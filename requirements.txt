@@ -15,3 +15,5 @@ scikit-learn
 # system: ffmpeg (with libmp3lame)
 requests
 pyarrow
+pyworld
+setuptools<81
