@@ -60,9 +60,9 @@ def _zipf(ref_w, ling):
             for k in range(n)]
 
 
-def analyse(x: np.ndarray, bid: str) -> FA:
+def analyse(x: np.ndarray, bid: str, ref_w: list[dict] | None = None) -> FA:
     """ASR twice (unprompted + disfluency-prompted, cached), align the transcript to what was heard, extract frames and silences."""
-    ref_w = reference.words_of(bid)
+    ref_w = ref_w or reference.words_of(bid)
     ling = annotate([{"w": r["w"], "sent_end": r["sent_end"], "clause_end": r["clause_end"]} for r in ref_w])
     hyp = asr.words(x, False)
     verb = asr.words(x, True)

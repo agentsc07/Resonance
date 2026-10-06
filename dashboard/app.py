@@ -1,9 +1,10 @@
-"""Flawline dataset review dashboard.
+"""Flawline LAB pages (for the team, and for screen-recording the data-engineering part of the video). Started by `LAB=1 python -m app.server`
+(or `make lab`) and linked from the web app's nav; the public pages (Analyse, Dataset, About) live in app/.
 
   streamlit run dashboard/app.py
 
-Pages: Baselines (coverage across age / origin / register) · Alterations review (A/B + verdict, writes
-pilot/realism.csv) · Pilot gate (spec pass rule per flaw) · Dataset (counts, QA, downloads).
+Pages: Baselines (coverage across age / origin / register, disfluency audit) · Alterations review (A/B player + verdict, writes
+pilot/realism.csv) · Pilot gate (spec pass rule per flaw).
 """
 from __future__ import annotations
 
@@ -121,7 +122,7 @@ if not mf.exists():
 M = load_manifest(mf.stat().st_mtime)
 BASE, CAND, STATUS = load_baselines()
 
-page = st.sidebar.radio("View", ["Analyse", "Baselines", "Alterations review", "Pilot gate", "Dataset"], label_visibility="collapsed")
+page = st.sidebar.radio("View", ["Alterations review", "Baselines", "Pilot gate"], label_visibility="collapsed")
 st.sidebar.caption("Flawline · Track C dataset v1 (dev)")
 reviewer = st.sidebar.text_input("Reviewer", value="Sai")
 rated = load_realism()
@@ -163,13 +164,8 @@ def script_html(words: list[dict], flagged: dict[int, str], slang: list[str] | N
     return f'<div class="script">{s}</div>'
 
 
-# --------------------------------------------------------------------------- page: analyse
-if page == "Analyse":
-    from analyse import render as render_analyse
-    render_analyse()
-
 # --------------------------------------------------------------------------- page: baselines
-elif page == "Baselines":
+if page == "Baselines":
     st.title("Baselines")
     st.caption("The yardsticks every alteration is made from. Slots cover age band × origin/accent × register (slang level).")
     bdf = pd.DataFrame(BASE)
@@ -401,59 +397,3 @@ elif page == "Pilot gate":
     c3.metric("Still to review", int(T.status.isin(["not started", "incomplete"]).sum()))
     st.caption("Objective Spearman comes from `generator/verify_flaws.py` (measured effect vs level, no listening). "
                "It is a sanity check, not a substitute for the by-ear gate.")
-
-
-# --------------------------------------------------------------------------- page: dataset
-else:
-    st.title("Dataset")
-    st.caption("What is currently built under `flawline-dataset/`.")
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Clips", len(M))
-    c2.metric("Baselines", M.baseline_id.nunique())
-    c3.metric("Hours", f"{M.duration_s.sum() / 3600:.2f}")
-    c4.metric("Flaw types", M[M.flaw.isin(FLAW_ORDER)].flaw.nunique())
-
-    g = M[(M.flaw.isin(FLAW_ORDER)) & (M.added_condition == "")]
-    z = g.pivot_table(index="flaw", columns="level", values="clip_id", aggfunc="count").reindex(FLAW_ORDER).fillna(0).astype(int)
-    fig = go.Figure(go.Heatmap(z=z.values, x=[f"L{c}" for c in z.columns], y=z.index, colorscale=[[0, "#f3f4f6"], [1, "#2b6cb0"]], showscale=False,
-                               text=z.values, texttemplate="%{text}", xgap=3, ygap=3, hovertemplate="%{y} %{x}: %{z} clips<extra></extra>"))
-    fig.update_layout(height=470, margin=dict(l=0, r=0, t=28, b=0), yaxis=dict(autorange="reversed"),
-                      title=dict(text="Clips per flaw × level (conditions excluded)", x=0, font=dict(size=13, color=MUTED)),
-                      plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-    a, b = st.columns([3, 2])
-    a.plotly_chart(fig, use_container_width=True)
-    with b:
-        st.markdown("**By split**")
-        st.dataframe(M.groupby("split").size().rename("clips"), use_container_width=True)
-        st.markdown("**By added condition**")
-        st.dataframe(M[M.added_condition != ""].groupby("added_condition").size().rename("clips"), use_container_width=True)
-    import results_page as RP
-    RP.counts(M)
-    RP.results()
-    st.subheader("Quality gates")
-    jcs = []
-    for jp in VARIANTS.glob("*.json"):
-        try:
-            j = json.loads(jp.read_text()).get("join_check")
-        except Exception:
-            continue
-        if j:
-            jcs.append(j)
-    q1, q2, q3 = st.columns(3)
-    if jcs:
-        q1.metric("Clips passing the join gate", f"{sum(j['passed'] for j in jcs) / len(jcs):.0%}", help="≤5% of joins above 6 dB and none above 12 dB, over what the baseline does naturally")
-        q2.metric("Joins above 6 dB", f"{sum(j['share_above_6db'] * j['n_joins'] for j in jcs) / max(1, sum(j['n_joins'] for j in jcs)):.1%}", help="v1.1 target: under 5%")
-    lk = ROOT.parent / "results" / "leakage.csv"
-    if lk.exists():
-        L = pd.read_csv(lk)
-        auc = float(L[L.scope == "ALL"].auc.iloc[0])
-        q3.metric("Leakage audit AUC", f"{auc:.2f}", delta="pass (≤0.60)" if auc <= 0.6 else "above 0.60 pass mark", delta_color="normal" if auc <= 0.6 else "inverse",
-                  help="Classifier that sees only editing artifacts (clicks, floor steps, flux, exact repeats). Near 0.5 = the dataset tests delivery, not editing.")
-    na = ROOT / "not_applicable.txt"
-    if na.exists() and na.read_text().strip():
-        st.warning("Flaws that could not be placed (recorded, not faked):")
-        st.code(na.read_text())
-    st.markdown("**Manifest**")
-    st.dataframe(M.drop(columns=["level", "flaw"]), hide_index=True, use_container_width=True)
-    st.download_button("Download manifest.csv", (ROOT / "manifest.csv").read_bytes(), "manifest.csv", "text/csv")
-    st.caption("Build checks: `python flawline-dataset/generator/qa.py` · reproducibility: `make_dataset.py --check-repro B01-CHAMP`.")

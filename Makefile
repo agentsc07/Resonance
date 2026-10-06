@@ -3,7 +3,8 @@
 #   make baselines  download VCTK p318/p227/p376/p283/p248/p326/p345/p314 (CC BY 4.0) and the JFK excerpts (public domain), align them
 #   make dataset    generate every flawed / conditioned clip, then the manifest
 #   make eval       harness self-test, acceptance tests, leakage audit, headline metrics on train and dev (never the test split)
-#   make app        open the dashboard on http://localhost:8501
+#   make app        the web app on http://localhost:8501 (Analyse, Dataset, About)
+#   make lab        the same plus the lab pages (Baselines, Alterations review, Pilot gate)
 PY ?= python
 GEN = flawline-dataset/generator
 
@@ -28,6 +29,9 @@ eval:
 	$(PY) eval/headline.py --split dev --mode same
 
 app:
-	streamlit run dashboard/app.py
+	$(PY) -m app.server
 
-.PHONY: setup baselines dataset eval app
+lab:
+	LAB=1 $(PY) -m app.server
+
+.PHONY: setup baselines dataset eval app lab

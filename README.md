@@ -12,7 +12,7 @@ Contrastive speech analytics (hackathon Track C). Real recorded speakers read a 
 ```bash
 make setup                  # pinned dependencies (requirements.lock) + spaCy model; needs ffmpeg
 make baselines dataset      # download VCTK + the JFK excerpts, align them, generate every clip   (or unzip the released dataset into flawline-dataset/)
-make app                    # dashboard: http://localhost:8501
+make app                    # the web app: http://localhost:8501 (Analyse, Dataset, About)
 ```
 
 Docker: `docker build -t flawline . && docker run -p 8501:8501 flawline`. The image holds the code and dependencies only; put the released `takes/` (baseline audio + alignment JSON) in `flawline-dataset/takes/` for the engine, because re-aligning on another machine moves word timings by up to 0.37 s. `make eval` re-runs the checks below on the train and dev splits (never the test split).
@@ -53,11 +53,12 @@ flawline-dataset/   generator/ (flaw factory, ingest, QA)  takes/ (baseline audi
 engine/             audio, conditions, dtw, compare, detect, free (general mode), consensus, arbitrate, score, explain, calibrate*, model.json, norms.json
 eval/               metrics, acceptance tests, leakage audit, headline metrics, harness self-test
 schema/             label.schema.json (v1.1.0) + validator
-dashboard/          Streamlit: Analyse (default), Baselines, Alterations review, Pilot gate, Dataset
+app/                web app: FastAPI service + static front end (Analyse, Dataset, About); `LAB=1` / `make lab` adds the lab pages
+dashboard/          lab pages only (Streamlit): Alterations review, Baselines, Pilot gate
 spec-v1.1.md        the build spec
 ```
 
-Dashboard pages: **Analyse** (score, per-category bars, timeline with the expected range, flaw cards with audio, JSON/HTML export, demo clips), **Alterations review** (original vs altered with a synced spectrogram player), **Pilot gate** (by-ear review sheet), **Dataset** (counts and all measured results).
+Web app pages: **Analyse** (drop a recording or pick a demo; score, seven category bars, a timeline with the expected range and the flagged moments, a flaw card with audio, the highlighted transcript, and an Advanced panel with mode, genre, rubric, experimental detectors and the full table), **Dataset** (tiles, flaw-by-level, conditions, speakers, quality gates, manifest), **About** (evaluation numbers read from `results/`). Lab pages (`LAB=1`): **Alterations review** (original vs altered with a synced spectrogram player), **Baselines**, **Pilot gate** (the by-ear review sheet). Screenshots at 1440x900 are in `docs/screenshots/`.
 
 ## Licences
 

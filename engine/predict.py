@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from . import arbitrate, audio, compare, conditions, detect, reference, score as scoring
+from . import arbitrate, asr, audio, compare, conditions, detect, reference, score as scoring
 from .explain import explain, explain_free
 from .linguistics import annotate
 
@@ -23,12 +23,20 @@ def _analyse_free(audio_path: str, meta: dict, ref_override: str | None):
     """Reference-free: the transcript (the text the speaker read) plus the clip itself and clean-speaker norms; no reference recording."""
     from . import free
     detect.use("free")
+    from . import transcript
     bid = ref_override or meta["baseline_id"]
     x, _ = audio.normalise(audio.load(audio_path))
     q = audio.quality(x)
     q["matched"] = {}
-    fa = free.analyse(x, bid)
-    cands = [c for c in free.run(fa, detect.TH) if c.flaw not in detect.DISABLED]
+    ref_w, text_checks = None, True
+    if meta.get("transcript"):                               # pasted text
+        ref_w, bid = transcript.words_from_text(meta["transcript"]), "custom"
+    elif meta.get("no_transcript"):                           # nothing supplied: use what the recogniser heard (text-fidelity checks then mean nothing)
+        heard = asr.words(x, False)
+        ref_w, bid, text_checks = transcript.words_from_text(" ".join(h["raw"] for h in heard)), "heard", False
+    fa = free.analyse(x, bid, ref_w)
+    q["text_checks"] = text_checks
+    cands = [c for c in free.run(fa, detect.TH) if c.flaw not in detect.DISABLED and (text_checks or c.flaw not in ("WORD_SKIP", "WORD_SWAP", "REPEAT"))]
     return fa, cands, q, "free:" + bid, fa.n
 
 
@@ -83,7 +91,7 @@ def predict(audio_path: str, meta: dict, mode: str = "same", rubric: dict | None
     C, cands, q, ref_id, n = analyse(audio_path, meta, mode, ref_override)
     if not experimental:                                       # experimental detectors are reported only on request (they would also outbid reliable ones)
         cands = [c for c in cands if c.flaw not in detect.EXPERIMENTAL]
-    ref_w = reference.words_of(ref_id[len("free:"):] if ref_id.startswith("free:") else ref_id)
+    ref_w = [{"w": w["w"], "clean": w["clean"]} for w in C.words] if mode == "free" else reference.words_of(ref_id)
     iso = scoring.load_iso(mode)
     rel = scoring.load_reliability(mode)
     cands = arbitrate.arbitrate(cands, rel)

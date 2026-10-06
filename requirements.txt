@@ -17,3 +17,6 @@ requests
 pyarrow
 pyworld
 setuptools<81
+fastapi
+uvicorn
+python-multipart
