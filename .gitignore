@@ -1,0 +1,12 @@
+# generated / large / local
+flawline-dataset/variants/
+flawline-dataset/generator/.cache/
+**/__pycache__/
+*.pyc
+*.flac
+.DS_Store
+results/.done
+.venv/
+.cache/
+*.wav
+*.pkl

@@ -1,0 +1,125 @@
+{
+  "B01": {
+    "slot": "B01",
+    "status": "PASS",
+    "n_words": 168,
+    "fillers": 0,
+    "issues": [],
+    "asr_mismatch_rate": 0.0,
+    "clipped_frac": 0.0,
+    "snr_db_est": 38.8,
+    "spontaneous": false,
+    "natural_disfluencies": 0
+  },
+  "B02": {
+    "slot": "B02",
+    "status": "PASS",
+    "n_words": 155,
+    "fillers": 0,
+    "issues": [
+      {
+        "kind": "misread / ASR mismatch",
+        "time_s": 57.0,
+        "reference": "he is",
+        "heard": "he's"
+      }
+    ],
+    "asr_mismatch_rate": 0.013,
+    "clipped_frac": 0.0,
+    "snr_db_est": 40.2,
+    "spontaneous": false,
+    "natural_disfluencies": 0
+  },
+  "B03": {
+    "slot": "B03",
+    "status": "PASS",
+    "n_words": 178,
+    "fillers": 0,
+    "issues": [],
+    "asr_mismatch_rate": 0.0,
+    "clipped_frac": 0.0,
+    "snr_db_est": 31.5,
+    "spontaneous": false,
+    "natural_disfluencies": 0
+  },
+  "B04": {
+    "slot": "B04",
+    "status": "PASS",
+    "n_words": 178,
+    "fillers": 0,
+    "issues": [],
+    "asr_mismatch_rate": 0.0,
+    "clipped_frac": 0.0,
+    "snr_db_est": 36.4,
+    "spontaneous": false,
+    "natural_disfluencies": 0
+  },
+  "B05": {
+    "slot": "B05",
+    "status": "REVIEW",
+    "n_words": 141,
+    "fillers": 0,
+    "issues": [
+      {
+        "kind": "long pause (minor)",
+        "time_s": 53.7,
+        "reference": "is",
+        "heard": "0.49 s gap"
+      }
+    ],
+    "asr_mismatch_rate": 0.0,
+    "clipped_frac": 0.0,
+    "snr_db_est": 41.4,
+    "spontaneous": false,
+    "natural_disfluencies": 0
+  },
+  "B06": {
+    "slot": "B06",
+    "status": "PASS",
+    "n_words": 178,
+    "fillers": 0,
+    "issues": [],
+    "asr_mismatch_rate": 0.0,
+    "clipped_frac": 0.0,
+    "snr_db_est": 35.1,
+    "spontaneous": false,
+    "natural_disfluencies": 0
+  },
+  "B07": {
+    "slot": "B07",
+    "status": "PASS",
+    "n_words": 167,
+    "fillers": 0,
+    "issues": [
+      {
+        "kind": "misread / ASR mismatch",
+        "time_s": 40.58,
+        "reference": "arch",
+        "heard": "arc"
+      },
+      {
+        "kind": "misread / ASR mismatch",
+        "time_s": 59.3,
+        "reference": "end",
+        "heard": "edge"
+      }
+    ],
+    "asr_mismatch_rate": 0.012,
+    "clipped_frac": 0.0,
+    "snr_db_est": 36.0,
+    "spontaneous": false,
+    "natural_disfluencies": 0
+  },
+  "B08": {
+    "slot": "B08",
+    "status": "PASS",
+    "n_words": 178,
+    "fillers": 0,
+    "issues": [],
+    "asr_mismatch_rate": 0.0,
+    "clipped_frac": 0.0,
+    "snr_db_est": 35.6,
+    "spontaneous": false,
+    "natural_disfluencies": 0
+  }
+}

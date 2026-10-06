@@ -1,0 +1,16 @@
+numpy
+scipy
+soundfile
+librosa
+pyworld
+praat-parselmouth
+wordfreq
+faster-whisper
+spacy            # + python -m spacy download en_core_web_sm
+pyyaml
+pandas
+plotly
+streamlit
+jsonschema
+scikit-learn
+# system: ffmpeg (with libmp3lame)

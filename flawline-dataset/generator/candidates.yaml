@@ -1,0 +1,83 @@
+# Real-speech candidates to replace placeholder baselines. NOTHING here is verified.
+# Dates, ages and licence notes are from memory: check each against the primary source before use
+# (spec risk table: "Licence unclear -> drop it"). No URLs are listed on purpose; find the archive copy
+# yourself, record it in baselines/<id>/source.json, and only then flip status to real.
+#
+# licence_hint values: us_federal (US government work, normally public domain), librivox (volunteer
+# recordings dedicated to the public domain), parliament (check the parliament's reuse terms),
+# unclear (do not use without written confirmation).
+
+candidates:
+  - slot: B02            # 46-65 / UK / formal declamation
+    speaker: "Winston Churchill"
+    speech: "We shall fight on the beaches (1940 text, 1949 re-recording)"
+    approx_age: 74
+    accent: "British RP"
+    gender: M
+    licence_hint: unclear
+    notes: "Archival audio, narrow bandwidth. Alignment risk (spec risk table). Crown copyright question."
+  - slot: B04            # 26-45 / Indian English / persuasive
+    speaker: "TBD: Indian parliamentarian or UN statement"
+    speech: "TBD"
+    accent: "Indian English"
+    gender: F
+    licence_hint: unclear
+    notes: "UN webcasts and Lok Sabha / Rajya Sabha recordings are the likely pool; check reuse terms."
+  - slot: B03            # 18-25 / slang-heavy / extemporaneous
+    speaker: "TBD: self-recorded or consenting student speaker"
+    speech: "TBD"
+    accent: "Indian English (Hindi belt)"
+    gender: M
+    licence_hint: consent
+    notes: "No famous champion fits a slang-heavy 18-25 slot. Recruit a debater and get a signed release."
+  - slot: B05            # 46-65 / Tamil English / colloquial
+    speaker: "TBD"
+    speech: "TBD"
+    accent: "Tamil English"
+    gender: F
+    licence_hint: consent
+    notes: "Same as B03: a consenting speaker is the realistic route."
+  - slot: B06            # 65+ / Irish English
+    speaker: "TBD"
+    speech: "TBD"
+    accent: "Irish English"
+    gender: F
+    licence_hint: unclear
+  - slot: B07            # 65+ / Southern US / colloquial
+    speaker: "Ronald Reagan (candidate)"
+    speech: "Challenger address, 28 Jan 1986"
+    approx_age: 74
+    accent: "General American (not Southern; weak match for the slot)"
+    gender: M
+    licence_hint: us_federal
+    notes: "Good 65+ male with clean public-domain audio, but the accent does not match the Southern slot. Either relabel the slot or find a Southern speaker."
+  - slot: B01            # 26-45 / US / interpretive reading
+    speaker: "LibriVox volunteer reader"
+    speech: "Any public-domain short story chapter, 60-90 s"
+    accent: "General American"
+    gender: F
+    licence_hint: librivox
+    notes: "Cleanest licence path for interpretive-reading slots. Not a champion, so say so in the datasheet."
+  - slot: B08            # 18-25 / Australian / slang
+    speaker: "TBD"
+    speech: "TBD"
+    accent: "Australian English"
+    gender: F
+    licence_hint: unclear
+    notes: "Parliament maiden speeches are older speakers; for 18-25 recruit a consenting debater."
+  - slot: spare          # 26-45 / US / persuasive
+    speaker: "John F. Kennedy"
+    speech: "Inaugural address, 20 Jan 1961"
+    approx_age: 43
+    accent: "New England American"
+    gender: M
+    licence_hint: us_federal
+    notes: "Excellent audio and a classic benchmark; trim a 60-90 s excerpt."
+  - slot: spare          # 46-65 / US / persuasive
+    speaker: "Barack Obama"
+    speech: "First inaugural address, 20 Jan 2009 (excerpt)"
+    approx_age: 47
+    accent: "General American"
+    gender: M
+    licence_hint: us_federal
+    notes: "Verify that the specific recording is a federal work and not a broadcaster's copyrighted capture."

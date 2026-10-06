@@ -1,0 +1,110 @@
+speaker_id,start,n,age,gender,accent,region
+p225,0,462,23,F,English,Southern England
+p226,462,712,22,M,English,Surrey
+p227,1174,778,38,M,English,Cumbria
+p228,1952,732,22,F,English,Southern England
+p229,2684,758,23,F,English,Southern England
+p230,3442,794,22,F,English,Stockton-on-tees
+p231,4236,912,23,F,English,Southern England
+p232,5148,822,23,M,English,Southern England
+p233,5970,744,23,F,English,Staffordshire
+p234,6714,714,22,F,Scottish,West Dumfries
+p236,7428,984,23,F,English,Manchester
+p237,8412,678,22,M,Scottish,Fife
+p238,9090,908,22,F,NorthernIrish,Belfast
+p239,9998,1004,22,F,English,SW England
+p240,11002,754,21,F,English,Southern England
+p241,11756,706,21,M,Scottish,Perth
+p243,12462,786,22,M,English,London
+p244,13248,840,22,F,English,Manchester
+p245,14088,708,25,M,Irish,Dublin
+p246,14796,716,22,M,Scottish,Selkirk
+p247,15512,950,22,M,Scottish,Argyll
+p248,16462,752,23,F,Indian,
+p249,17214,670,22,F,Scottish,Aberdeen
+p250,17884,962,22,F,English,SE England
+p251,18846,728,26,M,Indian,
+p252,19574,790,22,M,Scottish,Edinburgh
+p253,20364,750,22,F,Welsh,Cardiff
+p254,21114,792,21,M,English,Surrey
+p255,21906,758,19,M,Scottish,Galloway
+p256,22664,638,24,M,English,Birmingham
+p257,23302,868,24,F,English,Southern England
+p258,24170,826,22,M,English,Southern England
+p259,24996,962,23,M,English,Nottingham
+p260,25958,712,21,M,Scottish,Orkney
+p261,26670,948,26,F,NorthernIrish,Belfast
+p262,27618,788,23,F,Scottish,Edinburgh
+p263,28406,942,22,M,Scottish,Aberdeen
+p264,29348,966,23,F,Scottish,West Lothian
+p265,30314,696,23,F,Scottish,Ross
+p266,31010,844,22,F,Irish,Athlone
+p267,31854,834,23,F,English,Yorkshire
+p268,32688,812,23,F,English,Southern England
+p269,33500,792,20,F,English,Newcastle
+p270,34292,924,21,M,English,Yorkshire
+p271,35216,908,19,M,Scottish,Fife
+p272,36124,822,23,M,Scottish,Edinburgh
+p273,36946,866,23,M,English,Suffolk
+p274,37812,932,22,M,English,Essex
+p275,38744,832,23,M,Scottish,Midlothian
+p276,39576,924,24,F,English,Oxford
+p277,40500,916,23,F,English,NE England
+p278,41416,818,22,M,English,Cheshire
+p279,42234,810,23,M,English,Leicester
+p280,43044,410,25,F,Unknown,France
+p281,43454,918,29,M,Scottish,Edinburgh
+p282,44372,732,23,F,English,Newcastle
+p283,45104,938,24,F,Irish,Cork
+p284,46042,850,20,M,Scottish,Fife
+p285,46892,806,21,M,Scottish,Edinburgh
+p286,47698,934,23,M,English,Newcastle
+p287,48632,848,23,M,English,York
+p288,49480,824,22,F,Irish,Dublin
+p292,50304,822,23,M,NorthernIrish,Belfast
+p293,51126,792,22,F,NorthernIrish,Belfast
+p294,51918,846,33,F,American,San Francisco
+p295,52764,832,23,F,Irish,Dublin
+p297,53596,834,20,F,American,New York
+p298,54430,810,19,M,Irish,Tipperary
+p299,55240,810,25,F,American,California
+p300,56050,796,23,F,American,California
+p301,56846,822,23,F,American,North Carolina
+p302,57668,622,20,M,Canadian,Montreal
+p303,58290,704,24,F,Canadian,Toronto
+p304,58994,846,22,M,NorthernIrish,Belfast
+p305,59840,844,19,F,American,Philadelphia
+p306,60684,690,21,F,American,New York
+p307,61374,840,23,F,Canadian,Ontario
+p308,62214,846,18,F,American,Alabama
+p310,63060,846,21,F,American,Tennessee
+p311,63906,846,21,M,American,Iowa
+p312,64752,834,19,F,Canadian,Hamilton
+p313,65586,842,24,F,Irish,County Down
+p314,66428,846,26,F,SouthAfrican,Cape Town
+p316,67274,842,20,M,Canadian,Alberta
+p317,68116,846,23,F,Canadian,Hamilton
+p318,68962,844,32,F,American,Napa
+p323,69806,846,19,F,SouthAfrican,Pretoria
+p326,70652,798,26,M,Australian,English Sydney
+p329,71450,848,23,F,American,
+p330,72298,846,26,F,American,
+p333,73144,842,19,F,American,Indiana
+p334,73986,846,18,M,American,Chicago
+p335,74832,844,25,F,NewZealand,English
+p336,75676,836,18,F,SouthAfrican,Johannesburg
+p339,76512,846,21,F,American,Pennsylvania
+p340,77358,846,18,F,Irish,Dublin
+p341,78204,818,26,F,American,Ohio
+p343,79022,776,27,F,Canadian,Alberta
+p345,79798,794,22,M,American,Florida
+p347,80592,846,26,M,SouthAfrican,Johannesburg
+p351,81438,844,21,F,NorthernIrish,Derry
+p360,82282,848,19,M,American,New Jersey
+p361,83130,848,19,F,American,New Jersey
+p362,83978,246,29,F,American,
+p363,84224,838,22,M,Canadian,Toronto
+p364,85062,602,23,M,Irish,Donegal
+p374,85664,848,28,M,Australian,English
+p376,86512,848,22,M,Indian,
+s5,87360,796,22,F,British,

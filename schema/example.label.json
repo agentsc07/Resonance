@@ -1,0 +1,87 @@
+{
+  "clip_id": "B01-CHAMP_C0__PAUSE_BAD_L3_s3821",
+  "take_id": "B01-CHAMP",
+  "baseline_id": "B01",
+  "genre": "interpretive reading",
+  "who": {
+    "speaker_id": "CHAMP",
+    "age_band": "26-45",
+    "accent": "American",
+    "gender": "F",
+    "fluency_profile": "typical",
+    "synthetic_voice": false,
+    "origin": "American (Napa)",
+    "register": "neutral"
+  },
+  "where": {
+    "base_condition": "C0",
+    "added_condition": null,
+    "params": {}
+  },
+  "what": [
+    {
+      "flaw": "PAUSE_BAD",
+      "category": "Pausing",
+      "level": 3,
+      "params": {
+        "pause_s": 1.0
+      },
+      "word_start": 25,
+      "word_end": 26,
+      "kind": "insert",
+      "inserted_s": 1.0,
+      "boundary": "phrase_tight",
+      "context": "and we can ⟦…⟧ go meet her",
+      "why": "inside a tight phrase, between 'can' and 'go'",
+      "start_s": 10.6812,
+      "end_s": 11.6653,
+      "baseline_start_s": 10.6912,
+      "baseline_end_s": 10.6912
+    },
+    {
+      "flaw": "PAUSE_BAD",
+      "category": "Pausing",
+      "level": 3,
+      "params": {
+        "pause_s": 1.0
+      },
+      "word_start": 116,
+      "word_end": 117,
+      "kind": "insert",
+      "inserted_s": 1.0,
+      "boundary": "phrase_tight",
+      "context": "his reach, his ⟦…⟧ friends say he",
+      "why": "inside a tight phrase, between 'his' and 'friends'",
+      "start_s": 45.4423,
+      "end_s": 46.4303,
+      "baseline_start_s": 44.4835,
+      "baseline_end_s": 44.4835
+    },
+    {
+      "flaw": "PAUSE_BAD",
+      "category": "Pausing",
+      "level": 3,
+      "params": {
+        "pause_s": 1.0
+      },
+      "word_start": 128,
+      "word_end": 129,
+      "kind": "insert",
+      "inserted_s": 1.0,
+      "boundary": "phrase_tight",
+      "context": "gold at the ⟦…⟧ end of the",
+      "why": "inside a tight phrase, between 'the' and 'end'",
+      "start_s": 48.7837,
+      "end_s": 49.7729,
+      "baseline_start_s": 46.8527,
+      "baseline_end_s": 46.8527
+    }
+  ],
+  "multi_set": null,
+  "duration_s": 67.4107,
+  "seed": 3821,
+  "generator_version": "1.0.0",
+  "labels_from": "generator",
+  "align_source": "whisper-base.en (matched to corpus transcript) + energy-valley/zero-crossing snap",
+  "schema_version": "1.1.0"
+}

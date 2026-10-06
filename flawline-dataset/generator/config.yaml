@@ -1,0 +1,44 @@
+# Flaw factory config v1.0 (spec "What: the delivery flaws"). Index 0..4 = level L1..L5.
+# Tune here during the pilot gate; regenerate only the flaws that failed.
+version: "1.0.0"
+crossfade_ms: 20                       # v1.1: 15-25 ms, pitch-synchronous in voiced audio
+region_s: {min: 1.0, max: 6.0}          # modify-type regions; word-aligned
+max_regions: 3
+
+flaws:
+  PACE_FAST:  {category: Pacing,         param: rate,       levels: [1.10, 1.20, 1.35, 1.50, 1.75], region_s: [2.0, 4.0]}
+  PACE_SLOW:  {category: Pacing,         param: rate,       levels: [0.90, 0.80, 0.70, 0.60, 0.50], region_s: [1.5, 3.0]}
+  PAUSE_BAD:  {category: Pausing,        param: pause_s,    levels: [0.3, 0.6, 1.0, 1.6, 2.5]}
+  PAUSE_LOST: {category: Pausing,        param: removed,    levels: [0.20, 0.40, 0.60, 0.80, 1.00]}
+  MONOTONE:   {category: Intonation,     param: range_mult, levels: [0.8, 0.6, 0.4, 0.2, 0.0], region_s: [3.0, 5.0]}
+  UPTALK:     {category: Intonation,     param: semitones,  levels: [1, 2, 4, 6, 8]}
+  EMPH_FLAT:  {category: Intonation,     param: flatten,    levels: [0.25, 0.40, 0.60, 0.80, 1.00], region_s: [3.0, 5.0]}
+  FADE:       {category: Volume,         param: end_db,     levels: [-3, -6, -10, -15, -20]}
+  SHOUT:      {category: Volume,         param: gain_db,    levels: [2, 4, 6, 9, 12], region_s: [1.0, 3.0]}
+  FILLER:     {category: Fluency,        param: per_30s,    levels: [1, 2, 3, 5, 8]}
+  REPEAT:     {category: Fluency,        param: repeat,     levels: [[1, 1], [1, 2], [2, 1], [4, 1], [4, 2]]}   # [words, extra copies]
+  RARE_HESIT: {category: Fluency,        param: pause_s,    levels: [0.2, 0.4, 0.7, 1.0, 1.5], zipf_below: 3.5, word_slow: [0.9, 0.85, 0.8, 0.75, 0.7], filler_from_level: 3}
+  SLUR:       {category: Clarity,        param: atten_db,   levels: [-2, -4, -6, -9, -12], region_s: [1.5, 3.5]}
+  WORD_SKIP:  {category: Text fidelity,  param: n_words,    levels: [1, 2, 3, 5, 8]}
+  WORD_SWAP:  {category: Text fidelity,  param: n_words,    levels: [1, 2, 3, 5, 8]}
+
+multi_flaw_sets:                        # 5 per champion, each flaw once at the given level
+  - [PACE_FAST, FADE]
+  - [PAUSE_BAD, MONOTONE]
+  - [FILLER, UPTALK, SLUR]
+  - [EMPH_FLAT, PACE_SLOW, SHOUT]
+  - [REPEAT, RARE_HESIT, WORD_SWAP]
+multi_flaw_level: 3
+
+conditions:                              # "Where" (spec table), synthetic ones
+  N20:  {kind: babble, snr_db: 20}
+  N10:  {kind: pink,   snr_db: 10}
+  RVB:  {kind: reverb, rt60_s: 0.6}
+  PHN:  {kind: phone,  low_hz: 300, high_hz: 3400}
+  MP3:  {kind: mp3,    kbps: 64}
+  GAIN: {kind: gain,   db: 6}            # sign chosen per seed: +/-6 dB
+
+splits:                                  # hold out whole baselines: test = unseen speeches AND unseen accents
+  test: [B05, B08]
+  dev: [B03]
+  # everything else: train

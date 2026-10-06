@@ -1,0 +1,24 @@
+# Real recorded baselines. Each slot -> a speaker in a licensed corpus (see ingest_corpus.py).
+corpora:
+  vctk:
+    name: "VCTK 0.92"
+    licence: "CC BY 4.0"
+    url: "https://datashare.ed.ac.uk/handle/10283/3443"
+    citation: "Veaux, Yamagishi, MacDonald (2017) CSTR VCTK Corpus. University of Edinburgh. https://doi.org/10.7488/ds/2645"
+    note: "Studio-recorded read speech (elicitation paragraph + Rainbow Passage). Speakers are 18-38 only."
+  svarah:
+    name: "Svarah"
+    licence: "CC BY 4.0"
+    url: "https://huggingface.co/datasets/ai4bharat/Svarah"
+    citation: "Javed et al. (2023) Svarah: Evaluating English ASR Systems on Indian Accents. Interspeech. arXiv:2305.15760 (AI4Bharat / IIT Madras)"
+    note: "Crowd-sourced spontaneous English monologues, 16 kHz, phone/laptop mics, human transcripts. Age is a group (18-30/30-45/45-60/60+), not an exact age."
+target_s: [60, 90]
+slots:
+  B01: {corpus: vctk,   speaker: p318}
+  B02: {corpus: vctk,   speaker: p227}
+  B03: {corpus: vctk,   speaker: p376}
+  B04: {corpus: vctk,   speaker: p283}
+  B05: {corpus: vctk,   speaker: p248}
+  B06: {corpus: vctk,   speaker: p326}
+  B07: {corpus: vctk,   speaker: p345}
+  B08: {corpus: vctk,   speaker: p314}

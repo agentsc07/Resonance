@@ -1,0 +1,121 @@
+take_id,flaw,unit,L1,L2,L3,L4,L5,spearman,monotonic
+B01-CHAMP,PACE_FAST,achieved speed ratio,1.015,1.206,1.324,1.493,1.637,1.0,True
+B01-CHAMP,PACE_SLOW,achieved speed ratio,0.897,0.794,0.696,0.596,0.54,-1.0,True
+B01-CHAMP,PAUSE_BAD,inserted s,0.236,0.441,0.709,1.11,1.714,1.0,True
+B01-CHAMP,PAUSE_LOST,pause removed s,0.076,0.152,0.228,0.305,0.331,1.0,True
+B01-CHAMP,MONOTONE,F0 IQR lost (st),1.077,1.781,2.408,3.091,3.986,1.0,True
+B01-CHAMP,UPTALK,final rise from nucleus (st),0.633,1.113,3.193,4.977,6.863,1.0,True
+B01-CHAMP,EMPH_FLAT,focal prominence z lost,0.27,0.4,0.54,0.595,0.88,1.0,True
+B01-CHAMP,FADE,end level drop (dB),2.691,5.359,8.892,13.253,17.516,1.0,True
+B01-CHAMP,SHOUT,speech level gain (dB),1.875,3.795,5.975,8.92,11.685,1.0,True
+B01-CHAMP,FILLER,total inserted s,0.945,1.904,2.777,4.372,7.758,1.0,True
+B01-CHAMP,REPEAT,restart words (frac-weighted),0.77,1.49,1.54,3.08,5.96,1.0,True
+B01-CHAMP,RARE_HESIT,added s,0.203,0.244,0.513,0.692,1.028,1.0,True
+B01-CHAMP,SLUR,2-8 kHz loss (dB),2.075,4.362,6.804,10.067,13.315,1.0,True
+B01-CHAMP,WORD_SKIP,total removed s,0.23,0.405,0.596,1.434,2.239,1.0,True
+B01-CHAMP,WORD_SWAP,words swapped,1.0,2.0,3.0,5.0,8.0,1.0,True
+B02-CHAMP,PACE_FAST,achieved speed ratio,1.0,1.186,1.329,1.495,1.718,1.0,True
+B02-CHAMP,PACE_SLOW,achieved speed ratio,0.89,0.796,0.694,0.618,0.575,-1.0,True
+B02-CHAMP,PAUSE_BAD,inserted s,0.268,0.453,0.697,1.06,1.605,1.0,True
+B02-CHAMP,PAUSE_LOST,pause removed s,0.134,0.267,0.401,0.534,0.618,1.0,True
+B02-CHAMP,MONOTONE,F0 IQR lost (st),1.11,2.024,2.703,4.011,4.527,1.0,True
+B02-CHAMP,UPTALK,final rise from nucleus (st),0.59,1.22,2.63,3.95,5.34,1.0,True
+B02-CHAMP,EMPH_FLAT,focal prominence z lost,0.69,0.83,0.95,1.29,1.71,1.0,True
+B02-CHAMP,FADE,end level drop (dB),2.6,5.186,8.627,12.917,17.186,1.0,True
+B02-CHAMP,SHOUT,speech level gain (dB),1.91,3.84,5.92,8.75,11.16,1.0,True
+B02-CHAMP,FILLER,total inserted s,0.698,1.146,1.768,3.319,5.337,1.0,True
+B02-CHAMP,REPEAT,restart words (frac-weighted),0.71,1.41,1.42,2.84,5.64,1.0,True
+B02-CHAMP,RARE_HESIT,added s,0.198,0.411,0.948,1.219,1.887,1.0,True
+B02-CHAMP,SLUR,2-8 kHz loss (dB),2.055,4.254,6.546,9.722,12.888,1.0,True
+B02-CHAMP,WORD_SKIP,total removed s,0.337,0.434,0.673,1.05,1.675,1.0,True
+B02-CHAMP,WORD_SWAP,words swapped,1.0,2.0,3.0,5.0,8.0,1.0,True
+B03-CHAMP,PACE_FAST,achieved speed ratio,1.053,1.187,1.36,1.493,1.75,1.0,True
+B03-CHAMP,PACE_SLOW,achieved speed ratio,0.893,0.784,0.693,0.595,0.557,-1.0,True
+B03-CHAMP,PAUSE_BAD,inserted s,0.275,0.575,0.975,1.575,2.475,1.0,True
+B03-CHAMP,PAUSE_LOST,pause removed s,0.084,0.168,0.252,0.336,0.37,1.0,True
+B03-CHAMP,MONOTONE,F0 IQR lost (st),0.676,1.302,2.107,2.761,3.47,1.0,True
+B03-CHAMP,UPTALK,final rise from nucleus (st),-0.19,-0.06,2.29,3.48,2.23,0.7,False
+B03-CHAMP,EMPH_FLAT,focal prominence z lost,0.085,0.01,0.41,0.335,0.46,0.8,False
+B03-CHAMP,FADE,end level drop (dB),2.527,5.024,8.253,12.057,15.511,1.0,True
+B03-CHAMP,SHOUT,speech level gain (dB),0.54,1.19,5.79,8.66,11.29,1.0,True
+B03-CHAMP,FILLER,total inserted s,0.684,1.381,2.091,3.37,6.069,1.0,True
+B03-CHAMP,REPEAT,restart words (frac-weighted),0.69,1.4,1.38,2.76,5.6,0.9,False
+B03-CHAMP,RARE_HESIT,added s,0.23,0.359,0.726,1.102,1.543,1.0,True
+B03-CHAMP,SLUR,2-8 kHz loss (dB),1.918,4.068,6.267,9.242,12.075,1.0,True
+B03-CHAMP,WORD_SKIP,total removed s,0.239,0.73,1.068,1.558,2.524,1.0,True
+B03-CHAMP,WORD_SWAP,words swapped,1.0,2.0,3.0,5.0,8.0,1.0,True
+B04-CHAMP,PACE_FAST,achieved speed ratio,1.068,1.202,1.3,1.437,1.764,1.0,True
+B04-CHAMP,PACE_SLOW,achieved speed ratio,0.895,0.792,0.694,0.598,0.548,-1.0,True
+B04-CHAMP,PAUSE_BAD,inserted s,0.277,0.575,0.975,1.575,2.477,1.0,True
+B04-CHAMP,PAUSE_LOST,pause removed s,0.056,0.111,0.167,0.223,0.228,1.0,True
+B04-CHAMP,MONOTONE,F0 IQR lost (st),0.55,1.005,1.477,2.016,2.479,1.0,True
+B04-CHAMP,UPTALK,final rise from nucleus (st),0.94,2.04,3.87,5.81,7.81,1.0,True
+B04-CHAMP,EMPH_FLAT,focal prominence z lost,-0.16,0.11,-0.125,0.015,0.195,0.7,False
+B04-CHAMP,FADE,end level drop (dB),2.331,4.889,8.273,12.44,16.495,1.0,True
+B04-CHAMP,SHOUT,speech level gain (dB),1.947,3.91,5.95,8.86,11.567,1.0,True
+B04-CHAMP,FILLER,total inserted s,0.655,1.478,2.142,3.441,5.703,1.0,True
+B04-CHAMP,REPEAT,restart words (frac-weighted),0.68,1.37,1.36,2.72,5.48,0.9,False
+B04-CHAMP,RARE_HESIT,added s,0.211,0.431,0.924,1.276,1.787,1.0,True
+B04-CHAMP,SLUR,2-8 kHz loss (dB),2.025,4.316,6.73,9.969,13.178,1.0,True
+B04-CHAMP,WORD_SKIP,total removed s,0.106,0.394,0.643,1.399,2.453,1.0,True
+B04-CHAMP,WORD_SWAP,words swapped,1.0,2.0,3.0,5.0,8.0,1.0,True
+B05-CHAMP,PACE_FAST,achieved speed ratio,1.059,1.196,1.345,1.5,1.691,1.0,True
+B05-CHAMP,PACE_SLOW,achieved speed ratio,0.899,0.797,0.696,0.596,0.536,-1.0,True
+B05-CHAMP,PAUSE_BAD,inserted s,0.348,0.554,0.827,1.235,1.841,1.0,True
+B05-CHAMP,PAUSE_LOST,pause removed s,0.136,0.272,0.408,0.544,0.629,1.0,True
+B05-CHAMP,MONOTONE,F0 IQR lost (st),0.664,1.602,2.516,3.598,4.535,1.0,True
+B05-CHAMP,UPTALK,final rise from nucleus (st),0.98,1.85,3.53,5.3,7.06,1.0,True
+B05-CHAMP,EMPH_FLAT,focal prominence z lost,-0.07,-0.14,0.22,-0.24,0.02,0.1,False
+B05-CHAMP,FADE,end level drop (dB),2.614,5.028,8.218,12.15,16.002,1.0,True
+B05-CHAMP,SHOUT,speech level gain (dB),1.98,3.945,5.87,8.375,10.515,1.0,True
+B05-CHAMP,FILLER,total inserted s,0.967,1.822,2.58,4.622,6.841,1.0,True
+B05-CHAMP,REPEAT,restart words (frac-weighted),0.737,1.407,1.473,2.947,5.627,1.0,True
+B05-CHAMP,RARE_HESIT,added s,0.177,0.379,0.958,1.194,1.661,1.0,True
+B05-CHAMP,SLUR,2-8 kHz loss (dB),2.056,4.347,6.816,10.095,13.368,1.0,True
+B05-CHAMP,WORD_SKIP,total removed s,0.326,0.442,0.581,1.261,2.489,1.0,True
+B05-CHAMP,WORD_SWAP,words swapped,1.0,2.0,3.0,5.0,8.0,1.0,True
+B06-CHAMP,PACE_FAST,achieved speed ratio,1.085,1.192,1.334,1.481,1.738,1.0,True
+B06-CHAMP,PACE_SLOW,achieved speed ratio,0.903,0.796,0.698,0.633,0.619,-1.0,True
+B06-CHAMP,PAUSE_BAD,inserted s,0.274,0.574,0.974,1.574,2.474,1.0,True
+B06-CHAMP,PAUSE_LOST,pause removed s,0.075,0.15,0.225,0.3,0.325,1.0,True
+B06-CHAMP,MONOTONE,F0 IQR lost (st),0.567,1.128,1.571,2.0,2.499,1.0,True
+B06-CHAMP,UPTALK,final rise from nucleus (st),0.48,1.25,2.7,4.08,5.63,1.0,True
+B06-CHAMP,EMPH_FLAT,focal prominence z lost,0.487,-0.18,0.753,0.92,0.43,0.2,False
+B06-CHAMP,FADE,end level drop (dB),2.511,5.008,8.312,12.39,16.379,1.0,True
+B06-CHAMP,SHOUT,speech level gain (dB),1.955,3.925,5.975,8.85,11.53,1.0,True
+B06-CHAMP,FILLER,total inserted s,0.452,1.254,2.253,3.913,6.025,1.0,True
+B06-CHAMP,REPEAT,restart words (frac-weighted),0.755,1.44,1.51,3.02,5.76,1.0,True
+B06-CHAMP,RARE_HESIT,added s,0.225,0.452,0.946,1.386,1.992,1.0,True
+B06-CHAMP,SLUR,2-8 kHz loss (dB),2.084,4.328,6.656,9.85,13.015,1.0,True
+B06-CHAMP,WORD_SKIP,total removed s,0.186,0.414,0.523,0.716,1.286,1.0,True
+B06-CHAMP,WORD_SWAP,words swapped,1.0,2.0,3.0,5.0,8.0,1.0,True
+B07-CHAMP,PACE_FAST,achieved speed ratio,1.106,1.205,1.335,1.493,1.777,1.0,True
+B07-CHAMP,PACE_SLOW,achieved speed ratio,0.892,0.795,0.689,0.596,0.502,-1.0,True
+B07-CHAMP,PAUSE_BAD,inserted s,0.318,0.473,0.679,0.984,1.438,1.0,True
+B07-CHAMP,PAUSE_LOST,pause removed s,0.09,0.181,0.271,0.361,0.401,1.0,True
+B07-CHAMP,MONOTONE,F0 IQR lost (st),0.94,1.471,2.005,2.595,3.174,1.0,True
+B07-CHAMP,UPTALK,final rise from nucleus (st),0.22,0.41,1.0,1.49,2.2,1.0,True
+B07-CHAMP,EMPH_FLAT,focal prominence z lost,1.22,1.27,1.39,1.52,1.38,0.7,False
+B07-CHAMP,FADE,end level drop (dB),1.318,3.529,6.399,9.809,12.913,1.0,True
+B07-CHAMP,SHOUT,speech level gain (dB),1.98,3.96,5.87,8.82,11.58,1.0,True
+B07-CHAMP,FILLER,total inserted s,1.179,2.428,3.938,5.025,7.414,1.0,True
+B07-CHAMP,REPEAT,restart words (frac-weighted),0.637,1.31,1.273,2.547,5.24,0.9,False
+B07-CHAMP,RARE_HESIT,added s,0.211,0.345,0.733,1.012,1.48,1.0,True
+B07-CHAMP,SLUR,2-8 kHz loss (dB),2.09,4.38,6.763,10.006,13.231,1.0,True
+B07-CHAMP,WORD_SKIP,total removed s,0.329,0.615,0.865,1.595,2.797,1.0,True
+B07-CHAMP,WORD_SWAP,words swapped,1.0,2.0,3.0,5.0,8.0,1.0,True
+B08-CHAMP,PACE_FAST,achieved speed ratio,1.059,1.208,1.347,1.495,1.638,1.0,True
+B08-CHAMP,PACE_SLOW,achieved speed ratio,0.899,0.797,0.695,0.596,0.525,-1.0,True
+B08-CHAMP,PAUSE_BAD,inserted s,0.241,0.395,0.6,0.906,1.36,1.0,True
+B08-CHAMP,PAUSE_LOST,pause removed s,0.072,0.144,0.216,0.288,0.311,1.0,True
+B08-CHAMP,MONOTONE,F0 IQR lost (st),0.788,1.571,2.22,3.031,3.785,1.0,True
+B08-CHAMP,UPTALK,final rise from nucleus (st),0.3,0.76,1.64,2.6,4.99,1.0,True
+B08-CHAMP,EMPH_FLAT,focal prominence z lost,-0.3,-0.09,-0.19,0.47,0.41,0.8,False
+B08-CHAMP,FADE,end level drop (dB),2.882,5.495,8.932,13.096,16.979,1.0,True
+B08-CHAMP,SHOUT,speech level gain (dB),1.93,3.875,5.92,8.72,11.31,1.0,True
+B08-CHAMP,FILLER,total inserted s,0.628,1.558,2.314,4.347,6.999,1.0,True
+B08-CHAMP,REPEAT,restart words (frac-weighted),0.68,1.46,1.36,2.72,5.84,0.9,False
+B08-CHAMP,RARE_HESIT,added s,0.21,0.299,0.683,0.951,1.288,1.0,True
+B08-CHAMP,SLUR,2-8 kHz loss (dB),2.045,4.248,6.556,9.734,12.902,1.0,True
+B08-CHAMP,WORD_SKIP,total removed s,0.098,0.208,0.612,1.366,1.893,1.0,True
+B08-CHAMP,WORD_SWAP,words swapped,1.0,2.0,3.0,5.0,8.0,1.0,True

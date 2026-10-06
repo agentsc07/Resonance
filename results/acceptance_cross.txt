@@ -1,0 +1,56 @@
+/Users/saicharan/Desktop/01_Projects/MultiModalHackathon - iit Mandi/engine/compare.py:90: RuntimeWarning: invalid value encountered in add
+  p_mid = np.interp(np.arange(nref), np.arange(nref)[ok], ((p_lo + p_hi) / 2)[ok])
+{
+ "mode": "cross",
+ "dose_response": {
+  "min_ok": -0.9,
+  "failing": [
+   "PACE_FAST",
+   "PAUSE_BAD",
+   "PAUSE_LOST",
+   "MONOTONE",
+   "UPTALK",
+   "EMPH_FLAT",
+   "FILLER",
+   "SLUR",
+   "WORD_SKIP",
+   "WORD_SWAP"
+  ],
+  "median_spearman": -0.829
+ },
+ "invariance": {
+  "false_flags_per_min": 18.793,
+  "max_score_shift": 53.0,
+  "mean_shift_by_condition": {
+   "GAIN": 0.48,
+   "MP3": 2.33,
+   "N10": 40.98,
+   "N20": 5.6,
+   "PHN": 4.56,
+   "RVB": 4.03
+  },
+  "n": 48,
+  "pass": false
+ },
+ "locality": {
+  "mean_other_category_loss": 230.56,
+  "n": 60,
+  "pass": false
+ }
+}
+dose-response per flaw (score L0..L5):
+  PACE_FAST   [60.5, 62.8, 60.9, 60.3, 54.1, 53.4]  rho -0.829
+  PACE_SLOW   [60.5, 60.2, 58.0, 54.9, 50.4, 49.1]  rho -1.0
+  PAUSE_BAD   [60.5, 60.4, 59.9, 56.1, 59.2, 62.4]  rho -0.086
+  PAUSE_LOST  [60.5, 60.5, 58.5, 57.1, 59.4, 58.6]  rho -0.522
+  MONOTONE    [60.5, 60.6, 60.5, 60.5, 60.4, 60.4]  rho -0.802
+  UPTALK      [60.5, 62.7, 60.6, 62.8, 62.8, 62.7]  rho 0.647
+  EMPH_FLAT   [60.5, 60.5, 60.6, 60.5, 60.5, 60.6]  rho 0.414
+  FADE        [60.5, 60.4, 60.4, 59.8, 59.8, 59.1]  rho -0.971
+  SHOUT       [60.5, 60.5, 60.5, 58.8, 58.3, 57.5]  rho -0.941
+  FILLER      [60.5, 58.6, 59.1, 58.6, 53.3, 48.7]  rho -0.899
+  REPEAT      [60.5, 60.5, 60.5, 58.6, 58.4, 54.2]  rho -0.941
+  RARE_HESIT  [60.5, 60.9, 59.6, 58.4, 57.9, 55.5]  rho -0.943
+  SLUR        [60.5, 62.9, 62.9, 62.9, 58.0, 55.9]  rho -0.577
+  WORD_SKIP   [60.5, 56.2, 56.0, 56.3, 53.6, 48.2]  rho -0.829
+  WORD_SWAP   [60.5, 60.5, 62.7, 62.7, 62.8, 62.7]  rho 0.802

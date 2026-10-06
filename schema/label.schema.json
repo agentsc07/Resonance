@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flawline.local/schema/label-1.1.json",
+  "title": "Flawline label / prediction (schema 1.1.0)",
+  "description": "One JSON per clip. The generator writes it as ground truth, the engine writes predictions in exactly this shape (adding the optional prediction fields), and the evaluation harness compares the two. FROZEN: add optional fields only; never rename or remove.",
+  "type": "object",
+  "required": ["schema_version", "clip_id", "take_id", "baseline_id", "who", "where", "what", "duration_s", "labels_from"],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {"const": "1.1.0"},
+    "clip_id": {"type": "string", "pattern": "^B[0-9]{2}-[A-Z0-9]+_[A-Z0-9]+(__[A-Z0-9_]+_L[0-9]_s[0-9]{4})?$"},
+    "take_id": {"type": "string"},
+    "baseline_id": {"type": "string", "pattern": "^B[0-9]{2}$"},
+    "genre": {"type": ["string", "null"]},
+    "who": {
+      "type": "object",
+      "required": ["speaker_id"],
+      "properties": {
+        "speaker_id": {"type": "string"},
+        "age_band": {"type": ["string", "null"]},
+        "accent": {"type": ["string", "null"]},
+        "gender": {"enum": ["F", "M", "X", null]},
+        "fluency_profile": {"type": ["string", "null"]},
+        "synthetic_voice": {"type": "boolean"}
+      }
+    },
+    "where": {
+      "type": "object",
+      "required": ["base_condition", "added_condition"],
+      "properties": {
+        "base_condition": {"enum": ["C0", "C1", "C2"]},
+        "added_condition": {"enum": [null, "N20", "N10", "RVB", "PHN", "MP3", "GAIN"]},
+        "params": {"type": "object"}
+      }
+    },
+    "what": {"type": "array", "items": {"$ref": "#/$defs/region"}},
+    "duration_s": {"type": "number", "exclusiveMinimum": 0},
+    "seed": {"type": "integer"},
+    "generator_version": {"type": "string"},
+    "labels_from": {"enum": ["generator", "splice", "human", "human-double", "engine"]},
+    "multi_set": {"type": ["array", "null"], "items": {"type": "string"}},
+    "scenario": {"type": ["string", "null"], "description": "root-cause scenario id for scenario multi-flaw sets"},
+    "scores": {"$ref": "#/$defs/scores"}
+  },
+  "$defs": {
+    "flaw": {"enum": ["PACE_FAST", "PACE_SLOW", "PAUSE_BAD", "PAUSE_LOST", "MONOTONE", "UPTALK", "EMPH_FLAT", "EMPH_WRONG",
+                      "FADE", "SHOUT", "FILLER", "REPEAT", "RARE_HESIT", "SLUR", "WORD_SKIP", "WORD_SWAP"]},
+    "category": {"enum": ["Pacing", "Pausing", "Intonation", "Volume", "Fluency", "Clarity", "Text fidelity"]},
+    "region": {
+      "type": "object",
+      "required": ["flaw", "category", "start_s", "end_s", "word_start", "word_end"],
+      "properties": {
+        "flaw": {"$ref": "#/$defs/flaw"},
+        "category": {"$ref": "#/$defs/category"},
+        "level": {"type": "integer", "minimum": 1, "maximum": 5, "description": "injected severity (ground truth only)"},
+        "kind": {"enum": ["modify", "insert", "delete"]},
+        "params": {"type": "object"},
+        "start_s": {"type": "number", "minimum": 0},
+        "end_s": {"type": "number", "minimum": 0},
+        "baseline_start_s": {"type": "number", "minimum": 0},
+        "baseline_end_s": {"type": "number", "minimum": 0},
+        "word_start": {"type": "integer", "minimum": 0},
+        "word_end": {"type": "integer", "minimum": 0},
+        "boundary": {"type": "string"},
+        "context": {"type": "string"},
+        "why": {"type": "string"},
+        "severity": {"type": "number", "minimum": 0, "maximum": 5, "description": "PREDICTION: engine severity 0-5"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1, "description": "PREDICTION"},
+        "points_lost": {"type": "number", "minimum": 0, "description": "PREDICTION"},
+        "explanation": {"type": "string", "description": "PREDICTION: causal sentence with the measured numbers"}
+      }
+    },
+    "scores": {
+      "type": "object",
+      "properties": {
+        "overall": {"type": "number", "minimum": 0, "maximum": 100},
+        "band": {"enum": ["polished", "strong", "noticeable", "needs work"]},
+        "categories": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 100}},
+        "reference_mode": {"enum": ["same-speaker", "cross-speaker", "reference-free"]}
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "B08",
+  "title": "VCTK p314 · elicitation paragraph + Rainbow Passage",
+  "genre": "interpretive reading",
+  "gender": "F",
+  "age_band": "26-45",
+  "age": "26",
+  "origin": "SouthAfrican (Cape Town)",
+  "accent": "SouthAfrican",
+  "register": "neutral",
+  "slang_terms": [],
+  "status": "real_corpus",
+  "voice": null,
+  "take_id": "B08-CHAMP",
+  "corpus": "VCTK 0.92",
+  "speaker_id": "p314",
+  "licence": "CC BY 4.0",
+  "url": "https://datashare.ed.ac.uk/handle/10283/3443",
+  "citation": "Veaux, Yamagishi, MacDonald (2017) CSTR VCTK Corpus. University of Edinburgh. https://doi.org/10.7488/ds/2645",
+  "note": "Studio-recorded read speech (elicitation paragraph + Rainbow Passage). Speakers are 18-38 only. Contiguous first utterances, silence trimmed to 0.3 s margins."
+}
