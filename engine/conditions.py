@@ -9,11 +9,25 @@ from scipy.signal import butter, fftconvolve, sosfilt
 from .audio import SR, frame_db
 
 
-def bandwidth(x: np.ndarray, frac: float = 0.995) -> float:
-    seg = x[: SR * 40]
-    spec = np.abs(np.fft.rfft(seg * np.hanning(len(seg)))) ** 2
-    cum = np.cumsum(spec) / (spec.sum() + 1e-12)
-    return float(np.searchsorted(cum, frac) / len(spec) * (SR / 2))
+def bandwidth(x: np.ndarray, frac: float = 0.995, win_s: float = 2.0) -> float:
+    """Recording bandwidth: the 75th percentile of the per-window (2 s) bandwidths of the speech windows. A phone line or codec limits EVERY
+    window, while a local slur (a few clauses with the top band dulled) limits a minority of them, so the recording's bandwidth is not
+    mistaken for a delivery flaw and the slur survives condition matching."""
+    seg = x[: SR * 60]
+    w = int(win_s * SR)
+    if len(seg) < 2 * w:
+        w = len(seg)
+    d = frame_db(seg, 0.025, 0.010)
+    thr = np.percentile(d, 95) - 25
+    out = []
+    for a in range(0, max(1, len(seg) - w + 1), w // 2):
+        part = seg[a:a + w]
+        if np.mean(d[a // 160: (a + w) // 160] > thr) < 0.4:               # mostly pause: no band information
+            continue
+        spec = np.abs(np.fft.rfft(part * np.hanning(len(part)))) ** 2
+        cum = np.cumsum(spec) / (spec.sum() + 1e-12)
+        out.append(np.searchsorted(cum, frac) / len(spec) * (SR / 2))
+    return float(np.percentile(out, 75)) if out else 0.0
 
 
 def low_cut(x: np.ndarray) -> float:

@@ -141,10 +141,10 @@
      96.1,
      93.6,
      88.2,
-     100.0,
-     100.0
+     88.0,
+     88.1
     ],
-    "spearman": 0.152
+    "spearman": -0.943
    },
    "WORD_SKIP": {
     "scores_L0_to_L5": [
@@ -172,20 +172,19 @@
   "failing": [
    "PAUSE_LOST",
    "EMPH_FLAT",
-   "RARE_HESIT",
-   "SLUR"
+   "RARE_HESIT"
   ],
   "median_spearman": -0.943
  },
  "invariance": {
-  "false_flags_per_min": 0.563,
+  "false_flags_per_min": 0.523,
   "max_score_shift": 16.7,
   "mean_shift_by_condition": {
    "GAIN": 0.0,
    "MP3": 0.0,
    "N10": 1.64,
-   "N20": 5.15,
-   "PHN": 4.8,
+   "N20": 3.45,
+   "PHN": 3.85,
    "RVB": 3.39
   },
   "n": 48,

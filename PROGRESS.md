@@ -36,6 +36,11 @@ The test split (B05, B08) has not been used for tuning or evaluation. Run it onc
 
 Raw output: `results/acceptance_same.txt`, `results/acceptance_cross.txt`, `results/leakage.txt`. Cross mode is far worse than same mode on every acceptance check, which is why task 7 replaces the stitched reference.
 
+### Task log
+
+- **T3 babble (7 Oct plan, done 6 Oct):** babble is now time-reversed multi-talker speech (`generator/conditions.py`); N10/N20 and flawed+condition clips regenerated. Same-speaker invariance false flags 0.563 -> 0.503 per minute, N20 mean shift 5.15 -> 3.45 pts. Max shift still 16.7 pts.
+- **T4 SLUR blindness:** the global bandwidth estimate misread SLUR L4/L5 (a local band drop) as a band-limited recording, so the reference was degraded to match and the flaw vanished. `engine/conditions.py:bandwidth` is now the 75th percentile of 2 s speech windows. Phone clips still match. SLUR dose-response now passes (Spearman -0.943). Dose-response failing flaws: PAUSE_LOST, EMPH_FLAT, RARE_HESIT.
+
 ## Known failing checks
 
 - Acceptance (`eval/acceptance.py --mode same`): dose-response fails for PAUSE_LOST, EMPH_FLAT, SLUR; invariance 0.54 false flags/min (target 0.5) and 16.7 pt max shift (target 3); locality 26 pts (target 2). These were last run before the newest pause changes and before the cross work. Re-run before quoting.

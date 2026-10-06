@@ -1,5 +1,3 @@
-/Users/saicharan/Desktop/01_Projects/MultiModalHackathon - iit Mandi/engine/compare.py:90: RuntimeWarning: invalid value encountered in add
-  p_mid = np.interp(np.arange(nref), np.arange(nref)[ok], ((p_lo + p_hi) / 2)[ok])
 {
  "mode": "same",
  "dose_response": {
@@ -7,20 +5,19 @@
   "failing": [
    "PAUSE_LOST",
    "EMPH_FLAT",
-   "RARE_HESIT",
-   "SLUR"
+   "RARE_HESIT"
   ],
   "median_spearman": -0.943
  },
  "invariance": {
-  "false_flags_per_min": 0.563,
+  "false_flags_per_min": 0.523,
   "max_score_shift": 16.7,
   "mean_shift_by_condition": {
    "GAIN": 0.0,
    "MP3": 0.0,
    "N10": 1.64,
-   "N20": 5.15,
-   "PHN": 4.8,
+   "N20": 3.45,
+   "PHN": 3.85,
    "RVB": 3.39
   },
   "n": 48,
@@ -45,6 +42,6 @@ dose-response per flaw (score L0..L5):
   FILLER      [100.0, 95.7, 93.4, 92.0, 88.6, 88.0]  rho -1.0
   REPEAT      [100.0, 98.4, 97.5, 97.6, 97.1, 90.9]  rho -0.943
   RARE_HESIT  [100.0, 100.0, 94.4, 91.3, 89.7, 93.5]  rho -0.812
-  SLUR        [100.0, 96.1, 93.6, 88.2, 100.0, 100.0]  rho 0.152
+  SLUR        [100.0, 96.1, 93.6, 88.2, 88.0, 88.1]  rho -0.943
   WORD_SKIP   [100.0, 97.2, 95.5, 94.0, 83.7, 79.6]  rho -1.0
   WORD_SWAP   [100.0, 98.4, 96.2, 87.5, 90.0, 81.1]  rho -0.943
