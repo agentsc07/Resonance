@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from . import audio, compare, conditions, detect, reference, score as scoring
+from . import arbitrate, audio, compare, conditions, detect, reference, score as scoring
 from .explain import explain
 from .linguistics import annotate
 
@@ -52,13 +52,16 @@ def predict(audio_path: str, meta: dict, mode: str = "same", rubric: dict | None
     C, cands, q, ref_id, n = analyse(audio_path, meta, mode, ref_override)
     ref_w = reference.words_of(ref_id)
     iso = scoring.load_iso(mode)
+    rel = scoring.load_reliability(mode)
+    cands = arbitrate.arbitrate(cands, rel)
     what, tips = [], []
     for c in cands:
         sev = scoring.severity(c.flaw, c.d, iso)
         sent, tip = explain(c, C, ref_w, sev)
         what.append({"flaw": c.flaw, "category": c.category, "start_s": round(c.start, 3), "end_s": round(c.end, 3),
                      "word_start": int(c.w0), "word_end": int(c.w1), "kind": "modify", "severity": round(sev, 3),
-                     "confidence": q["confidence"], "explanation": sent, "params": {"d": round(c.d, 3), "tip": tip, **c.facts}})
+                     "confidence": q["confidence"], "reliability": round(rel.get(c.flaw, 1.0), 2), "explanation": sent,
+                     "params": {"d": round(c.d, 3), "tip": tip, **c.facts}})
     sc = scoring.score(what, meta["duration_s"], meta.get("genre"), rubric, dont_score_fluency)
     for r, row in zip(what, sc["regions"]):
         r["points_lost"] = row["points_lost"]

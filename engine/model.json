@@ -609,6 +609,23 @@
     ],
     "n": 36
    }
+  },
+  "reliability": {
+   "EMPH_FLAT": 0.1,
+   "FADE": 0.381,
+   "FILLER": 0.534,
+   "MONOTONE": 0.538,
+   "PACE_FAST": 0.76,
+   "PACE_SLOW": 0.811,
+   "PAUSE_BAD": 0.679,
+   "PAUSE_LOST": 1.0,
+   "RARE_HESIT": 0.895,
+   "REPEAT": 0.333,
+   "SHOUT": 0.552,
+   "SLUR": 0.254,
+   "UPTALK": 0.197,
+   "WORD_SKIP": 0.564,
+   "WORD_SWAP": 0.641
   }
  },
  "cross": {
@@ -987,6 +1004,23 @@
     ],
     "n": 6
    }
+  },
+  "reliability": {
+   "EMPH_FLAT": 0.1,
+   "FADE": 0.1,
+   "FILLER": 0.1,
+   "MONOTONE": 0.833,
+   "PACE_FAST": 0.1,
+   "PACE_SLOW": 0.287,
+   "PAUSE_BAD": 0.889,
+   "PAUSE_LOST": 0.1,
+   "RARE_HESIT": 0.625,
+   "REPEAT": 0.1,
+   "SHOUT": 0.417,
+   "SLUR": 0.1,
+   "UPTALK": 0.444,
+   "WORD_SKIP": 0.1,
+   "WORD_SWAP": 0.1
   }
  }
 }

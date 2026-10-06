@@ -83,12 +83,28 @@ def fit_isotonic(labs, mode):
     return out
 
 
+def fit_reliability(labs, mode, floor: float = 0.1):
+    """Per-flaw reliability = precision of the full detector pass on TRAIN at the calibrated thresholds (used to weight penalties and to
+    arbitrate overlapping detections of different causes)."""
+    g, _ = T.evaluate(labs, mode, verbose=False)
+    return {f: round(max(floor, v["precision"]), 3) for f, v in g["per"].items()}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", default="same")
+    ap.add_argument("--only-reliability", action="store_true", help="refit just the per-flaw reliability from the current model.json")
     ap.add_argument("--rounds", type=int, default=2)
     a = ap.parse_args()
     labs = T.clips("train")
+    if a.only_reliability:
+        mp = Path(__file__).parent / "model.json"
+        allm = json.loads(mp.read_text())
+        detect.use(a.mode)
+        allm[a.mode]["reliability"] = fit_reliability(labs, a.mode)
+        mp.write_text(json.dumps(allm, indent=1))
+        print(a.mode, allm[a.mode]["reliability"])
+        return
     print(f"calibrating on {len(labs)} TRAIN clips, mode={a.mode}")
     detect.use(a.mode)
     model = {"mode": a.mode, "repeat_clf": fit_repeat(labs, a.mode)}
@@ -112,6 +128,7 @@ def main():
     detect.TH.update(th)
     model["thresholds"] = th
     model["isotonic"] = fit_isotonic(labs, a.mode)
+    model["reliability"] = fit_reliability(labs, a.mode)
     mp = Path(__file__).parent / "model.json"
     allm = json.loads(mp.read_text()) if mp.exists() else {}
     allm[a.mode] = {k: v for k, v in model.items() if k != "mode"}

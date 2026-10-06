@@ -25,6 +25,15 @@ def load_iso(mode: str = "same") -> dict:
     return (allm.get(mode) or allm.get("same") or {}).get("isotonic", {})
 
 
+def load_reliability(mode: str = "same") -> dict:
+    """Per-flaw reliability = the detector's precision on the TRAIN split at its calibrated thresholds (floored so no detector is silenced)."""
+    mp = HERE / "model.json"
+    if not mp.exists():
+        return {}
+    allm = json.loads(mp.read_text())
+    return (allm.get(mode) or allm.get("same") or {}).get("reliability", {})
+
+
 def severity(flaw: str, d: float, iso: dict | None = None, mode: str = "same") -> float:
     iso = iso if iso is not None else load_iso(mode)
     m = iso.get(flaw)
@@ -51,7 +60,7 @@ def score(regions: list[dict], duration_s: float, genre: str | None, rub: dict |
         m = 1.0 if r["flaw"] in rub["event_flaws"] else min(rub["span_cap"], max(0.0, r["end_s"] - r["start_s"]) / 2.0)
         w = float(rub["flaw_weight"].get(r["flaw"], 1.0))
         counted = conf >= rub["min_confidence"] and not (dont_score_fluency and r["category"] == "Fluency")
-        p = w * conf * (s ** rub["severity_exponent"]) * m if counted else 0.0
+        p = w * conf * float(r.get("reliability", 1.0)) * (s ** rub["severity_exponent"]) * m if counted else 0.0
         P[r["category"]] += p
         rows.append({**{k: r[k] for k in ("flaw", "category", "start_s", "end_s")}, "severity": round(s, 2), "points_lost": 0.0,
                      "penalty": round(p, 3), "counted": counted, "explanation": r.get("explanation", "")})

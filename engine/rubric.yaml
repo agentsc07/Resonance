@@ -1,6 +1,6 @@
 # Rubric: genre weights per category (spec v1.1 "Scoring logic"), flaw weights, constants. Users may supply their own file ("custom evaluative rubric").
-tau: 23.0                     # S_dim = 100 * exp(-P_dim / tau): one L3 flaw per minute costs ~20 points in its category
-severity_exponent: 1.5        # one egregious flaw costs more than several mild ones
+tau: 35.0                     # S_dim = 100 * exp(-P_dim / tau); with exponent 2: L1 ~100, L2 ~90, L3 ~70, L5 ~65 on TRAIN single-flaw clips (target L5 55 not reached: detector severity saturates at L4-L5)
+severity_exponent: 2.0        # one egregious flaw costs more than several mild ones
 min_confidence: 0.4           # below this a region is shown but costs nothing
 span_cap: 3.0                 # span flaws: m = min(span_cap, region seconds / 2)
 bands: {polished: 90, strong: 75, noticeable: 60}      # >= value; below 60 = needs work
@@ -10,5 +10,5 @@ genre_weights:
   declamation:          {Pacing: 0.15, Pausing: 0.20, Intonation: 0.20, Volume: 0.20, Fluency: 0.10, Clarity: 0.10, Text fidelity: 0.05}
   extemporaneous:       {Pacing: 0.15, Pausing: 0.15, Intonation: 0.15, Volume: 0.10, Fluency: 0.30, Clarity: 0.15, Text fidelity: 0.00}
   persuasive oratory:   {Pacing: 0.15, Pausing: 0.20, Intonation: 0.20, Volume: 0.20, Fluency: 0.15, Clarity: 0.10, Text fidelity: 0.00}
-flaw_weight: {}               # default 1 per flaw code; e.g. {WORD_SWAP: 0.5} to down-weight misreads
+flaw_weight: {}               # default 1 per flaw code; engine/fit_scoring.py tried per-flaw fits on TRAIN and made dose-response worse (see PROGRESS.md)
 event_flaws: [FILLER, REPEAT, RARE_HESIT, PAUSE_BAD, PAUSE_LOST, WORD_SKIP, WORD_SWAP, UPTALK]
