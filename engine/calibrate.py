@@ -68,8 +68,8 @@ def fit_isotonic(labs, mode):
     for lab in labs:
         if not lab["what"]:
             continue
-        C, q, ref, n = T.analysed(lab, mode)
-        preds = [T.to_pred(c) for c in T.run_detectors(C, ref)]
+        cands, C, ref = T.cands_for(lab, mode)
+        preds = [T.to_pred(c) for c in cands]
         for i, j, _ in M.match(lab["what"], preds, 0.3, lambda r: r["flaw"]):
             if lab["what"][i].get("level") is not None:
                 pts.setdefault(lab["what"][i]["flaw"], []).append((preds[j]["severity"], lab["what"][i]["level"]))
@@ -110,7 +110,7 @@ def main():
     model = {"mode": a.mode, "repeat_clf": fit_repeat(labs, a.mode)}
     detect.REPEAT_CLF = model["repeat_clf"]
     th = dict(detect._DEFAULT_TH)
-    costs = [T.analysed(l, a.mode)[0].path_cost for l in labs]               # how well a NORMAL clip matches its reference in this mode
+    costs = [T.analysed(l, a.mode)[0].path_cost for l in labs]               # primary reference               # how well a NORMAL clip matches its reference in this mode
     th["cost_ref"] = float(max(0.02, np.percentile(costs, 75)))
     print(f"match norm cost_ref = {th['cost_ref']:.3f} (median path cost {np.median(costs):.3f})")
     for rnd in range(a.rounds):
@@ -128,6 +128,12 @@ def main():
     detect.TH.update(th)
     model["thresholds"] = th
     model["isotonic"] = fit_isotonic(labs, a.mode)
+    detect.DISABLED = set()
+    g, _ = T.evaluate(labs, a.mode, verbose=False)
+    if a.mode == "cross":                                    # a detector that cannot beat F1 0.1 on TRAIN against other voices is not reported
+        model["disabled"] = sorted(f for f in detect.PRODUCERS if g["per"].get(f, {"f1": 0.0})["f1"] < 0.10)
+        detect.DISABLED = set(model["disabled"])
+        print("cross mode disables:", model["disabled"])
     model["reliability"] = fit_reliability(labs, a.mode)
     mp = Path(__file__).parent / "model.json"
     allm = json.loads(mp.read_text()) if mp.exists() else {}

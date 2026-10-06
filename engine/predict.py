@@ -19,12 +19,28 @@ def _ref(bid: str):
     return _REF_CACHE[bid]
 
 
-def analyse(audio_path: str, meta: dict, mode: str, ref_override: str | None = None):
+def analyse(audio_path: str, meta: dict, mode: str, ref_override: str | None = None, ref_id_force: str | None = None):
+    """One reference, or in cross mode the consensus of the text's whole panel of reference voices (see consensus.py)."""
+    if mode != "cross" or ref_id_force:
+        return _analyse_one(audio_path, meta, mode, ref_override, ref_id_force)
+    from . import consensus
+    bid = ref_override or meta["baseline_id"]
+    r1, members = reference.panel_ids(bid)
+    runs = [_analyse_one(audio_path, meta, mode, ref_override, None)] + [_analyse_one(audio_path, meta, mode, ref_override, m) for m in members]
+    cands = consensus.vote([r[1] for r in runs])
+    cands = [c for c in cands if c.flaw not in detect.DISABLED]
+    C, _, q, ref_id, n = runs[0]
+    return C, cands, q, ref_id, n
+
+
+def _analyse_one(audio_path: str, meta: dict, mode: str, ref_override: str | None = None, ref_id_force: str | None = None):
     detect.use(mode)
     bid = meta["baseline_id"]
     if ref_override:                                           # e.g. a dashboard upload: the user names the baseline whose text they read
         bid = ref_override
     ref_id, n = reference.choose(bid, {"same": "same", "cross": "stitch", "free": "same"}[mode])
+    if ref_id_force:                                           # a specific panel reference, e.g. "cross:B01@B04"
+        ref_id, n = ref_id_force, len(reference.words_of(ref_id_force))
     ref_x, ref_w, ling = _ref(ref_id)
     par_x, _ = audio.normalise(audio.load(audio_path))
     if ref_id.startswith(reference.STITCH):                    # trailing sentences no other speaker read cannot be compared: crop them off

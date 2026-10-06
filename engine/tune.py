@@ -33,13 +33,13 @@ def clips(split: str, limit=None, flawed_only=False):
     return out[:limit] if limit else out
 
 
-def analysed(lab: dict, mode: str):
+def analysed(lab: dict, mode: str, ref_id: str | None = None):
     CACHE.mkdir(exist_ok=True)
-    f = CACHE / f"{lab['clip_id']}__{mode}.pkl"
+    f = CACHE / f"{lab['clip_id']}__{mode}{'__' + ref_id.replace(':', '_') if ref_id else ''}.pkl"
     if f.exists():
         return pickle.loads(f.read_bytes())
     meta = {k: v for k, v in lab.items() if k not in ("what", "seed", "join_check", "multi_set")}
-    C, cands, q, ref, n = predict.analyse(str(DATA / "variants" / f"{lab['clip_id']}.flac"), meta, mode)
+    C, cands, q, ref, n = predict.analyse(str(DATA / "variants" / f"{lab['clip_id']}.flac"), meta, mode, None, ref_id)
     f.write_bytes(pickle.dumps((C, q, ref, n)))
     return C, q, ref, n
 
@@ -59,6 +59,25 @@ def run_detectors(C, ref_id, flaw=None):
     return detect.run_flaw(flaw, C, bt, zn) if flaw else detect.run_all(C, bt, zn)
 
 
+def refs_of(lab: dict, mode: str) -> list[str | None]:
+    """Reference ids to analyse a clip against: same mode = the clip's own clean take; cross mode = the text's panel (primary + members)."""
+    if mode != "cross":
+        return [None]
+    r1, members = predict.reference.panel_ids(lab["baseline_id"])
+    return [None] + members
+
+
+def cands_for(lab: dict, mode: str, flaw=None):
+    """Detections for a clip (consensus across the panel in cross mode). Returns (cands, C of the primary reference, its ref id)."""
+    from . import consensus
+    per, first = [], None
+    for r in refs_of(lab, mode):
+        C, q, ref, n = analysed(lab, mode, r)
+        per.append(run_detectors(C, ref, flaw))
+        first = first or (C, ref)
+    return consensus.vote(per), first[0], first[1]
+
+
 def to_pred(c):
     return {"flaw": c.flaw, "category": c.category, "start_s": c.start, "end_s": c.end, "word_start": c.w0, "word_end": c.w1, "severity": c.d, "kind": "modify"}
 
@@ -70,8 +89,8 @@ def evaluate(labs, mode, th=None, verbose=True, flaw=None):
         detect.TH.update(th)
     pairs = []
     for lab in labs:
-        C, q, ref, n = analysed(lab, mode)
-        preds = [to_pred(c) for c in run_detectors(C, ref, flaw)]
+        cands, C, ref = cands_for(lab, mode, flaw)
+        preds = [to_pred(c) for c in cands if flaw or c.flaw not in detect.DISABLED]
         pairs.append((lab, {"what": preds, "duration_s": lab["duration_s"]}))
     g = M.grounding(pairs, 0.5, "flaw")
     if verbose:

@@ -28,7 +28,7 @@ CAT_COLOR = {"Pacing": "#3b82c4", "Pausing": "#8b5cf6", "Intonation": "#f08c00",
              "Fluency": "#e03131", "Clarity": "#0c8599", "Text fidelity": "#7c6f64"}
 CATS = list(CAT_COLOR)
 GENRES = ["interpretive reading", "declamation", "extemporaneous", "persuasive oratory"]
-MODE_LABEL = {"same": "Same speaker (upper bound)", "cross": "Cross-speaker (EXPERIMENTAL: F1 0.03, not reliable)", "free": "Reference-free"}
+MODE_LABEL = {"same": "Same speaker (upper bound)", "cross": "Cross-speaker (EXPERIMENTAL: F1 0.20 train / 0.16 dev, 10 of 15 flaws)", "free": "Reference-free"}
 BAND_COLOR = {"polished": "#2f9e44", "strong": "#2b6cb0", "noticeable": "#f08c00", "needs work": "#e03131"}
 
 

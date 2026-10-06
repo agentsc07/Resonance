@@ -25,6 +25,7 @@ from pathlib import Path as _P
 MODEL_PATH = _P(__file__).parent / "model.json"
 MODELS = _json.loads(MODEL_PATH.read_text()) if MODEL_PATH.exists() else {}      # {"same": {...}, "cross": {...}} fitted on TRAIN only
 _DEFAULT_TH = dict(TH)
+DISABLED: set = set()                          # flaws this mode cannot detect reliably (fitted on TRAIN): never reported
 REPEAT_CLF = None                              # logistic on block structure: {"w": [...], "b": x, "mean": [...], "std": [...]}
 MODE = "same"
 
@@ -49,13 +50,14 @@ def th(key: str) -> float:
 
 def use(mode: str):
     """Select the calibrated parameter set for a reference mode (same / cross / free)."""
-    global REPEAT_CLF, MODE
+    global REPEAT_CLF, MODE, DISABLED
     MODE = mode
     m = MODELS.get(mode) or MODELS.get("same") or {}
     TH.clear()
     TH.update(_DEFAULT_TH)
     TH.update(m.get("thresholds", {}))
     REPEAT_CLF = m.get("repeat_clf")
+    DISABLED = set(m.get("disabled", []))
 
 
 use("same")
