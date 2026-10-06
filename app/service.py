@@ -36,10 +36,13 @@ PLAIN = {"PACE_FAST": "Rushed pace", "PACE_SLOW": "Dragging pace", "PAUSE_BAD": 
          "UPTALK": "Statement ends on a rise", "EMPH_FLAT": "Buried emphasis", "FADE": "Trailing off", "SHOUT": "Sudden loud stretch", "FILLER": "Filler sound",
          "REPEAT": "False start", "RARE_HESIT": "Hesitation before a hard word", "SLUR": "Slurred consonants", "WORD_SKIP": "Skipped words", "WORD_SWAP": "Misread word"}
 MODES = [
+    {"id": "reference", "label": "Your reference reading", "note": "Compared with a reference recording you supplied.", "f1": "n/a"},
     {"id": "free", "label": "General", "note": "No reference recording. Uses your own clip, the text and clean-speaker norms.", "f1": "0.31 train · 0.20 dev"},
     {"id": "same", "label": "Same speaker", "note": "Compared with the speaker's own clean reading. Upper bound.", "f1": "0.59 train · 0.71 dev"},
     {"id": "cross", "label": "Another speaker", "note": "Experimental. Several other voices must agree.", "f1": "0.23 train · 0.22 dev"},
 ]
+LANE = {"PACE_FAST": "rate", "PACE_SLOW": "rate", "WORD_SKIP": "rate", "WORD_SWAP": "rate", "MONOTONE": "pitch", "UPTALK": "pitch", "EMPH_FLAT": "pitch", "RARE_HESIT": "rate",
+        "SHOUT": "level", "FADE": "level", "PAUSE_BAD": "level", "PAUSE_LOST": "level", "FILLER": "level", "REPEAT": "level", "SLUR": "level"}
 PRESETS = [
     {"id": "accent", "title": "Accent, no reference", "sub": "Clean reading by an Indian-English speaker", "clip": "B03-CHAMP_C0", "mode": "free"},
     {"id": "noise", "title": "Noisy room", "sub": "Clean delivery under 20 dB babble", "clip": "B03-CHAMP_N20", "mode": "free"},
@@ -183,6 +186,25 @@ def summary(pred: dict) -> str:
     return " ".join(x for x in (lead, top, weak) if x)
 
 
+def _register_reference(upload_id: str, text: str | None) -> str:
+    """Align the user's reference recording to its text (pasted, or what the recogniser hears) and register it as a reference."""
+    from engine import asr, free, transcript
+    rid = f"ref:{upload_id}"
+    path = str(next(UPLOADS.glob(f"{upload_id}.*")))
+    x = eaudio.normalise(eaudio.load(path))[0]
+    if text:
+        words = transcript.words_from_text(text)
+    else:
+        words = transcript.words_from_text(" ".join(h["raw"] for h in asr.words(x, False)))
+    fa = free.analyse(x, "custom", words)
+    ref = [{"i": w["i"], "w": w["w"], "clean": w["clean"], "punct": "", "sent_end": words[w["i"]]["sent_end"], "clause_end": words[w["i"]]["clause_end"],
+            "start_s": float(w["ps"]), "end_s": float(max(w["pe"], w["ps"] + 0.01))} for w in fa.words]
+    eref.register_custom(rid, ref, path)
+    from engine import predict as _p
+    _p.drop_ref_cache(rid)
+    return rid
+
+
 def analyse(opts: dict) -> dict:
     """opts: source ('clip'|'upload'), id, mode, genre, no_fluency, experimental, rubric (yaml text), text_id | transcript | none."""
     key = hashlib.sha256(json.dumps(opts, sort_keys=True).encode()).hexdigest()[:20]
@@ -212,20 +234,42 @@ def analyse(opts: dict) -> dict:
         path, ref_override = str(next(UPLOADS.glob(f"{ident}.*"))), text_id
     if opts.get("genre"):
         m["genre"] = opts["genre"]
+    if opts.get("reference_id"):                              # a reference reading was supplied: compare with it (same-speaker machinery)
+        with LOCK:
+            ref_override = _register_reference(opts["reference_id"], opts.get("transcript"))
+        mode = "same"
     with LOCK:
         pred, C, ref_id = ENG.predict(path, m, mode, rub, bool(opts.get("no_fluency")), ref_override, full=True, experimental=bool(opts.get("experimental")))
         tl = timeline(pred, C, mode, wav)
         words = transcript(pred, C, mode, ref_id)
     cats = [{"name": c, "score": pred["scores"]["categories"][c], "loss": round(100 - pred["scores"]["categories"][c], 1)} for c in CATS]
     regions = [{"id": k, "flaw": r["flaw"], "name": PLAIN[r["flaw"]], "category": r["category"], "start": r["start_s"], "end": r["end_s"], "severity": r["severity"],
-                "points": r["points_lost"], "why": r["explanation"], "tip": r["params"].get("tip", ""), "confidence": r.get("confidence"),
+                "points": r["points_lost"], "lane": LANE[r["flaw"]], "why": r["explanation"], "tip": r["params"].get("tip", ""), "confidence": r.get("confidence"),
                 "reliability": r.get("reliability"), "w0": r["word_start"], "w1": r["word_end"]} for k, r in enumerate(pred["what"])]
-    out = {"key": key, "overall": pred["scores"]["overall"], "band": pred["scores"]["band"], "categories": cats, "summary": summary(pred), "regions": regions,
-           "timeline": tl, "words": words, "quality": pred["quality"], "mode": mode, "audio_url": f"/api/audio/{'clip' if src == 'clip' else 'upload'}/{ident}.wav",
+    out = {"key": key, "overall": pred["scores"]["overall"], "band": pred["scores"]["band"], "worst": pred["scores"]["worst_area_score"], "categories": cats, "summary": summary(pred), "regions": regions,
+           "timeline": tl, "words": words, "quality": pred["quality"], "mode": "reference" if opts.get("reference_id") else mode, "audio_url": f"/api/audio/{'clip' if src == 'clip' else 'upload'}/{ident}.wav",
            "reference": pred["reference"], "pred": pred, "genre": m["genre"], "clip": ident if src == "clip" else None,
            "text_checks": pred["quality"].get("text_checks", True)}
     _CACHE[key] = out
     return out
+
+
+PAIR_FLAWS = ["PACE_SLOW", "SHOUT", "PAUSE_BAD", "FADE", "FILLER", "PACE_FAST", "WORD_SKIP", "SLUR"]
+CAT_WORDS = [("Pacing", "Rushing, or dragging"), ("Pausing", "Stopping in the middle of a phrase, or not stopping where a pause belongs"), ("Intonation", "A flat voice, a rise at the end of a statement, buried emphasis"),
+             ("Volume", "Trailing off, or a sudden loud stretch"), ("Fluency", "Filler sounds, false starts, hesitating before a hard word"), ("Clarity", "Slurred consonants"),
+             ("Text fidelity", "Skipped or misread words")]
+
+
+def pair(i: int) -> dict:
+    """A clean reading and the same reading with one flaw (level 4), to hear the difference."""
+    flaw = PAIR_FLAWS[i % len(PAIR_FLAWS)]
+    clean = "B01-CHAMP_C0"
+    flawed = next(r["clip_id"] for r in manifest() if r["clip_id"].startswith(f"B01-CHAMP_C0__{flaw}_L4_"))
+    lab = json.loads((DATA / "variants" / f"{flawed}.json").read_text())
+    reg = lab["what"][0]
+    return {"i": i % len(PAIR_FLAWS), "n": len(PAIR_FLAWS), "name": PLAIN[flaw], "level": reg.get("level"), "clean": clean, "flawed": flawed,
+            "clean_span": [reg["baseline_start_s"], max(reg["baseline_end_s"], reg["baseline_start_s"] + 0.3)], "flawed_span": [reg["start_s"], max(reg["end_s"], reg["start_s"] + 0.3)],
+            "why": reg.get("why", "")}
 
 
 def truth(clip_id: str) -> list[dict]:
@@ -285,7 +329,7 @@ def dataset() -> dict:
     rows = [{"id": r["clip_id"], "baseline": r["baseline_id"], "split": r["split"], "flaws": r["flaw_codes"], "cats": r["categories"], "level": r["max_level"],
              "cond": r["added_condition"], "dur": round(float(r["duration_s"]), 1)} for r in M]
     return {"tiles": {"clips": len(M), "hours": round(sum(float(r["duration_s"]) for r in M) / 3600, 2), "baselines": len({r["baseline_id"] for r in M}), "flaws": len(flaws)},
-            "grid": [{"flaw": f, "name": PLAIN[f], "levels": grid[f]} for f in flaws], "conditions": cond, "speakers": list(speakers.values()), "splits": _count(M, "split"),
+            "categories": [{"name": n, "words": w} for n, w in CAT_WORDS], "conditions": cond, "speakers": list(speakers.values()), "splits": _count(M, "split"),
             "gates": {"join_pass": round(gate["passed"] / max(gate["n"], 1), 3), "joins_above_6db": round(gate["above6"] / max(gate["joins"], 1), 4), "clips_checked": gate["n"],
                       "leak_test": leak.get("ALL"), "leak_loso": loso.get("ALL"), "qa": _qa(), "repro": {"identical": 75, "total": 80, "max_lsb": 1}},
             "manifest": rows}

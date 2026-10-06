@@ -42,9 +42,17 @@ def severity(flaw: str, d: float, iso: dict | None = None, mode: str = "same") -
     return float(np.clip(np.interp(d, m["x"], m["y"]), 0.0, 5.0))
 
 
-def band(score: float, rub: dict) -> str:
+def band(score: float, rub: dict, worst: float | None = None) -> str:
+    """Band of the overall score, capped by the worst area so one badly hurt category cannot hide behind an average:
+    an area below 50 rules out polished and strong, an area below 30 means needs work."""
     b = rub["bands"]
-    return "polished" if score >= b["polished"] else "strong" if score >= b["strong"] else "noticeable" if score >= b["noticeable"] else "needs work"
+    out = "polished" if score >= b["polished"] else "strong" if score >= b["strong"] else "noticeable" if score >= b["noticeable"] else "needs work"
+    if worst is not None:
+        if worst < 30:
+            out = "needs work"
+        elif worst < 50 and out in ("polished", "strong"):
+            out = "noticeable"
+    return out
 
 
 def score(regions: list[dict], duration_s: float, genre: str | None, rub: dict | None = None, dont_score_fluency: bool = False) -> dict:
@@ -69,10 +77,13 @@ def score(regions: list[dict], duration_s: float, genre: str | None, rub: dict |
         rest = sum(v for k, v in W.items() if k != "Fluency")
         W = {k: (0.0 if k == "Fluency" else v + f * v / rest) for k, v in W.items()}
     cat = {c: round(100.0 * float(np.exp(-(P[c] / mins) / rub["tau"])), 1) for c in rub["categories"]}
-    overall = round(sum(W[c] * cat[c] for c in rub["categories"]) / max(sum(W.values()), 1e-9), 1)
+    mean = sum(W[c] * cat[c] for c in rub["categories"]) / max(sum(W.values()), 1e-9)
+    live = [cat[c] for c in rub["categories"] if W[c] > 0]                      # areas that count under this genre / rubric
+    worst = min(live) if live else 100.0
+    overall = round(rub.get("blend_mean", 0.6) * mean + (1 - rub.get("blend_mean", 0.6)) * worst, 1)   # one bad area drags the score, an average cannot hide it
     # points lost by a region = its share of its category's loss, expressed in overall points
     for row in rows:
         c = row["category"]
         loss_c = 100.0 - cat[c]
         row["points_lost"] = round(W[c] * loss_c * (row["penalty"] / P[c]) / max(sum(W.values()), 1e-9), 2) if P[c] > 0 else 0.0
-    return {"overall": overall, "band": band(overall, rub), "categories": cat, "weights": W, "regions": rows, "minutes": round(mins, 2)}
+    return {"overall": overall, "band": band(overall, rub, worst), "worst": worst, "mean": round(mean, 1), "categories": cat, "weights": W, "regions": rows, "minutes": round(mins, 2)}

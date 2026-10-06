@@ -30,6 +30,7 @@ class AnalyseReq(BaseModel):
     rubric: str | None = None
     text_id: str | None = None
     transcript: str | None = None
+    reference_id: str | None = None
 
 
 @app.get("/api/meta")
@@ -71,6 +72,11 @@ def audio(kind: str, ident: str):
 @app.get("/api/truth/{clip_id}")
 def truth(clip_id: str):
     return S.truth(clip_id)
+
+
+@app.get("/api/pair/{i}")
+def pair(i: int):
+    return S.pair(i)
 
 
 @app.get("/api/dataset")

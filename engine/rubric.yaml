@@ -3,6 +3,7 @@ tau: 35.0                     # S_dim = 100 * exp(-P_dim / tau); with exponent 2
 severity_exponent: 2.0        # one egregious flaw costs more than several mild ones
 min_confidence: 0.4           # below this a region is shown but costs nothing
 span_cap: 3.0                 # span flaws: m = min(span_cap, region seconds / 2)
+blend_mean: 0.6              # overall = 0.6 * genre-weighted mean + 0.4 * worst counted area
 bands: {polished: 90, strong: 75, noticeable: 60}      # >= value; below 60 = needs work
 categories: [Pacing, Pausing, Intonation, Volume, Fluency, Clarity, Text fidelity]
 genre_weights:

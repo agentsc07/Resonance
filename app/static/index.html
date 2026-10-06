@@ -35,14 +35,16 @@
         <input type="file" id="file" accept="audio/*,.wav,.mp3,.m4a,.flac" class="sr">
       </label>
       <textarea class="text-in" id="transcript" rows="1" placeholder="Paste the text you read (optional). Without it, the engine uses what it hears."></textarea>
-      <div class="go"><button class="btn gold" id="run">Analyse</button></div>
+      <div class="go">
+        <label class="ignore" title="Fillers like “um” and false starts stay on the timeline but cost no points."><input type="checkbox" id="nofl"><span>Ignore fillers and false starts</span></label>
+        <button class="btn gold" id="run">Analyse</button>
+      </div>
     </div>
     <div class="presets" id="presets"><span class="eyebrow preset-label">Try one</span></div>
 
     <div class="panel verdict" id="verdict">
       <div class="gauge">
-        <svg viewBox="0 0 200 200"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" id="gg0" stop-color="#f8d98a"/><stop offset="1" id="gg1" stop-color="#d79a2b"/></linearGradient></defs>
-          <circle class="track" cx="100" cy="100" r="84"/><circle class="arc" id="arc" cx="100" cy="100" r="84" stroke="url(#gg)" stroke-dasharray="527.8" stroke-dashoffset="527.8"/></svg>
+        <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"/><circle class="kept" id="kept" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/><circle class="lost" id="lostarc" cx="60" cy="60" r="52" stroke-dasharray="0 326.7" stroke-dashoffset="0"/></svg>
         <div class="num"><b id="score">–</b><span id="band">score</span></div>
       </div>
       <div class="cats" id="cats"></div>
@@ -53,12 +55,12 @@
     <div class="panel tl-card" id="tlcard">
       <div class="tl-head">
         <h3>Timeline</h3>
-        <div class="seg" id="lanesel" role="group" aria-label="Second lane"><button data-k="pitch" class="on">Pitch</button><button data-k="level">Loudness</button><button data-k="rate">Rate</button></div>
+        <div class="seg" id="lanesel" role="group" aria-label="What the second lane shows"><button data-k="pitch" class="on">Pitch</button><button data-k="level">Loudness</button><button data-k="rate">Speed</button></div>
         <button class="btn sm" id="playall">▶ Play all</button>
         <button class="btn sm" id="reveal" hidden>Reveal what was injected</button>
-        <div class="legend"><span><i style="background:linear-gradient(90deg,#f8d98a,#d79a2b)"></i>Waveform</span><span><i style="background:#9bd5ff"></i>You</span><span><i class="band"></i>Expected range</span><span id="lg-ref" hidden><i class="ref"></i>Reference</span></div>
+        <div class="legend"><span data-tip="The shape of your recording over time. Taller means louder."><i style="background:var(--data)"></i>Waveform</span><span data-tip="Your own voice: how high or low it goes, how loud it is, or how fast you speak, depending on the lane chosen."><i style="background:var(--blue)"></i>You</span><span data-tip="Where your own delivery normally sits. Leaving the grey band is not a mistake by itself; the numbered moments below are what cost points."><i class="band"></i>Expected range</span><span id="lg-ref" data-tip="The same words from your reference reading, lined up with yours." hidden><i class="ref"></i>Reference</span></div>
       </div>
-      <div class="canvas-wrap"><canvas id="tl" width="1200" height="300" aria-label="Waveform, pitch and flagged moments. Click a flagged strip to select and play it."></canvas><div class="tip" id="tip"></div></div>
+      <div class="canvas-wrap"><canvas id="tl" width="1200" height="256" aria-label="Waveform and a second lane, with numbered flagged moments. Click a number to select and play it."></canvas><div class="tip" id="tip"></div></div>
       <div class="truth-list" id="truth"></div>
       <div class="veil" id="veil2"><div class="eq"><i></i><i></i><i></i><i></i><i></i></div></div>
     </div>
@@ -69,20 +71,21 @@
     <details class="panel adv" id="adv">
       <summary>Advanced</summary>
       <div class="adv-body">
-        <div class="adv-grid">
+        <div class="field"><span class="lab">Reference reading (optional)</span>
+          <div class="refbox"><input type="file" id="refile" accept="audio/*,.wav,.mp3,.m4a,.flac"><button class="btn sm" id="refclear" hidden>Remove</button></div>
+          <div class="dimmer" style="font-size:12.5px;margin-top:6px">A recording of the same text read the way you want it to sound. When given, your reading is compared with it instead of with the general expectations. Paste the text above for best results.</div></div>
+        <div class="adv-grid labonly">
           <div class="field"><span class="lab">How should "good" be decided?</span><div class="modes" id="modes"></div></div>
           <div class="field"><label for="genre">Genre preset</label><select id="genre"></select>
-            <div style="height:14px"></div><label for="textid">Which text was read?</label><select id="textid"></select>
-            <div class="dimmer" style="font-size:12px;margin-top:6px">Needed for the two reference modes. In General mode you can leave it on automatic.</div></div>
+            <div style="height:14px"></div><label for="textid">Which text was read?</label><select id="textid"></select></div>
           <div class="field">
-            <div class="switch"><div>Don't score fluency<small>Fillers and false starts stay visible but cost nothing.</small></div><input type="checkbox" id="nofl"></div>
             <div class="switch"><div>Show experimental detectors<small>Emphasis, repeats, uptalk, hesitation: unreliable, off by default.</small></div><input type="checkbox" id="exp"></div>
             <div style="padding-top:12px"><label class="lab" for="rub">Your own rubric (YAML)</label><input type="file" id="rub" accept=".yaml,.yml" style="font-size:13px;color:var(--ink-2)"><div class="dimmer" id="rub-n" style="font-size:12px;margin-top:4px"></div></div>
           </div>
         </div>
-        <div class="field"><span class="lab">Pick a dataset clip</span>
+        <div class="field labonly"><span class="lab">Pick a dataset clip</span>
           <div class="adv-grid" style="grid-template-columns:1fr 1fr 1.4fr auto;align-items:end"><select id="d-take" aria-label="Speaker"></select><select id="d-kind" aria-label="Clip type"></select><select id="d-clip" aria-label="Clip"></select><button class="btn" id="d-go">Load clip</button></div></div>
-        <div class="field"><span class="lab">All flagged moments</span><div class="scroll-x"><table class="t" id="flaws-table"></table></div>
+        <div class="field"><span class="lab">Details</span><div class="scroll-x"><table class="t" id="flaws-table"></table></div>
           <div style="display:flex;gap:10px;margin-top:12px"><button class="btn sm" id="ex-json">Download score JSON</button><button class="btn sm" id="ex-html">Download one-page report</button></div></div>
       </div>
     </details>
@@ -92,13 +95,19 @@
 <!-- ================= DATASET ================= -->
 <section class="page" id="p-dataset">
   <div class="stack">
-    <div class="hero"><div class="eyebrow">Data engineering</div><h1>Real voices, controlled flaws, known truth.</h1>
-      <p>Ten baseline recordings, fifteen delivery flaws at five strengths, six recording conditions. Every flaw is injected at a known place, so every label is exact.</p></div>
+    <div class="hero"><h1>Real voices, controlled flaws, known truth.</h1>
+      <p>We start from clean recordings of real speakers, then change one thing at a time: a rushed phrase, a misplaced pause, a skipped word. Because we made each change, we know exactly where it is.</p></div>
     <div class="tiles" id="tiles"></div>
-    <div class="charts">
-      <div class="panel chart"><h3>Flaws by level</h3><div class="sub">Single-flaw clips per flaw and strength (L1 mild, L5 egregious)</div><div class="heat" id="heat"></div></div>
-      <div class="panel chart"><h3>Recording conditions</h3><div class="sub">Clean speech and five synthetic conditions</div><div class="hbars" id="conds"></div></div>
-      <div class="panel chart"><h3>Speakers</h3><div class="sub">Who is in the dataset</div><div class="spk" id="spk"></div></div>
+    <div class="cols2">
+      <div class="panel card"><h3>What we change</h3><div class="sub">Fifteen kinds of delivery flaw, in seven areas, each at five strengths from barely there to egregious.</div><div class="catlist" id="catlist"></div></div>
+      <div class="panel card"><h3>Hear a pair</h3><div class="sub" id="pair-sub">The same reading, clean and with one flaw.</div>
+        <div class="pair"><div class="pairrow"><button class="play" id="pc" aria-label="Play the clean reading">▶</button><div><b>Clean reading</b><span id="pc-s"></span></div></div>
+          <div class="pairrow fl"><button class="play" id="pf" aria-label="Play the flawed reading">▶</button><div><b id="pf-t">With a flaw</b><span id="pf-s"></span></div></div>
+          <div style="display:flex;align-items:center;gap:12px"><button class="btn sm" id="pnext">Another pair</button><span class="dimmer" id="pn" style="font-size:12.5px"></span></div></div></div>
+    </div>
+    <div class="cols2b">
+      <div class="panel card"><h3>Recording conditions</h3><div class="sub">Every voice also appears in rougher recordings, to check that a bad microphone is not mistaken for bad delivery.</div><div class="hbars" id="conds"></div></div>
+      <div class="panel card"><h3>Speakers</h3><div class="sub">Eight studio voices and two excerpts of a 1962 speech.</div><div class="spk" id="spk"></div></div>
     </div>
     <div class="panel gates" id="gates"></div>
     <details class="panel adv"><summary>Manifest</summary><div class="adv-body"><input type="search" id="mf-q" placeholder="Filter by clip, speaker, flaw or split"><div class="scroll-x"><table class="t" id="mf"></table></div>
@@ -109,10 +118,13 @@
 <!-- ================= ABOUT ================= -->
 <section class="page" id="p-about">
   <div class="stack">
-    <div class="hero"><div class="eyebrow">About</div><h1>Spoken delivery, measured against a known truth.</h1>
+    <div class="hero"><h1>Spoken delivery, measured against a known truth.</h1>
       <p>Flawline injects controlled flaws into real recordings, then asks an engine to find them blind: where each one is, what it is, and what it costs. Because the truth is known, every number below can be checked.</p></div>
-    <div class="about-grid"><div class="panel evalcard" id="ev"></div><div class="stack"><div class="panel evalcard" id="acc"></div><div class="panel evalcard" id="lim"></div></div></div>
-    <div class="panel evalcard"><h3>Links</h3><div class="links" id="links" style="margin-top:12px"></div></div>
+    <div class="big3" id="big3"></div>
+    <div class="panel gloss" id="gloss"></div>
+    <details class="panel adv"><summary>Full results</summary><div class="adv-body"><div id="ev"></div><div id="acc"></div></div></details>
+    <div class="panel card" id="lim"></div>
+    <div class="panel card"><h3>Links</h3><div class="links" id="links" style="margin-top:12px"></div></div>
   </div>
 </section>
 </main>

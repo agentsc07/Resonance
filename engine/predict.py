@@ -11,6 +11,10 @@ from .linguistics import annotate
 _REF_CACHE: dict = {}
 
 
+def drop_ref_cache(bid: str):
+    _REF_CACHE.pop(bid, None)
+
+
 def _ref(bid: str):
     if bid not in _REF_CACHE:
         w = reference.words_of(bid)
@@ -109,6 +113,6 @@ def predict(audio_path: str, meta: dict, mode: str = "same", rubric: dict | None
     out = {"schema_version": "1.1.0", "clip_id": meta["clip_id"], "take_id": meta["take_id"], "baseline_id": meta["baseline_id"],
             "genre": meta.get("genre"), "who": meta.get("who", {"speaker_id": "?"}), "where": meta.get("where", {"base_condition": "C0", "added_condition": None}),
             "what": what, "duration_s": meta["duration_s"], "labels_from": "engine",
-            "scores": {"overall": sc["overall"], "band": sc["band"], "categories": sc["categories"], "reference_mode": {"same": "same-speaker", "cross": "cross-speaker", "free": "reference-free"}[mode]},
+            "scores": {"overall": sc["overall"], "band": sc["band"], "worst_area_score": round(sc["worst"], 1), "categories": sc["categories"], "reference_mode": {"same": "same-speaker", "cross": "cross-speaker", "free": "reference-free"}[mode]},
             "quality": q, "reference": {"baseline_id": ref_id, "common_words": n}}
     return (out, C, ref_id) if full else out

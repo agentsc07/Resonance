@@ -13,13 +13,24 @@ STITCH = "cross:"          # reference ids of the form "cross:B03" mean "other s
 _STITCHED: dict = {}
 
 
+CUSTOM: dict[str, dict] = {}      # "ref:<id>" -> {"words": [...], "path": audio file}: a reference reading supplied by the user at run time
+
+
+def register_custom(rid: str, words: list[dict], path: str):
+    CUSTOM[rid] = {"words": words, "path": path}
+
+
 def words_of(bid: str) -> list[dict]:
+    if bid in CUSTOM:
+        return CUSTOM[bid]["words"]
     if bid.startswith(STITCH):
         return _member(bid)["words"]
     return json.loads((DATA / "takes" / f"{bid}-CHAMP_C0.align.json").read_text())["words"]
 
 
 def audio_of(bid: str) -> str:
+    if bid in CUSTOM:
+        return CUSTOM[bid]["path"]
     if bid.startswith(STITCH):
         return _member(bid)["path"]
     return str(DATA / "takes" / f"{bid}-CHAMP_C0.flac")

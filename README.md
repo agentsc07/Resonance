@@ -27,7 +27,7 @@ Three ways to know what "good" is, chosen in the dashboard:
 | **Same speaker** | the speaker's own clean reading | upper bound; the validated headline |
 | **Another speaker** (experimental) | other speakers reading the same sentences | a panel of references must agree before a flaw is reported |
 
-Pipeline: 16 kHz ingest and quality gate → (reference modes) degrade the clean reference to the participant's bandwidth/noise/reverb → DTW alignment, lag curve read as insertions/deletions and tempo → one detector per flaw → cross-detector arbitration → isotonic severity → rubric score `S = 100·exp(−P/35)` per category, genre-weighted → plain-language explanation with the measured numbers. The generator and the engine never import each other.
+Pipeline: 16 kHz ingest and quality gate → (reference modes) degrade the clean reference to the participant's bandwidth/noise/reverb → DTW alignment, lag curve read as insertions/deletions and tempo → one detector per flaw → cross-detector arbitration → isotonic severity → rubric score `S = 100·exp(−P/35)` per category; overall = 0.6 × genre-weighted mean + 0.4 × worst area, and the band is capped by the worst area (an area under 50 rules out polished and strong) → plain-language explanation with the measured numbers. The generator and the engine never import each other.
 
 ## Results (honest)
 
@@ -42,7 +42,7 @@ Event F1 at IoU 0.5 against the injected truth. Thresholds are fitted on **train
 - **Headline flaws (11):** FADE, FILLER, MONOTONE, PACE_FAST, PACE_SLOW, PAUSE_BAD, PAUSE_LOST, SHOUT, SLUR, WORD_SKIP, WORD_SWAP. FILLER and PAUSE_BAD are leakage-flagged (see below).
 - **Experimental, excluded from headline metrics and hidden by default:** EMPH_FLAT (VCTK voices are too flat for the flattening to scale with level; F1 0.09), REPEAT (0.13), UPTALK (0.25), RARE_HESIT (non-monotone dose-response, leakage 0.70).
 - **General mode does not reach the 0.4 bar** and does not transfer to the noisy 1962 recording (ASR errors and clean-speaker norms produce false flags). SLUR and MONOTONE are undetectable without a reference (effect about the size of natural variation).
-- **Score acceptance tests (same speaker):** score falls with level for 12 of 13 scored flaws (RARE_HESIT fails; EMPH_FLAT and UPTALK hidden); false flags under noise/phone/room/codec 0.35 per minute (target ≤ 0.5, passes); worst clean-speech score shift 13.5 pts (target < 3, **fails**; mean shifts ≤ 1.6); points lost in other categories 3.7 (target < 5 met, < 2 not).
+- **Score acceptance tests (same speaker, after the worst-area blend):** score falls with level for 12 of 13 scored flaws (RARE_HESIT fails, rho -0.52), and a level-5 flaw now lands at about 55-85 overall instead of 83-96; false flags under noise/phone/room/codec 0.35 per minute (target <= 0.5, passes); clean-speech score shift under those conditions averages 3.5-3.7 pts for babble and reverb (target < 3, **fails**) with a worst case of 29.8 pts (the blend makes one false flag in one area cost more); points lost in other categories 3.7 (target < 5 met, < 2 not).
 - **Leakage audit** (classifier sees only editing artifacts): AUC 0.598 on held-out test windows (mark 0.60), 0.616 leave-one-speaker-out, about 0.7 for RARE_HESIT, FILLER, PAUSE_BAD, EMPH_FLAT. Reported as is; the audit definition changed during the project (v2, see `PROGRESS.md`).
 - **Not done:** the by-ear realism rating of the injected flaws (nobody has listened to them yet), a human panel, speakers over 45 or with slang, a speech-accent corpus.
 
@@ -58,7 +58,7 @@ dashboard/          lab pages only (Streamlit): Alterations review, Baselines, P
 spec-v1.1.md        the build spec
 ```
 
-Web app pages: **Analyse** (drop a recording or pick a demo; score, seven category bars, a timeline with the expected range and the flagged moments, a flaw card with audio, the highlighted transcript, and an Advanced panel with mode, genre, rubric, experimental detectors and the full table), **Dataset** (tiles, flaw-by-level, conditions, speakers, quality gates, manifest), **About** (evaluation numbers read from `results/`). Lab pages (`LAB=1`): **Alterations review** (original vs altered with a synced spectrogram player), **Baselines**, **Pilot gate** (the by-ear review sheet). Screenshots at 1440x900 are in `docs/screenshots/`.
+Web app pages (three colours only: grey data, gold = what you can act on, coral = points lost): **Analyse** (drop a recording or pick a demo; a compact verdict with bars only for the areas that lost points, a timeline with numbered flagged moments and the expected range, a flaw card with audio, the highlighted transcript, and an Advanced panel with an optional reference reading and the details table), **Dataset** (tiles, what gets injected in plain words, a Hear-a-pair card, conditions, speakers, quality gates, manifest), **About** (three plain-language headline numbers, glossary, full results collapsed). The mode, genre, rubric, experimental-detector and dataset-clip controls appear with `LAB=1`. Lab pages (`LAB=1`): **Alterations review** (original vs altered with a synced spectrogram player), **Baselines**, **Pilot gate** (the by-ear review sheet). Screenshots at 1440x900 are in `docs/screenshots/`.
 
 ## Licences
 
