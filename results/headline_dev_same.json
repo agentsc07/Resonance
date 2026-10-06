@@ -1,0 +1,56 @@
+{
+ "split": "dev",
+ "mode": "same",
+ "clips": 20,
+ "all_flaws": {
+  "f1": 0.628,
+  "precision": 0.576,
+  "recall": 0.691
+ },
+ "headline": {
+  "flaws": [
+   "FADE",
+   "FILLER",
+   "MONOTONE",
+   "PACE_FAST",
+   "PACE_SLOW",
+   "PAUSE_BAD",
+   "PAUSE_LOST",
+   "SHOUT",
+   "SLUR",
+   "WORD_SKIP",
+   "WORD_SWAP"
+  ],
+  "f1": 0.705,
+  "precision": 0.66,
+  "recall": 0.756
+ },
+ "experimental": {
+  "EMPH_FLAT": "VCTK speakers are not expressive enough for a flattening to scale with level; detector F1 0.09",
+  "REPEAT": "detector F1 0.13; leakage AUC 0.64",
+  "UPTALK": "detector F1 0.25 (no leakage)",
+  "RARE_HESIT": "dose-response fails (non-monotone); leakage AUC 0.70"
+ },
+ "cross_disabled": [],
+ "leakage_flagged": {
+  "PAUSE_BAD": 0.68,
+  "FILLER": 0.69
+ },
+ "per_flaw_f1": {
+  "EMPH_FLAT": 0.375,
+  "FADE": 0.889,
+  "FILLER": 0.706,
+  "MONOTONE": 0.75,
+  "PACE_FAST": 1.0,
+  "PACE_SLOW": 0.889,
+  "PAUSE_BAD": 0.8,
+  "PAUSE_LOST": 1.0,
+  "RARE_HESIT": 0.4,
+  "REPEAT": 0.0,
+  "SHOUT": 0.5,
+  "SLUR": 0.364,
+  "UPTALK": 1.0,
+  "WORD_SKIP": 0.667,
+  "WORD_SWAP": 0.615
+ }
+}

@@ -52,6 +52,11 @@ streamlit run dashboard/app.py                                        # Analyse 
   loosen sensitivity instead of creating false flags (condition clips: 7.4 -> ~0.6 false flags per clip).
 - Split hygiene: thresholds / classifiers / isotonic maps are fit on `train`, checked on `dev`, and `test` (B05, B08) is touched once at the end.
 
+## Headline vs experimental flaws
+
+Headline (11 flaws, same-speaker F1@0.5 0.59 train / 0.71 dev): FADE, FILLER*, MONOTONE, PACE_FAST, PACE_SLOW, PAUSE_BAD*, PAUSE_LOST, SHOUT, SLUR, WORD_SKIP, WORD_SWAP. *leakage-flagged (audit AUC about 0.7).
+Experimental, excluded from headline metrics: EMPH_FLAT, REPEAT, UPTALK, RARE_HESIT (see `PROGRESS.md` for why). Cross-speaker mode is experimental overall (F1 0.20 train / 0.16 dev, 8 of 15 detectors active).
+
 ## Current engine status (6 Oct 2026, honest numbers)
 - Same-speaker reference (upper bound): event F1@0.5 = 0.50 on train (235 clips), 0.62 on dev. Strong: PACE, PAUSE_LOST, WORD_SWAP; weak: EMPH_FLAT, REPEAT, UPTALK, SLUR.
 - Cross-speaker reference: F1@0.5 = 0.03 (natural speaker differences swamp the detectors). **Experimental**; the Analyse page defaults to same-speaker.
