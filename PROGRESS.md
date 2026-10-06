@@ -11,7 +11,7 @@ Rules kept throughout: generator and engine never import each other; the test sp
 | Dataset | 564 clips, 9.97 h, 10 baselines (8 VCTK + 2 JFK), 15 flaws x 5 levels, 6 conditions. QA: 0 problems. |
 | Engine | Three modes: General (reference-free, dashboard default), Same speaker (validated headline), Another speaker (experimental). |
 | Dashboard | Analyse, Baselines, Alterations review, Pilot gate, Dataset. Tested in real (headless) Chrome. |
-| Packaging | `requirements.lock`, `Dockerfile`, `Makefile`, datasheet, README, technical report draft. Final Docker image build was still downloading packages when this was written. |
+| Packaging | `requirements.lock`, `Dockerfile`, `Makefile`, datasheet, README, technical report draft. Docker image builds (exit 0). |
 | Not done | By-ear pilot gate, test-split run (12 Oct), dataset zip + checksums, public repo push, code LICENSE, video, Speech Accent Archive, human panel. |
 
 ### Latest numbers (event F1 at IoU 0.5, thresholds fitted on train only)
@@ -95,7 +95,7 @@ Why: you asked for a major UI update, a default build of Analyse / Dataset / Abo
   1. Re-ingesting VCTK p318 reproduces the audio to within one 16-bit step (max sample diff 3.1e-5) but faster-whisper word timings differ by up to 0.37 s, which moves flaw placement. **The released takes (audio + alignment JSON) must ship with the dataset**; `make baselines` is for provenance, not bit-exact rebuilds.
   2. Regenerating the B01 grid (80 clips) from the shipped takes: **75 of 80 bit-identical to the macOS build; 5 differ by at most 1 LSB** (4 PACE clips, 1 multi-flaw; time-stretch rounding).
   3. Bugs found: `pyworld` was missing from `requirements.txt`; the container lacked `setuptools` (`pyworld` imports `pkg_resources`; pinned 80.9.0).
-- Docker Desktop was not running; I started it. The final `docker build -t flawline:final .` (Dockerfile + lock) was slow on the network and had not finished at the time of writing; the equivalent environment was tested.
+- Docker Desktop was not running; I started it. `docker build -t flawline:final .` (Dockerfile + the lock as it was before the web-app dependencies were added) completed with exit 0 (about 35 minutes on this network, mostly package downloads); the later lock with fastapi was verified by running the app in a container, not by a second full image build.
 
 ## 5. Dead ends (so nobody repeats them)
 TTS baselines; Svarah as a baseline; TTS duration-prefix alignment; DTW noise-floor clamp; threshold tuning alone for cross mode (the reference only covered 14 words); a leakage audit with random negatives; per-flaw score weights fitted on train; a first lock file from the Mac environment; whole-clip bandwidth estimation; hf-energy for SLUR and F0-IQR windows for MONOTONE in reference-free mode; plain syllable rate for pace in reference-free mode; unexplained-audio filler detection by threshold alone.
