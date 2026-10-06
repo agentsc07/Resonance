@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 
 from . import arbitrate, audio, compare, conditions, detect, reference, score as scoring
-from .explain import explain
+from .explain import explain, explain_free
 from .linguistics import annotate
 
 _REF_CACHE: dict = {}
@@ -19,8 +19,23 @@ def _ref(bid: str):
     return _REF_CACHE[bid]
 
 
+def _analyse_free(audio_path: str, meta: dict, ref_override: str | None):
+    """Reference-free: the transcript (the text the speaker read) plus the clip itself and clean-speaker norms; no reference recording."""
+    from . import free
+    detect.use("free")
+    bid = ref_override or meta["baseline_id"]
+    x, _ = audio.normalise(audio.load(audio_path))
+    q = audio.quality(x)
+    q["matched"] = {}
+    fa = free.analyse(x, bid)
+    cands = [c for c in free.run(fa, detect.TH) if c.flaw not in detect.DISABLED]
+    return fa, cands, q, "free:" + bid, fa.n
+
+
 def analyse(audio_path: str, meta: dict, mode: str, ref_override: str | None = None, ref_id_force: str | None = None):
     """One reference, or in cross mode the consensus of the text's whole panel of reference voices (see consensus.py)."""
+    if mode == "free":
+        return _analyse_free(audio_path, meta, ref_override)
     if mode != "cross" or ref_id_force:
         return _analyse_one(audio_path, meta, mode, ref_override, ref_id_force)
     from . import consensus
@@ -68,14 +83,14 @@ def predict(audio_path: str, meta: dict, mode: str = "same", rubric: dict | None
     C, cands, q, ref_id, n = analyse(audio_path, meta, mode, ref_override)
     if not experimental:                                       # experimental detectors are reported only on request (they would also outbid reliable ones)
         cands = [c for c in cands if c.flaw not in detect.EXPERIMENTAL]
-    ref_w = reference.words_of(ref_id)
+    ref_w = reference.words_of(ref_id[len("free:"):] if ref_id.startswith("free:") else ref_id)
     iso = scoring.load_iso(mode)
     rel = scoring.load_reliability(mode)
     cands = arbitrate.arbitrate(cands, rel)
     what, tips = [], []
     for c in cands:
         sev = scoring.severity(c.flaw, c.d, iso)
-        sent, tip = explain(c, C, ref_w, sev)
+        sent, tip = explain_free(c, C, ref_w, sev) if mode == "free" else explain(c, C, ref_w, sev)
         what.append({"flaw": c.flaw, "category": c.category, "start_s": round(c.start, 3), "end_s": round(c.end, 3),
                      "word_start": int(c.w0), "word_end": int(c.w1), "kind": "modify", "severity": round(sev, 3),
                      "confidence": q["confidence"], "reliability": round(rel.get(c.flaw, 1.0), 2), "explanation": sent,

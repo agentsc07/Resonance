@@ -1,0 +1,7 @@
+.git
+**/__pycache__
+flawline-dataset/variants
+flawline-dataset/generator/.cache
+flawline-dataset/takes/*.flac
+results
+*.pyc

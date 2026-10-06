@@ -50,10 +50,10 @@ def results():
     st.caption("Event F1 at IoU 0.5 against the injected ground truth. Thresholds are fitted on TRAIN only. The test split (B05, B08) is evaluated once, at the end.")
     rows = []
     for split in ("train", "dev", "extra", "test"):
-        for mode in ("same", "cross"):
+        for mode in ("free", "same", "cross"):
             h = _json(f"headline_{split}_{mode}.json")
             if h:
-                rows.append({"split": split, "reference": "same speaker" if mode == "same" else "cross speaker (experimental)", "clips": h["clips"],
+                rows.append({"split": split, "reference": {"same": "same speaker (upper bound)", "free": "general, no reference", "cross": "another speaker (experimental)"}[mode], "clips": h["clips"],
                              "all flaws F1": h["all_flaws"]["f1"], "headline F1": h["headline"]["f1"], "headline flaws": len(h["headline"]["flaws"])})
     if rows:
         st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)

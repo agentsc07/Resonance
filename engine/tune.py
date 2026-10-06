@@ -67,9 +67,29 @@ def refs_of(lab: dict, mode: str) -> list[str | None]:
     return [None] + members
 
 
+FREE_CACHE = Path("/tmp/free_cache")
+
+
+def free_analysis(lab: dict):
+    """Reference-free analysis of a dataset clip (ASR + frames), cached. The transcript is the text of the clip's baseline."""
+    from . import audio, free
+    FREE_CACHE.mkdir(exist_ok=True)
+    f = FREE_CACHE / f"{lab['clip_id']}.pkl"
+    if f.exists():
+        return pickle.loads(f.read_bytes())
+    x = audio.normalise(audio.load(str(DATA / "variants" / f"{lab['clip_id']}.flac")))[0]
+    fa = free.analyse(x, lab["baseline_id"])
+    f.write_bytes(pickle.dumps(fa))
+    return fa
+
+
 def cands_for(lab: dict, mode: str, flaw=None):
     """Detections for a clip (consensus across the panel in cross mode). Returns (cands, C of the primary reference, its ref id)."""
     from . import consensus
+    if mode == "free":
+        from . import free
+        fa = free_analysis(lab)
+        return free.run(fa, detect.TH, flaw), fa, lab["baseline_id"]
     per, first = [], None
     for r in refs_of(lab, mode):
         C, q, ref, n = analysed(lab, mode, r)

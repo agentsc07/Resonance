@@ -56,9 +56,15 @@ def use(mode: str):
     m = MODELS.get(mode) or MODELS.get("same") or {}
     TH.clear()
     TH.update(_DEFAULT_TH)
+    if mode == "free":
+        from .free import FTH
+        TH.update(FTH)
     TH.update(m.get("thresholds", {}))
     REPEAT_CLF = m.get("repeat_clf")
     DISABLED = set(m.get("disabled", []))
+    if mode == "free":
+        from . import free
+        free.INS_CLF = m.get("ins_clf")
 
 
 use("same")

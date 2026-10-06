@@ -28,7 +28,8 @@ CAT_COLOR = {"Pacing": "#3b82c4", "Pausing": "#8b5cf6", "Intonation": "#f08c00",
              "Fluency": "#e03131", "Clarity": "#0c8599", "Text fidelity": "#7c6f64"}
 CATS = list(CAT_COLOR)
 GENRES = ["interpretive reading", "declamation", "extemporaneous", "persuasive oratory"]
-MODE_LABEL = {"same": "Same speaker (upper bound)", "cross": "Cross-speaker (EXPERIMENTAL: F1 0.20 train / 0.16 dev, 10 of 15 flaws)", "free": "Reference-free"}
+MODE_LABEL = {"free": "General: no reference needed (F1 0.25 train / 0.14 dev, 9 of 15 flaws)", "same": "Same speaker (upper bound, F1 0.49 / 0.63)",
+              "cross": "Another speaker (EXPERIMENTAL: F1 0.20 / 0.16, 10 of 15 flaws)"}
 BAND_COLOR = {"polished": "#2f9e44", "strong": "#2b6cb0", "noticeable": "#f08c00", "needs work": "#e03131"}
 
 
@@ -95,6 +96,59 @@ def timeline(pred: dict, C, wave: np.ndarray, sr: int, sel: int | None):
     return fig
 
 
+def timeline_free(pred: dict, fa, wave: np.ndarray, sr: int, sel: int | None):
+    """Reference-free timeline: you against the EXPECTED RANGE (shaded band) for your own voice, not a single reference line."""
+    from engine import free as EF
+    fig = make_subplots(rows=4, cols=1, shared_xaxes=True, vertical_spacing=0.035, row_heights=[0.34, 0.24, 0.24, 0.18],
+                        subplot_titles=("Waveform and flaw regions", "Pitch (semitones re own median) · band = your typical range", "Loudness (dB re own speech level) · band = expected range",
+                                        "Speaking rate (syllables/s) · band = ±25% of your median"))
+    n = 1500
+    m = len(wave) // n * n
+    seg = wave[:m].reshape(n, -1)
+    t = (np.arange(n) + 0.5) * (len(wave) / sr / n)
+    fig.add_trace(go.Scatter(x=np.r_[t, t[::-1]], y=np.r_[seg.max(1), seg.min(1)[::-1]], fill="toself", mode="lines", line=dict(width=0),
+                             fillcolor="rgba(75,85,99,.55)", hoverinfo="skip", showlegend=False), row=1, col=1)
+    for i, r in enumerate(pred["what"]):
+        col = CAT_COLOR[r["category"]]
+        fig.add_vrect(x0=r["start_s"], x1=max(r["end_s"], r["start_s"] + 0.15), fillcolor=col, opacity=0.38 if i == sel else 0.22,
+                      line=dict(color=col, width=2 if i == sel else 1), row="all", col=1)
+        fig.add_trace(go.Scatter(x=[(r["start_s"] + r["end_s"]) / 2], y=[0.92], mode="markers", marker=dict(size=14, color="rgba(0,0,0,0)"),
+                                 hovertemplate=f"<b>{r['flaw']}</b> · {r['category']}<br>severity {r['severity']:.1f} · −{r['points_lost']:.1f} pts<br>%{{x:.2f}} s<extra></extra>",
+                                 showlegend=False), row=1, col=1)
+    fr = fa.fr
+    smooth = lambda v, k: np.convolve(np.pad(np.asarray(v, float), k // 2, mode="edge"), np.ones(k) / k, mode="valid")[: len(v)]
+    band = lambda row, lo, hi: fig.add_trace(go.Scatter(x=[0, fa.dur, fa.dur, 0], y=[lo, lo, hi, hi], fill="toself", mode="lines", line=dict(width=0),
+                                                         fillcolor="rgba(77,171,247,.16)", hoverinfo="skip", showlegend=False), row=row, col=1)
+    f0 = fr.f0_st[~np.isnan(fr.f0_st)]
+    if len(f0) > 20:
+        band(2, float(np.percentile(f0, 10)), float(np.percentile(f0, 90)))
+    fig.add_trace(go.Scatter(x=fr.t, y=fr.f0_st, mode="lines", line=dict(color="#4dabf7", width=1.6), name="You", showlegend=True, connectgaps=False), row=2, col=1)
+    th = EF.FTH
+    from engine import detect as _d
+    band(3, -8.0, float(_d.TH.get("shout_db", th["shout_db"])))
+    fig.add_trace(go.Scatter(x=fr.t, y=smooth(fr.inten, 9), mode="lines", line=dict(color="#4dabf7", width=1.4), showlegend=False), row=3, col=1)
+    xs, ys = [], []
+    for w in fa.words:
+        if w["status"] == "skip":
+            continue
+        d = max(w["pe"] - w["ps"], 0.05)
+        xs += [w["ps"], w["pe"]]
+        ys += [EF.syllables(w["clean"]) / d] * 2
+    if ys:
+        med = float(np.median(ys))
+        band(4, 0.75 * med, 1.33 * med)
+        fig.add_trace(go.Scatter(x=xs, y=np.clip(ys, 0, 14), mode="lines", line=dict(color="#4dabf7", width=1.4, shape="hv"), showlegend=False,
+                                 hovertemplate="%{y:.1f} syll/s<extra>You</extra>"), row=4, col=1)
+    fig.update_layout(height=640, margin=dict(l=0, r=0, t=34, b=0), hovermode="x unified", legend=dict(orientation="h", y=1.06, x=0),
+                      plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+    fig.update_yaxes(showgrid=True, gridcolor="rgba(128,128,128,.25)", zeroline=False)
+    fig.update_yaxes(visible=False, row=1, col=1)
+    fig.update_xaxes(ticksuffix=" s", showgrid=False)
+    for a in fig.layout.annotations:
+        a.update(x=0, xanchor="left", font=dict(size=12, color="#6b7280"))
+    return fig
+
+
 def cut_wav(x: np.ndarray, sr: int, a: float, b: float) -> bytes:
     seg = x[max(0, int(a * sr)): int(b * sr)]
     buf = io.BytesIO()
@@ -140,15 +194,15 @@ def render():
             st.session_state[k] = v
     st.markdown("**Demo clips**")
     d = st.columns(5)
-    d[0].button("Accent vs another speaker", key="pr1", use_container_width=True, on_click=_preset, args=("cross", "B03-CHAMP", "Clean take", "B03-CHAMP_C0"),
-                help="Indian-accent speaker compared with a different speaker's reading (cross-speaker, experimental). A clean reading should score high.")
-    d[1].button("Noisy room, clean speech", key="pr2", use_container_width=True, on_click=_preset, args=("same", "B03-CHAMP", "Noisy / phone / room (clean speech)", "B03-CHAMP_N20"),
+    d[0].button("Accent, no reference", key="pr1", use_container_width=True, on_click=_preset, args=("free", "B03-CHAMP", "Clean take", "B03-CHAMP_C0"),
+                help="Indian-accent speaker, no reference recording needed (general mode). A clean reading should score high.")
+    d[1].button("Noisy room, clean speech", key="pr2", use_container_width=True, on_click=_preset, args=("free", "B03-CHAMP", "Noisy / phone / room (clean speech)", "B03-CHAMP_N20"),
                 help="Clean delivery recorded with babble noise at 20 dB: noise must not be mistaken for a flaw.")
-    d[2].button("Very slow reading", key="pr3", use_container_width=True, on_click=_preset, args=("same", "B01-CHAMP", "Flaw at level 5", "B01-CHAMP_C0__PACE_SLOW_L5_s4414"),
-                help="An egregious injected flaw (pace slowed at level 5).")
-    d[3].button("A real long pause", key="pr4", use_container_width=True, on_click=_preset, args=("cross", "B07-CHAMP", "Clean take", "B07-CHAMP_C0"),
+    d[2].button("Sudden shouting", key="pr3", use_container_width=True, on_click=_preset, args=("free", "B01-CHAMP", "Flaw at level 5", "B01-CHAMP_C0__SHOUT_L5_s4068"),
+                help="An egregious injected flaw (a loud stretch, level 5).")
+    d[3].button("A real long pause", key="pr4", use_container_width=True, on_click=_preset, args=("free", "B07-CHAMP", "Clean take", "B07-CHAMP_C0"),
                 help="An unedited VCTK reading with a natural 1.7 s pause; the engine's flag here is a real pause, not an injected one.")
-    d[4].button("JFK 1962 speech, dropped words", key="pr5", use_container_width=True, on_click=_preset, args=("same", "B09-CHAMP", "Flaw at level 5", "B09-CHAMP_C0__WORD_SKIP_L5_s5972"),
+    d[4].button("JFK 1962 speech, dropped words", key="pr5", use_container_width=True, on_click=_preset, args=("free", "B09-CHAMP", "Flaw at level 5", "B09-CHAMP_C0__WORD_SKIP_L5_s5972"),
                 help="Excerpt of President Kennedy's Rice University address (public domain, 1962 open-air recording) with 8 words removed (level 5).")
 
     path, meta, ref_override, gt = None, None, None, None
@@ -157,7 +211,8 @@ def render():
         c1, c2, c3, c4 = st.columns(4)
         take = c1.selectbox("Baseline speaker", sorted(man.take_id.unique()), key="an_take")
         kinds = {"Clean take": "clean", "One flaw (level 3)": "L3", "Multi-flaw set": "MULTI", "Noisy / phone / room (clean speech)": "COND", "Flaw at level 5": "L5"}
-        kind = c2.selectbox("Clip type", list(kinds), index=1, key="an_kind")
+        st.session_state.setdefault("an_kind", "One flaw (level 3)")
+        kind = c2.selectbox("Clip type", list(kinds), key="an_kind")
         sub = man[man.take_id == take]
         if kinds[kind] == "clean":
             pool = sub[(sub.flaw_codes == "") & (sub.added_condition == "")]
@@ -192,7 +247,6 @@ def render():
             x = eaudio.load(path)
             meta = {"clip_id": "B00-UPLOAD_C0", "take_id": "B00-UPLOAD", "baseline_id": ref_override, "genre": genre, "duration_s": len(x) / eaudio.SR,
                     "who": {"speaker_id": "UPLOAD"}, "where": {"base_condition": "C0", "added_condition": None}}
-            mode = "same" if mode == "free" else mode
     if not path:
         st.info("Choose a clip or upload audio to begin.")
         return
@@ -208,7 +262,8 @@ def render():
         sc = pred["scores"]
         st.markdown(f"<div style='font-size:3.2rem;font-weight:700;color:{BAND_COLOR[sc['band']]};line-height:1'>{sc['overall']:.0f}</div>"
                     f"<div style='font-size:1.1rem;font-weight:600'>{sc['band']}</div>"
-                    f"<div class='small'>reference: {MODE_LABEL[mode]} · {ref_id} · {pred['reference']['common_words']} words compared</div>", unsafe_allow_html=True)
+                    + (f"<div class='small'>no reference recording · expectations from your own clip, the transcript and clean-speaker norms · {pred['reference']['common_words']} words checked</div>"
+                         if mode == "free" else f"<div class='small'>reference: {MODE_LABEL[mode]} · {ref_id} · {pred['reference']['common_words']} words compared</div>"), unsafe_allow_html=True)
         st.markdown(f"<span class='pill' style='background:{qcol}22;color:{qcol}'>recording quality: {q['badge']}</span> "
                     f"<span class='small'>SNR {q['snr_db']} dB · bandwidth {q['bandwidth_hz']} Hz · clipped {q['clipped_frac']:.3%}</span>", unsafe_allow_html=True)
         if q["badge"] == "poor":
@@ -228,12 +283,12 @@ def render():
         st.success("No delivery flaws found against the reference.")
     order = sorted(range(len(regs)), key=lambda i: -regs[i]["points_lost"])
     sel = st.session_state.get("an_sel") if st.session_state.get("an_sel") in range(len(regs)) else (order[0] if order else None)
-    st.plotly_chart(timeline(pred, C, wave, sr, sel), use_container_width=True)
+    st.plotly_chart(timeline_free(pred, C, wave, sr, sel) if mode == "free" else timeline(pred, C, wave, sr, sel), use_container_width=True)
     flagged = {}
     for r in regs:
         for i in range(r["word_start"], r["word_end"] + 1):
             flagged[i] = CAT_COLOR[r["category"]]
-    st.markdown(script_html(C.ref_words, flagged), unsafe_allow_html=True)
+    st.markdown(script_html(eref.words_of(ref_id[5:]) if mode == "free" else C.ref_words, flagged), unsafe_allow_html=True)
     st.markdown("  ".join(f"<span class='pill' style='background:{c}22;color:{c}'>{k}</span>" for k, c in CAT_COLOR.items()), unsafe_allow_html=True)
 
     if regs:
@@ -249,10 +304,14 @@ def render():
         a, b = st.columns(2)
         a.markdown("**You**")
         a.audio(cut_wav(wave, sr, r["start_s"] - 0.4, r["end_s"] + 0.4), format="audio/wav")
-        rx = eaudio.load(eref.audio_of(ref_id))
-        w0, w1 = r["word_start"], r["word_end"]
-        b.markdown(f"**Reference** ({ref_id}, same words)")
-        b.audio(cut_wav(rx, eaudio.SR, C.w[w0]["rs"] - 0.4, C.w[w1]["re"] + 0.4), format="audio/wav")
+        if mode != "free":
+            rx = eaudio.load(eref.audio_of(ref_id))
+            w0, w1 = r["word_start"], r["word_end"]
+            b.markdown(f"**Reference** ({ref_id}, same words)")
+            b.audio(cut_wav(rx, eaudio.SR, C.w[w0]["rs"] - 0.4, C.w[w1]["re"] + 0.4), format="audio/wav")
+        else:
+            b.markdown("**Expected**")
+            b.caption(r["explanation"])
 
     st.subheader("All flaws")
     if regs:

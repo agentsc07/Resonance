@@ -55,7 +55,7 @@ streamlit run dashboard/app.py                                        # Analyse 
 ## Headline vs experimental flaws
 
 Headline (11 flaws, same-speaker F1@0.5 0.59 train / 0.71 dev): FADE, FILLER*, MONOTONE, PACE_FAST, PACE_SLOW, PAUSE_BAD*, PAUSE_LOST, SHOUT, SLUR, WORD_SKIP, WORD_SWAP. *leakage-flagged (audit AUC about 0.7).
-Experimental, excluded from headline metrics: EMPH_FLAT, REPEAT, UPTALK, RARE_HESIT (see `PROGRESS.md` for why). Cross-speaker mode is experimental overall (F1 0.20 train / 0.16 dev, 8 of 15 detectors active).
+Experimental, excluded from headline metrics: EMPH_FLAT, REPEAT, UPTALK, RARE_HESIT (see `PROGRESS.md` for why). Cross-speaker mode is experimental overall (F1 0.20 train / 0.16 dev, 8 of 15 detectors active). General (reference-free) mode, the dashboard default, scores F1 0.25 train / 0.14 dev (headline-8: 0.31 / 0.20) and 0.06 on the JFK recording: below the 0.4 bar, so same-speaker mode remains the validated headline.
 
 ## Current engine status (6 Oct 2026, honest numbers)
 - Same-speaker reference (upper bound): event F1@0.5 = 0.50 on train (235 clips), 0.62 on dev. Strong: PACE, PAUSE_LOST, WORD_SWAP; weak: EMPH_FLAT, REPEAT, UPTALK, SLUR.

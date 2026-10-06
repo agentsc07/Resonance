@@ -2,7 +2,6 @@ numpy
 scipy
 soundfile
 librosa
-pyworld
 praat-parselmouth
 wordfreq
 faster-whisper
@@ -14,3 +13,5 @@ streamlit
 jsonschema
 scikit-learn
 # system: ffmpeg (with libmp3lame)
+requests
+pyarrow
