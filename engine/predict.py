@@ -62,10 +62,12 @@ def _analyse_one(audio_path: str, meta: dict, mode: str, ref_override: str | Non
 
 
 def predict(audio_path: str, meta: dict, mode: str = "same", rubric: dict | None = None, dont_score_fluency: bool = False,
-            ref_override: str | None = None, full: bool = False):
+            ref_override: str | None = None, full: bool = False, experimental: bool = False):
     """Prediction in label schema 1.1.0: regions with calibrated severity, confidence, causal explanation and points lost, plus scores.
     full=True also returns the comparison object (for the dashboard's time-warped overlay)."""
     C, cands, q, ref_id, n = analyse(audio_path, meta, mode, ref_override)
+    if not experimental:                                       # experimental detectors are reported only on request (they would also outbid reliable ones)
+        cands = [c for c in cands if c.flaw not in detect.EXPERIMENTAL]
     ref_w = reference.words_of(ref_id)
     iso = scoring.load_iso(mode)
     rel = scoring.load_reliability(mode)

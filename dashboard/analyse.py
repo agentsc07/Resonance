@@ -33,10 +33,10 @@ BAND_COLOR = {"polished": "#2f9e44", "strong": "#2b6cb0", "noticeable": "#f08c00
 
 
 @st.cache_data(show_spinner=False)
-def run_engine(path: str, meta_json: str, mode: str, ref_override: str | None, rubric_yaml: str | None, dont_fluency: bool):
+def run_engine(path: str, meta_json: str, mode: str, ref_override: str | None, rubric_yaml: str | None, dont_fluency: bool, experimental: bool = False):
     meta = json.loads(meta_json)
     rub = yaml.safe_load(rubric_yaml) if rubric_yaml else None
-    pred, C, ref_id = ENG.predict(path, meta, mode, rub, dont_fluency, ref_override, full=True)
+    pred, C, ref_id = ENG.predict(path, meta, mode, rub, dont_fluency, ref_override, full=True, experimental=experimental)
     return pred, C, ref_id
 
 
@@ -66,10 +66,13 @@ def timeline(pred: dict, C, wave: np.ndarray, sr: int, sel: int | None):
                                  hovertemplate=f"<b>{r['flaw']}</b> · {r['category']}<br>severity {r['severity']:.1f} · −{r['points_lost']:.1f} pts<br>%{{x:.2f}} s<extra></extra>",
                                  showlegend=False), row=1, col=1)
     fp, fr = C.par_fr, C.ref_fr
+    smooth = lambda v, k: np.convolve(np.pad(np.asarray(v, float), k // 2, mode="edge"), np.ones(k) / k, mode="valid")[: len(v)]
     for row, key, name in ((2, "f0_st", "f0"), (3, "inten", "inten")):
-        fig.add_trace(go.Scatter(x=fp.t, y=getattr(fp, key), mode="lines", line=dict(color="#111827", width=1.4), name="You", legendgroup="you",
+        yp_ = getattr(fp, key) if key == "f0_st" else smooth(getattr(fp, key), 9)
+        yr_ = _warp(C, name) if key == "f0_st" else smooth(_warp(C, name), 9)
+        fig.add_trace(go.Scatter(x=fp.t, y=yp_, mode="lines", line=dict(color="#4dabf7", width=1.6), name="You", legendgroup="you",
                                  showlegend=row == 2, connectgaps=False), row=row, col=1)
-        fig.add_trace(go.Scatter(x=fp.t, y=_warp(C, name), mode="lines", line=dict(color="#d9480f", width=1.2, dash="dot"), name="Reference (time-warped)",
+        fig.add_trace(go.Scatter(x=fp.t, y=yr_, mode="lines", line=dict(color="#d9480f", width=1.2, dash="dot"), name="Reference (time-warped)",
                                  legendgroup="ref", showlegend=row == 2, connectgaps=False), row=row, col=1)
     xs, yp, yr = [], [], []
     for w, rw in zip(C.w, C.ref_words):
@@ -78,13 +81,13 @@ def timeline(pred: dict, C, wave: np.ndarray, sr: int, sel: int | None):
         xs += [w["ps"], w["pe"]]
         yp += [syl / dp] * 2
         yr += [syl / dr * 1.0] * 2
-    fig.add_trace(go.Scatter(x=xs, y=np.clip(yp, 0, 14), mode="lines", line=dict(color="#111827", width=1.2, shape="hv"), showlegend=False,
+    fig.add_trace(go.Scatter(x=xs, y=np.clip(yp, 0, 14), mode="lines", line=dict(color="#4dabf7", width=1.4, shape="hv"), showlegend=False,
                              hovertemplate="%{y:.1f} syll/s<extra>You</extra>"), row=4, col=1)
     fig.add_trace(go.Scatter(x=xs, y=np.clip(yr, 0, 14), mode="lines", line=dict(color="#d9480f", width=1.0, dash="dot", shape="hv"), showlegend=False,
                              hovertemplate="%{y:.1f} syll/s<extra>Reference</extra>"), row=4, col=1)
     fig.update_layout(height=640, margin=dict(l=0, r=0, t=34, b=0), hovermode="x unified", legend=dict(orientation="h", y=1.06, x=0),
                       plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-    fig.update_yaxes(showgrid=True, gridcolor="#eceff3", zeroline=False)
+    fig.update_yaxes(showgrid=True, gridcolor="rgba(128,128,128,.25)", zeroline=False)
     fig.update_yaxes(visible=False, row=1, col=1)
     fig.update_xaxes(ticksuffix=" s", showgrid=False)
     for a in fig.layout.annotations:
@@ -130,6 +133,21 @@ def render():
         genre = st.selectbox("Genre preset", GENRES, key="an_genre")
         rub_file = st.file_uploader("…or your own rubric.yaml", type=["yaml", "yml"], key="an_rub")
         no_flu = st.checkbox("Don't score fluency", key="an_nofl", help="Fluency events stay visible but cost nothing (e.g. for a speaker who stammers).")
+        show_exp = st.checkbox("Show experimental detectors", key="an_exp", help="EMPH_FLAT, REPEAT, UPTALK and RARE_HESIT are not reliable enough for the headline results (low precision or leakage); hidden unless you ask.")
+
+    def _preset(mode_, take_, kind_, clip_):
+        for k, v in (("an_src", "Try a dataset clip"), ("an_mode", mode_), ("an_take", take_), ("an_kind", kind_), ("an_clip", clip_)):
+            st.session_state[k] = v
+    st.markdown("**Demo clips**")
+    d = st.columns(4)
+    d[0].button("Accent vs another speaker", key="pr1", use_container_width=True, on_click=_preset, args=("cross", "B03-CHAMP", "Clean take", "B03-CHAMP_C0"),
+                help="Indian-accent speaker compared with a different speaker's reading (cross-speaker, experimental). A clean reading should score high.")
+    d[1].button("Noisy room, clean speech", key="pr2", use_container_width=True, on_click=_preset, args=("same", "B03-CHAMP", "Noisy / phone / room (clean speech)", "B03-CHAMP_N20"),
+                help="Clean delivery recorded with babble noise at 20 dB: noise must not be mistaken for a flaw.")
+    d[2].button("Very slow reading", key="pr3", use_container_width=True, on_click=_preset, args=("same", "B01-CHAMP", "Flaw at level 5", "B01-CHAMP_C0__PACE_SLOW_L5_s4414"),
+                help="An egregious injected flaw (pace slowed at level 5).")
+    d[3].button("A real long pause", key="pr4", use_container_width=True, on_click=_preset, args=("cross", "B07-CHAMP", "Clean take", "B07-CHAMP_C0"),
+                help="An unedited VCTK reading with a natural 1.7 s pause; the engine's flag here is a real pause, not an injected one.")
 
     path, meta, ref_override, gt = None, None, None, None
     if src == "Try a dataset clip":
@@ -148,7 +166,11 @@ def render():
         else:
             lv = "_L3_" if kinds[kind] == "L3" else "_L5_"
             pool = sub[sub.clip_id.str.contains(lv) & (sub.multi_set == "") & (sub.added_condition == "") & (~sub.clip_id.str.contains("PURE_")) & (sub.flaw_codes != "")]
-        cid = c3.selectbox("Clip", pool.clip_id.tolist(), format_func=lambda c: c.split("__")[-1] if "__" in c else c.split("_")[-1], key="an_clip")
+        exp = {"EMPH_FLAT", "REPEAT", "UPTALK", "RARE_HESIT"}               # experimental flaws (see README): listed last
+        fl = lambda c: c.split("__")[1].rsplit("_L", 1)[0] if "__" in c else ""
+        ids = sorted(pool.clip_id.tolist(), key=lambda c: (fl(c) in exp, c))
+        cid = c3.selectbox("Clip", ids, key="an_clip",
+                           format_func=lambda c: (c.split("__")[-1] if "__" in c else c.split("_")[-1]) + (" · experimental flaw" if fl(c) in exp else ""))
         row = man[man.clip_id == cid].iloc[0]
         path = str(DATA / "variants" / f"{cid}.flac") if (DATA / "variants" / f"{cid}.flac").exists() else str(DATA / "takes" / f"{cid}.flac")
         meta = {"clip_id": cid, "take_id": row.take_id, "baseline_id": row.baseline_id, "genre": genre, "duration_s": float(row.duration_s),
@@ -173,7 +195,7 @@ def render():
         st.info("Choose a clip or upload audio to begin.")
         return
     with st.spinner("Aligning against the reference and measuring delivery… (first run of a clip takes a few seconds)"):
-        pred, C, ref_id = run_engine(path, json.dumps(meta), mode, ref_override, rub_file.getvalue().decode() if rub_file else None, no_flu)
+        pred, C, ref_id = run_engine(path, json.dumps(meta), mode, ref_override, rub_file.getvalue().decode() if rub_file else None, no_flu, show_exp)
     wave, sr = sf.read(path, dtype="float32")
     wave = wave if wave.ndim == 1 else wave.mean(axis=1)
 
@@ -218,7 +240,7 @@ def render():
         r = regs[sel]
         col = CAT_COLOR[r["category"]]
         st.markdown(f"<span class='pill' style='background:{col}22;color:{col}'>{r['category']}</span> **{r['flaw']}** · severity {r['severity']:.1f}/5 · "
-                    f"{r['start_s']:.2f}–{r['end_s']:.2f} s · **−{r['points_lost']:.1f} points**")
+                    f"{r['start_s']:.2f}–{r['end_s']:.2f} s · **−{r['points_lost']:.1f} points**", unsafe_allow_html=True)
         st.markdown(r["explanation"])
         if r["params"].get("tip"):
             st.markdown(f"💡 *{r['params']['tip']}*")

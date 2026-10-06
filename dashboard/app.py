@@ -427,6 +427,9 @@ else:
         st.dataframe(M.groupby("split").size().rename("clips"), use_container_width=True)
         st.markdown("**By added condition**")
         st.dataframe(M[M.added_condition != ""].groupby("added_condition").size().rename("clips"), use_container_width=True)
+    import results_page as RP
+    RP.counts(M)
+    RP.results()
     st.subheader("Quality gates")
     jcs = []
     for jp in VARIANTS.glob("*.json"):
