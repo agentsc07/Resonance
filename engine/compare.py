@@ -158,7 +158,7 @@ def build(ref_x: np.ndarray, ref_words: list[dict], par_x: np.ndarray, n_words: 
         o["rf"], o["pf"] = a, b
         r_mid = int(round((o["rs"] + o["re"]) / 2 * FR))
         o["tempo"] = float(tempo[min(nref - 1, r_mid)])                            # lag slope: >0 participant slower than the reference
-        o["rho"] = (1.0 + tempo_med) / (1.0 + o["tempo"])                           # >1 = faster than the clip's typical tempo (speaker-normalised)
+        o["rho"] = (1.0 + tempo_med) / max(1.0 + o["tempo"], 0.2)                           # >1 = faster than the clip's typical tempo (speaker-normalised)
         cs = cost_f[int(round(o["rs"] * FR)): int(round(o["re"] * FR)) + 1]
         o["cost"] = float(np.nanmean(cs)) if np.isfinite(cs).any() else np.nan     # acoustic mismatch of this word (a swapped word matches badly)
     return Cmp(n=n, ref_words=ref_words[:n], ref_fr=rf, par_fr=pf, kappa=kappa, w=recs, events=events, lag=lag, path_cost=cost, path=(rr, pp))

@@ -152,7 +152,7 @@ COLS = ["clip_id", "take_id", "baseline_id", "genre", "speaker_id", "age_band", 
 
 def split_of(baseline_id: str) -> str:
     s = CFGALL["splits"]
-    return "test" if baseline_id in s["test"] else "dev" if baseline_id in s["dev"] else "train"
+    return "test" if baseline_id in s["test"] else "dev" if baseline_id in s["dev"] else "extra" if baseline_id in s.get("extra", []) else "train"
 
 
 def clean_label(take: str):

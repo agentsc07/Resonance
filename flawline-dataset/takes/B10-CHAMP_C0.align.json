@@ -1,0 +1,1329 @@
+{
+  "take_id": "B10-CHAMP",
+  "sr": 22050,
+  "duration_s": 62.1,
+  "align_source": "whisper-base.en (matched to corpus transcript) + energy-valley/glottal-epoch snap",
+  "words": [
+    {
+      "i": 0,
+      "w": "In",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 1.64,
+      "end_s": 1.8102
+    },
+    {
+      "i": 1,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 1.8102,
+      "end_s": 1.8444
+    },
+    {
+      "i": 2,
+      "w": "last",
+      "clean": "last",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 1.8444,
+      "end_s": 2.1983
+    },
+    {
+      "i": 3,
+      "w": "twenty",
+      "clean": "twenty",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 2.1983,
+      "end_s": 2.3476
+    },
+    {
+      "i": 4,
+      "w": "four",
+      "clean": "four",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 2.3476,
+      "end_s": 2.4768
+    },
+    {
+      "i": 5,
+      "w": "hours",
+      "clean": "hours",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 2.4768,
+      "end_s": 3.0602
+    },
+    {
+      "i": 6,
+      "w": "we",
+      "clean": "we",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 3.9204,
+      "end_s": 4.0211
+    },
+    {
+      "i": 7,
+      "w": "have",
+      "clean": "have",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 4.0211,
+      "end_s": 4.2718
+    },
+    {
+      "i": 8,
+      "w": "seen",
+      "clean": "seen",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 4.2718,
+      "end_s": 4.5824
+    },
+    {
+      "i": 9,
+      "w": "facilities",
+      "clean": "facilities",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 4.5824,
+      "end_s": 4.9209
+    },
+    {
+      "i": 10,
+      "w": "now",
+      "clean": "now",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 4.9209,
+      "end_s": 5.6122
+    },
+    {
+      "i": 11,
+      "w": "being",
+      "clean": "being",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 5.6122,
+      "end_s": 5.9342
+    },
+    {
+      "i": 12,
+      "w": "created",
+      "clean": "created",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 5.9342,
+      "end_s": 6.3384
+    },
+    {
+      "i": 13,
+      "w": "for",
+      "clean": "for",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 6.3384,
+      "end_s": 7.1978
+    },
+    {
+      "i": 14,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 7.1978,
+      "end_s": 7.3175
+    },
+    {
+      "i": 15,
+      "w": "greatest",
+      "clean": "greatest",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 7.3175,
+      "end_s": 7.6532
+    },
+    {
+      "i": 16,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 7.6532,
+      "end_s": 8.3119
+    },
+    {
+      "i": 17,
+      "w": "most",
+      "clean": "most",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 8.3119,
+      "end_s": 8.5385
+    },
+    {
+      "i": 18,
+      "w": "complex",
+      "clean": "complex",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 8.5385,
+      "end_s": 8.9918
+    },
+    {
+      "i": 19,
+      "w": "exploration",
+      "clean": "exploration",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 8.9918,
+      "end_s": 9.6751
+    },
+    {
+      "i": 20,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 9.6751,
+      "end_s": 10.4612
+    },
+    {
+      "i": 21,
+      "w": "man's",
+      "clean": "man's",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 10.4612,
+      "end_s": 10.8346
+    },
+    {
+      "i": 22,
+      "w": "history.",
+      "clean": "history",
+      "punct": ".",
+      "sent_end": true,
+      "clause_end": false,
+      "start_s": 10.8346,
+      "end_s": 11.0803
+    },
+    {
+      "i": 23,
+      "w": "We",
+      "clean": "we",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 12.1189,
+      "end_s": 12.2384
+    },
+    {
+      "i": 24,
+      "w": "have",
+      "clean": "have",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 12.2384,
+      "end_s": 12.5115
+    },
+    {
+      "i": 25,
+      "w": "felt",
+      "clean": "felt",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 12.5115,
+      "end_s": 12.71
+    },
+    {
+      "i": 26,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 12.71,
+      "end_s": 12.9095
+    },
+    {
+      "i": 27,
+      "w": "ground",
+      "clean": "ground",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 12.9095,
+      "end_s": 13.2183
+    },
+    {
+      "i": 28,
+      "w": "shake",
+      "clean": "shake",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 13.2183,
+      "end_s": 13.8734
+    },
+    {
+      "i": 29,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 13.8734,
+      "end_s": 14.9537
+    },
+    {
+      "i": 30,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 14.9537,
+      "end_s": 14.9837
+    },
+    {
+      "i": 31,
+      "w": "air",
+      "clean": "air",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 14.9837,
+      "end_s": 15.1659
+    },
+    {
+      "i": 32,
+      "w": "shattered",
+      "clean": "shattered",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 15.1659,
+      "end_s": 15.6745
+    },
+    {
+      "i": 33,
+      "w": "by",
+      "clean": "by",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 15.6745,
+      "end_s": 15.9919
+    },
+    {
+      "i": 34,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 15.9919,
+      "end_s": 16.1085
+    },
+    {
+      "i": 35,
+      "w": "testing",
+      "clean": "testing",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 16.1085,
+      "end_s": 16.4156
+    },
+    {
+      "i": 36,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 16.4156,
+      "end_s": 16.6542
+    },
+    {
+      "i": 37,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 16.6542,
+      "end_s": 16.7311
+    },
+    {
+      "i": 38,
+      "w": "Saturn",
+      "clean": "saturn",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 16.7311,
+      "end_s": 17.0405
+    },
+    {
+      "i": 39,
+      "w": "C1",
+      "clean": "c",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 17.6393,
+      "end_s": 18.4283
+    },
+    {
+      "i": 40,
+      "w": "booster",
+      "clean": "booster",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 18.4283,
+      "end_s": 18.8243
+    },
+    {
+      "i": 41,
+      "w": "rocket,",
+      "clean": "rocket",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 18.8243,
+      "end_s": 19.1224
+    },
+    {
+      "i": 42,
+      "w": "many",
+      "clean": "many",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 20.1013,
+      "end_s": 20.3507
+    },
+    {
+      "i": 43,
+      "w": "times",
+      "clean": "times",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 20.3507,
+      "end_s": 20.842
+    },
+    {
+      "i": 44,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 20.842,
+      "end_s": 21.0993
+    },
+    {
+      "i": 45,
+      "w": "powerful",
+      "clean": "powerful",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 21.0993,
+      "end_s": 21.2296
+    },
+    {
+      "i": 46,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 21.2296,
+      "end_s": 22.5341
+    },
+    {
+      "i": 47,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 22.5341,
+      "end_s": 22.5736
+    },
+    {
+      "i": 48,
+      "w": "Atlas",
+      "clean": "atlas",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 22.5736,
+      "end_s": 22.912
+    },
+    {
+      "i": 49,
+      "w": "which",
+      "clean": "which",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 22.912,
+      "end_s": 23.2721
+    },
+    {
+      "i": 50,
+      "w": "launched",
+      "clean": "launched",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 23.2721,
+      "end_s": 23.5588
+    },
+    {
+      "i": 51,
+      "w": "John",
+      "clean": "john",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 23.5588,
+      "end_s": 24.2232
+    },
+    {
+      "i": 52,
+      "w": "Glenn,",
+      "clean": "glenn",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 24.2232,
+      "end_s": 24.8009
+    },
+    {
+      "i": 53,
+      "w": "generating",
+      "clean": "generating",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 25.5406,
+      "end_s": 26.0611
+    },
+    {
+      "i": 54,
+      "w": "power",
+      "clean": "power",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 26.0611,
+      "end_s": 26.5233
+    },
+    {
+      "i": 55,
+      "w": "equivalent",
+      "clean": "equivalent",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 26.5233,
+      "end_s": 26.9612
+    },
+    {
+      "i": 56,
+      "w": "to",
+      "clean": "to",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 26.9612,
+      "end_s": 27.3042
+    },
+    {
+      "i": 57,
+      "w": "ten",
+      "clean": "ten",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 27.3042,
+      "end_s": 27.8061
+    },
+    {
+      "i": 58,
+      "w": "thousand",
+      "clean": "thousand",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 27.8061,
+      "end_s": 28.2464
+    },
+    {
+      "i": 59,
+      "w": "automobiles",
+      "clean": "automobiles",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 28.2464,
+      "end_s": 28.6387
+    },
+    {
+      "i": 60,
+      "w": "with",
+      "clean": "with",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 28.6387,
+      "end_s": 29.253
+    },
+    {
+      "i": 61,
+      "w": "their",
+      "clean": "their",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 29.253,
+      "end_s": 29.4623
+    },
+    {
+      "i": 62,
+      "w": "accelerators",
+      "clean": "accelerators",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 29.4623,
+      "end_s": 30.2547
+    },
+    {
+      "i": 63,
+      "w": "on",
+      "clean": "on",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 30.2547,
+      "end_s": 30.7533
+    },
+    {
+      "i": 64,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 30.7533,
+      "end_s": 30.8808
+    },
+    {
+      "i": 65,
+      "w": "floor.",
+      "clean": "floor",
+      "punct": ".",
+      "sent_end": true,
+      "clause_end": false,
+      "start_s": 30.8808,
+      "end_s": 31.0006
+    },
+    {
+      "i": 66,
+      "w": "We",
+      "clean": "we",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 31.6258,
+      "end_s": 32.2566
+    },
+    {
+      "i": 67,
+      "w": "have",
+      "clean": "have",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 32.2566,
+      "end_s": 32.5023
+    },
+    {
+      "i": 68,
+      "w": "seen",
+      "clean": "seen",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 32.5023,
+      "end_s": 32.6678
+    },
+    {
+      "i": 69,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 32.6678,
+      "end_s": 33.0048
+    },
+    {
+      "i": 70,
+      "w": "site",
+      "clean": "site",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 33.0048,
+      "end_s": 33.3245
+    },
+    {
+      "i": 71,
+      "w": "where",
+      "clean": "where",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 33.3245,
+      "end_s": 34.1969
+    },
+    {
+      "i": 72,
+      "w": "five",
+      "clean": "five",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 34.1969,
+      "end_s": 34.9413
+    },
+    {
+      "i": 73,
+      "w": "F1",
+      "clean": "f",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 34.9413,
+      "end_s": 35.6034
+    },
+    {
+      "i": 74,
+      "w": "rocket",
+      "clean": "rocket",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 35.6034,
+      "end_s": 35.8915
+    },
+    {
+      "i": 75,
+      "w": "engines,",
+      "clean": "engines",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 35.8915,
+      "end_s": 36.2791
+    },
+    {
+      "i": 76,
+      "w": "each",
+      "clean": "each",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 36.821,
+      "end_s": 37.5699
+    },
+    {
+      "i": 77,
+      "w": "one",
+      "clean": "one",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 37.5699,
+      "end_s": 37.8435
+    },
+    {
+      "i": 78,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 37.8435,
+      "end_s": 38.2234
+    },
+    {
+      "i": 79,
+      "w": "powerful",
+      "clean": "powerful",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 38.2234,
+      "end_s": 38.4241
+    },
+    {
+      "i": 80,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 38.4241,
+      "end_s": 39.7249
+    },
+    {
+      "i": 81,
+      "w": "all",
+      "clean": "all",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 39.7249,
+      "end_s": 39.9083
+    },
+    {
+      "i": 82,
+      "w": "eight",
+      "clean": "eight",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 39.9083,
+      "end_s": 40.4569
+    },
+    {
+      "i": 83,
+      "w": "engines",
+      "clean": "engines",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 40.4569,
+      "end_s": 40.7038
+    },
+    {
+      "i": 84,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 40.7038,
+      "end_s": 41.0627
+    },
+    {
+      "i": 85,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 41.0627,
+      "end_s": 41.2059
+    },
+    {
+      "i": 86,
+      "w": "Saturn",
+      "clean": "saturn",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 41.2059,
+      "end_s": 41.4907
+    },
+    {
+      "i": 87,
+      "w": "combined,",
+      "clean": "combined",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 41.4907,
+      "end_s": 41.8802
+    },
+    {
+      "i": 88,
+      "w": "will",
+      "clean": "will",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 43.0234,
+      "end_s": 43.1177
+    },
+    {
+      "i": 89,
+      "w": "be",
+      "clean": "be",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 43.1177,
+      "end_s": 43.4503
+    },
+    {
+      "i": 90,
+      "w": "clustered",
+      "clean": "clustered",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 43.4503,
+      "end_s": 43.7593
+    },
+    {
+      "i": 91,
+      "w": "together",
+      "clean": "together",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 43.7593,
+      "end_s": 44.3072
+    },
+    {
+      "i": 92,
+      "w": "to",
+      "clean": "to",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 44.3072,
+      "end_s": 45.2332
+    },
+    {
+      "i": 93,
+      "w": "make",
+      "clean": "make",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 45.2332,
+      "end_s": 45.5828
+    },
+    {
+      "i": 94,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 45.5828,
+      "end_s": 45.6498
+    },
+    {
+      "i": 95,
+      "w": "advanced",
+      "clean": "advanced",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 45.6498,
+      "end_s": 46.3436
+    },
+    {
+      "i": 96,
+      "w": "Saturn",
+      "clean": "saturn",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 46.3436,
+      "end_s": 47.0183
+    },
+    {
+      "i": 97,
+      "w": "missile,",
+      "clean": "missile",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 47.0183,
+      "end_s": 47.3611
+    },
+    {
+      "i": 98,
+      "w": "assembled",
+      "clean": "assembled",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 48.0393,
+      "end_s": 48.5535
+    },
+    {
+      "i": 99,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 48.5535,
+      "end_s": 48.9801
+    },
+    {
+      "i": 100,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 48.9801,
+      "end_s": 49.073
+    },
+    {
+      "i": 101,
+      "w": "new",
+      "clean": "new",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 49.073,
+      "end_s": 49.2366
+    },
+    {
+      "i": 102,
+      "w": "building",
+      "clean": "building",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 49.2366,
+      "end_s": 49.4811
+    },
+    {
+      "i": 103,
+      "w": "to",
+      "clean": "to",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 49.4811,
+      "end_s": 50.4666
+    },
+    {
+      "i": 104,
+      "w": "be",
+      "clean": "be",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 50.4666,
+      "end_s": 50.7395
+    },
+    {
+      "i": 105,
+      "w": "built",
+      "clean": "built",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 50.7395,
+      "end_s": 51.0286
+    },
+    {
+      "i": 106,
+      "w": "at",
+      "clean": "at",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 51.0286,
+      "end_s": 51.1432
+    },
+    {
+      "i": 107,
+      "w": "Cape",
+      "clean": "cape",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 51.1432,
+      "end_s": 51.3832
+    },
+    {
+      "i": 108,
+      "w": "Canaveral,",
+      "clean": "canaveral",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 51.3832,
+      "end_s": 51.6159
+    },
+    {
+      "i": 109,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 51.6159,
+      "end_s": 52.8014
+    },
+    {
+      "i": 110,
+      "w": "tall",
+      "clean": "tall",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 52.8014,
+      "end_s": 52.9972
+    },
+    {
+      "i": 111,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 52.9972,
+      "end_s": 53.4523
+    },
+    {
+      "i": 112,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 53.4523,
+      "end_s": 53.5779
+    },
+    {
+      "i": 113,
+      "w": "forty",
+      "clean": "forty",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 53.5779,
+      "end_s": 53.688
+    },
+    {
+      "i": 114,
+      "w": "eight",
+      "clean": "eight",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 53.688,
+      "end_s": 54.016
+    },
+    {
+      "i": 115,
+      "w": "story",
+      "clean": "story",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 54.016,
+      "end_s": 55.0205
+    },
+    {
+      "i": 116,
+      "w": "structure,",
+      "clean": "structure",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 55.0205,
+      "end_s": 55.4008
+    },
+    {
+      "i": 117,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 55.7587,
+      "end_s": 56.3855
+    },
+    {
+      "i": 118,
+      "w": "wide",
+      "clean": "wide",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 56.3855,
+      "end_s": 56.6704
+    },
+    {
+      "i": 119,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 56.6704,
+      "end_s": 57.1986
+    },
+    {
+      "i": 120,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 57.1986,
+      "end_s": 57.2953
+    },
+    {
+      "i": 121,
+      "w": "city",
+      "clean": "city",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 57.2953,
+      "end_s": 57.5128
+    },
+    {
+      "i": 122,
+      "w": "block,",
+      "clean": "block",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 57.5128,
+      "end_s": 57.7824
+    },
+    {
+      "i": 123,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 58.2188,
+      "end_s": 58.8171
+    },
+    {
+      "i": 124,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 58.8171,
+      "end_s": 59.0351
+    },
+    {
+      "i": 125,
+      "w": "long",
+      "clean": "long",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 59.0351,
+      "end_s": 59.3092
+    },
+    {
+      "i": 126,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 59.3092,
+      "end_s": 59.7
+    },
+    {
+      "i": 127,
+      "w": "two",
+      "clean": "two",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 59.7,
+      "end_s": 59.9937
+    },
+    {
+      "i": 128,
+      "w": "lengths",
+      "clean": "lengths",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 59.9937,
+      "end_s": 60.3424
+    },
+    {
+      "i": 129,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 60.3424,
+      "end_s": 61.0701
+    },
+    {
+      "i": 130,
+      "w": "this",
+      "clean": "this",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 61.0701,
+      "end_s": 61.2512
+    },
+    {
+      "i": 131,
+      "w": "field.",
+      "clean": "field",
+      "punct": ".",
+      "sent_end": true,
+      "clause_end": false,
+      "start_s": 61.2512,
+      "end_s": 61.52
+    }
+  ],
+  "refined": 2
+}

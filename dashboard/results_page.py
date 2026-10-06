@@ -49,7 +49,7 @@ def results():
     st.subheader("Measured results")
     st.caption("Event F1 at IoU 0.5 against the injected ground truth. Thresholds are fitted on TRAIN only. The test split (B05, B08) is evaluated once, at the end.")
     rows = []
-    for split in ("train", "dev", "test"):
+    for split in ("train", "dev", "extra", "test"):
         for mode in ("same", "cross"):
             h = _json(f"headline_{split}_{mode}.json")
             if h:

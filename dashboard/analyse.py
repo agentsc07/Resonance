@@ -139,7 +139,7 @@ def render():
         for k, v in (("an_src", "Try a dataset clip"), ("an_mode", mode_), ("an_take", take_), ("an_kind", kind_), ("an_clip", clip_)):
             st.session_state[k] = v
     st.markdown("**Demo clips**")
-    d = st.columns(4)
+    d = st.columns(5)
     d[0].button("Accent vs another speaker", key="pr1", use_container_width=True, on_click=_preset, args=("cross", "B03-CHAMP", "Clean take", "B03-CHAMP_C0"),
                 help="Indian-accent speaker compared with a different speaker's reading (cross-speaker, experimental). A clean reading should score high.")
     d[1].button("Noisy room, clean speech", key="pr2", use_container_width=True, on_click=_preset, args=("same", "B03-CHAMP", "Noisy / phone / room (clean speech)", "B03-CHAMP_N20"),
@@ -148,6 +148,8 @@ def render():
                 help="An egregious injected flaw (pace slowed at level 5).")
     d[3].button("A real long pause", key="pr4", use_container_width=True, on_click=_preset, args=("cross", "B07-CHAMP", "Clean take", "B07-CHAMP_C0"),
                 help="An unedited VCTK reading with a natural 1.7 s pause; the engine's flag here is a real pause, not an injected one.")
+    d[4].button("JFK 1962 speech, dropped words", key="pr5", use_container_width=True, on_click=_preset, args=("same", "B09-CHAMP", "Flaw at level 5", "B09-CHAMP_C0__WORD_SKIP_L5_s5972"),
+                help="Excerpt of President Kennedy's Rice University address (public domain, 1962 open-air recording) with 8 words removed (level 5).")
 
     path, meta, ref_override, gt = None, None, None, None
     if src == "Try a dataset clip":

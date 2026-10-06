@@ -41,4 +41,5 @@ conditions:                              # "Where" (spec table), synthetic ones
 splits:                                  # hold out whole baselines: test = unseen speeches AND unseen accents
   test: [B05, B08]
   dev: [B03]
+  extra: [B09, B10]                     # JFK Rice University excerpts: released in the dataset, never used to fit or select anything
   # everything else: train

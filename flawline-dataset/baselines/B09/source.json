@@ -1,0 +1,21 @@
+{
+  "id": "B09",
+  "title": "Rice University address, 12 Sep 1962 (excerpt 1: 'a college noted for knowledge')",
+  "genre": "persuasive oratory",
+  "gender": "M",
+  "age_band": "26-45",
+  "age": "45",
+  "origin": "American (Massachusetts)",
+  "accent": "American (New England)",
+  "register": "formal oratory",
+  "slang_terms": [],
+  "status": "real_corpus",
+  "voice": null,
+  "take_id": "B09-CHAMP",
+  "corpus": "JFK Rice University address (1962)",
+  "speaker_id": "JFK",
+  "licence": "Public domain (US Government work; Public Domain Mark 1.0 on the Rice University copy)",
+  "url": "https://archive.org/details/president-john-f.-kennedy-09-12-1962",
+  "citation": "John F. Kennedy, Address at Rice University on the Nation's Space Effort, 12 September 1962 (JFK Library JFKWHA-127-002).",
+  "note": "1962 open-air speech recording with crowd and PA noise, excerpt 88-154 s of the full address, silence trimmed to 0.3 s margins. Not studio quality: used to widen the dataset beyond read-aloud studio speech."
+}

@@ -1,0 +1,1339 @@
+{
+  "take_id": "B09-CHAMP",
+  "sr": 22050,
+  "duration_s": 66.0,
+  "align_source": "whisper-base.en (matched to corpus transcript) + energy-valley/glottal-epoch snap",
+  "words": [
+    {
+      "i": 0,
+      "w": "We",
+      "clean": "we",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 0.0,
+      "end_s": 0.8788
+    },
+    {
+      "i": 1,
+      "w": "meet",
+      "clean": "meet",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 0.8788,
+      "end_s": 1.2658
+    },
+    {
+      "i": 2,
+      "w": "at",
+      "clean": "at",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 1.2658,
+      "end_s": 1.4992
+    },
+    {
+      "i": 3,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 1.4992,
+      "end_s": 1.6561
+    },
+    {
+      "i": 4,
+      "w": "college",
+      "clean": "college",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 1.6561,
+      "end_s": 1.9233
+    },
+    {
+      "i": 5,
+      "w": "noted",
+      "clean": "noted",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 1.9233,
+      "end_s": 3.7448
+    },
+    {
+      "i": 6,
+      "w": "for",
+      "clean": "for",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 3.7448,
+      "end_s": 3.8831
+    },
+    {
+      "i": 7,
+      "w": "knowledge,",
+      "clean": "knowledge",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 3.8831,
+      "end_s": 4.2491
+    },
+    {
+      "i": 8,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 4.2491,
+      "end_s": 5.5628
+    },
+    {
+      "i": 9,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 5.5628,
+      "end_s": 5.8229
+    },
+    {
+      "i": 10,
+      "w": "city",
+      "clean": "city",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 5.8229,
+      "end_s": 5.8553
+    },
+    {
+      "i": 11,
+      "w": "noted",
+      "clean": "noted",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 5.8553,
+      "end_s": 6.3246
+    },
+    {
+      "i": 12,
+      "w": "for",
+      "clean": "for",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 6.3246,
+      "end_s": 6.5621
+    },
+    {
+      "i": 13,
+      "w": "progress,",
+      "clean": "progress",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 6.5621,
+      "end_s": 6.8543
+    },
+    {
+      "i": 14,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 6.8543,
+      "end_s": 8.0174
+    },
+    {
+      "i": 15,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 8.0174,
+      "end_s": 8.2642
+    },
+    {
+      "i": 16,
+      "w": "state",
+      "clean": "state",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 8.2642,
+      "end_s": 8.3731
+    },
+    {
+      "i": 17,
+      "w": "noted",
+      "clean": "noted",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 8.3731,
+      "end_s": 8.7956
+    },
+    {
+      "i": 18,
+      "w": "for",
+      "clean": "for",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 8.7956,
+      "end_s": 8.9306
+    },
+    {
+      "i": 19,
+      "w": "strength,",
+      "clean": "strength",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 8.9306,
+      "end_s": 9.3434
+    },
+    {
+      "i": 20,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 9.3434,
+      "end_s": 10.2356
+    },
+    {
+      "i": 21,
+      "w": "we",
+      "clean": "we",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 10.2356,
+      "end_s": 10.4952
+    },
+    {
+      "i": 22,
+      "w": "stand",
+      "clean": "stand",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 10.4952,
+      "end_s": 10.821
+    },
+    {
+      "i": 23,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 10.821,
+      "end_s": 11.1797
+    },
+    {
+      "i": 24,
+      "w": "need",
+      "clean": "need",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 11.1797,
+      "end_s": 11.4333
+    },
+    {
+      "i": 25,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 11.4333,
+      "end_s": 11.5338
+    },
+    {
+      "i": 26,
+      "w": "all",
+      "clean": "all",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 11.5338,
+      "end_s": 11.6276
+    },
+    {
+      "i": 27,
+      "w": "three.",
+      "clean": "three",
+      "punct": ".",
+      "sent_end": true,
+      "clause_end": false,
+      "start_s": 11.6276,
+      "end_s": 12.0953
+    },
+    {
+      "i": 28,
+      "w": "For",
+      "clean": "for",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 12.0953,
+      "end_s": 13.1288
+    },
+    {
+      "i": 29,
+      "w": "we",
+      "clean": "we",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 13.1288,
+      "end_s": 13.4994
+    },
+    {
+      "i": 30,
+      "w": "meet",
+      "clean": "meet",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 13.4994,
+      "end_s": 13.9282
+    },
+    {
+      "i": 31,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 13.9282,
+      "end_s": 14.2268
+    },
+    {
+      "i": 32,
+      "w": "an",
+      "clean": "an",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 14.2268,
+      "end_s": 14.3939
+    },
+    {
+      "i": 33,
+      "w": "hour",
+      "clean": "hour",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 14.3939,
+      "end_s": 14.6651
+    },
+    {
+      "i": 34,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 14.6651,
+      "end_s": 14.9622
+    },
+    {
+      "i": 35,
+      "w": "change",
+      "clean": "change",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 14.9622,
+      "end_s": 15.3184
+    },
+    {
+      "i": 36,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 15.3184,
+      "end_s": 15.9001
+    },
+    {
+      "i": 37,
+      "w": "challenge,",
+      "clean": "challenge",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 15.9001,
+      "end_s": 16.2344
+    },
+    {
+      "i": 38,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 16.2344,
+      "end_s": 17.5717
+    },
+    {
+      "i": 39,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 17.5717,
+      "end_s": 17.7737
+    },
+    {
+      "i": 40,
+      "w": "decade",
+      "clean": "decade",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 17.7737,
+      "end_s": 18.004
+    },
+    {
+      "i": 41,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 18.004,
+      "end_s": 18.4324
+    },
+    {
+      "i": 42,
+      "w": "hope",
+      "clean": "hope",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 18.4324,
+      "end_s": 18.6444
+    },
+    {
+      "i": 43,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 18.6444,
+      "end_s": 19.0815
+    },
+    {
+      "i": 44,
+      "w": "fear,",
+      "clean": "fear",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 19.0815,
+      "end_s": 19.2926
+    },
+    {
+      "i": 45,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 19.2926,
+      "end_s": 20.4134
+    },
+    {
+      "i": 46,
+      "w": "an",
+      "clean": "an",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 20.4134,
+      "end_s": 20.5761
+    },
+    {
+      "i": 47,
+      "w": "age",
+      "clean": "age",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 20.5761,
+      "end_s": 20.8843
+    },
+    {
+      "i": 48,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 20.8843,
+      "end_s": 21.082
+    },
+    {
+      "i": 49,
+      "w": "both",
+      "clean": "both",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 21.082,
+      "end_s": 21.2654
+    },
+    {
+      "i": 50,
+      "w": "knowledge",
+      "clean": "knowledge",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 21.2654,
+      "end_s": 21.5816
+    },
+    {
+      "i": 51,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 21.5816,
+      "end_s": 22.3233
+    },
+    {
+      "i": 52,
+      "w": "ignorance.",
+      "clean": "ignorance",
+      "punct": ".",
+      "sent_end": true,
+      "clause_end": false,
+      "start_s": 22.3233,
+      "end_s": 22.5617
+    },
+    {
+      "i": 53,
+      "w": "The",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 23.7198,
+      "end_s": 23.7552
+    },
+    {
+      "i": 54,
+      "w": "greater",
+      "clean": "greater",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 23.7552,
+      "end_s": 23.9559
+    },
+    {
+      "i": 55,
+      "w": "our",
+      "clean": "our",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 23.9559,
+      "end_s": 24.4616
+    },
+    {
+      "i": 56,
+      "w": "knowledge",
+      "clean": "knowledge",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 24.4616,
+      "end_s": 24.807
+    },
+    {
+      "i": 57,
+      "w": "increases,",
+      "clean": "increases",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 24.807,
+      "end_s": 25.2113
+    },
+    {
+      "i": 58,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 25.2113,
+      "end_s": 26.3489
+    },
+    {
+      "i": 59,
+      "w": "greater",
+      "clean": "greater",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 26.3489,
+      "end_s": 26.6722
+    },
+    {
+      "i": 60,
+      "w": "our",
+      "clean": "our",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 26.6722,
+      "end_s": 26.8695
+    },
+    {
+      "i": 61,
+      "w": "ignorance",
+      "clean": "ignorance",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 26.8695,
+      "end_s": 27.2561
+    },
+    {
+      "i": 62,
+      "w": "unfolds.",
+      "clean": "unfolds",
+      "punct": ".",
+      "sent_end": true,
+      "clause_end": false,
+      "start_s": 27.2561,
+      "end_s": 28.0366
+    },
+    {
+      "i": 63,
+      "w": "Despite",
+      "clean": "despite",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 29.0789,
+      "end_s": 29.5928
+    },
+    {
+      "i": 64,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 29.5928,
+      "end_s": 29.8557
+    },
+    {
+      "i": 65,
+      "w": "striking",
+      "clean": "striking",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 29.8557,
+      "end_s": 30.0516
+    },
+    {
+      "i": 66,
+      "w": "fact",
+      "clean": "fact",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 30.0516,
+      "end_s": 30.6601
+    },
+    {
+      "i": 67,
+      "w": "that",
+      "clean": "that",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 30.6601,
+      "end_s": 31.9169
+    },
+    {
+      "i": 68,
+      "w": "most",
+      "clean": "most",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 31.9169,
+      "end_s": 32.2369
+    },
+    {
+      "i": 69,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 32.2369,
+      "end_s": 32.4357
+    },
+    {
+      "i": 70,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 32.4357,
+      "end_s": 32.4857
+    },
+    {
+      "i": 71,
+      "w": "scientists",
+      "clean": "scientists",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 32.4857,
+      "end_s": 32.9478
+    },
+    {
+      "i": 72,
+      "w": "that",
+      "clean": "that",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 32.9478,
+      "end_s": 33.3696
+    },
+    {
+      "i": 73,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 33.3696,
+      "end_s": 33.4679
+    },
+    {
+      "i": 74,
+      "w": "world",
+      "clean": "world",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 33.4679,
+      "end_s": 33.7926
+    },
+    {
+      "i": 75,
+      "w": "has",
+      "clean": "has",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 33.7926,
+      "end_s": 34.0726
+    },
+    {
+      "i": 76,
+      "w": "ever",
+      "clean": "ever",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 34.0726,
+      "end_s": 34.2141
+    },
+    {
+      "i": 77,
+      "w": "known",
+      "clean": "known",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 34.2141,
+      "end_s": 34.6168
+    },
+    {
+      "i": 78,
+      "w": "are",
+      "clean": "are",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 34.6168,
+      "end_s": 35.4331
+    },
+    {
+      "i": 79,
+      "w": "alive",
+      "clean": "alive",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 35.4331,
+      "end_s": 35.8785
+    },
+    {
+      "i": 80,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 35.8785,
+      "end_s": 36.8383
+    },
+    {
+      "i": 81,
+      "w": "working",
+      "clean": "working",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 36.8383,
+      "end_s": 37.0731
+    },
+    {
+      "i": 82,
+      "w": "today,",
+      "clean": "today",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 37.0731,
+      "end_s": 37.4624
+    },
+    {
+      "i": 83,
+      "w": "despite",
+      "clean": "despite",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 37.9002,
+      "end_s": 38.9324
+    },
+    {
+      "i": 84,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 38.9324,
+      "end_s": 39.3303
+    },
+    {
+      "i": 85,
+      "w": "fact",
+      "clean": "fact",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 39.3303,
+      "end_s": 39.5937
+    },
+    {
+      "i": 86,
+      "w": "that",
+      "clean": "that",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 39.5937,
+      "end_s": 39.8255
+    },
+    {
+      "i": 87,
+      "w": "this",
+      "clean": "this",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 39.8255,
+      "end_s": 40.0635
+    },
+    {
+      "i": 88,
+      "w": "nation's",
+      "clean": "nation's",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 40.0635,
+      "end_s": 40.7629
+    },
+    {
+      "i": 89,
+      "w": "own",
+      "clean": "own",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 40.7629,
+      "end_s": 41.0773
+    },
+    {
+      "i": 90,
+      "w": "scientific",
+      "clean": "scientific",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 41.0773,
+      "end_s": 41.7249
+    },
+    {
+      "i": 91,
+      "w": "manpower",
+      "clean": "manpower",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 41.7249,
+      "end_s": 42.3734
+    },
+    {
+      "i": 92,
+      "w": "is",
+      "clean": "is",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 42.3734,
+      "end_s": 43.4552
+    },
+    {
+      "i": 93,
+      "w": "doubling",
+      "clean": "doubling",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 43.4552,
+      "end_s": 43.909
+    },
+    {
+      "i": 94,
+      "w": "every",
+      "clean": "every",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 43.909,
+      "end_s": 44.3676
+    },
+    {
+      "i": 95,
+      "w": "twelve",
+      "clean": "twelve",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 44.3676,
+      "end_s": 44.868
+    },
+    {
+      "i": 96,
+      "w": "years,",
+      "clean": "years",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 44.868,
+      "end_s": 45.2392
+    },
+    {
+      "i": 97,
+      "w": "in",
+      "clean": "in",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 45.2392,
+      "end_s": 46.3854
+    },
+    {
+      "i": 98,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 46.3854,
+      "end_s": 46.5575
+    },
+    {
+      "i": 99,
+      "w": "rate",
+      "clean": "rate",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 46.5575,
+      "end_s": 46.6074
+    },
+    {
+      "i": 100,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 46.6074,
+      "end_s": 46.9317
+    },
+    {
+      "i": 101,
+      "w": "growth",
+      "clean": "growth",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 46.9317,
+      "end_s": 47.1825
+    },
+    {
+      "i": 102,
+      "w": "more",
+      "clean": "more",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 48.1915,
+      "end_s": 48.3624
+    },
+    {
+      "i": 103,
+      "w": "than",
+      "clean": "than",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 48.3624,
+      "end_s": 48.6889
+    },
+    {
+      "i": 104,
+      "w": "three",
+      "clean": "three",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 48.6889,
+      "end_s": 48.9371
+    },
+    {
+      "i": 105,
+      "w": "times",
+      "clean": "times",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 48.9371,
+      "end_s": 49.3052
+    },
+    {
+      "i": 106,
+      "w": "that",
+      "clean": "that",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 49.3052,
+      "end_s": 49.6311
+    },
+    {
+      "i": 107,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 49.6311,
+      "end_s": 50.3541
+    },
+    {
+      "i": 108,
+      "w": "our",
+      "clean": "our",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 50.3541,
+      "end_s": 50.5856
+    },
+    {
+      "i": 109,
+      "w": "population",
+      "clean": "population",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 50.5856,
+      "end_s": 50.8602
+    },
+    {
+      "i": 110,
+      "w": "as",
+      "clean": "as",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 50.8602,
+      "end_s": 51.3485
+    },
+    {
+      "i": 111,
+      "w": "a",
+      "clean": "a",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 51.3485,
+      "end_s": 51.4764
+    },
+    {
+      "i": 112,
+      "w": "whole,",
+      "clean": "whole",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 51.4764,
+      "end_s": 51.6366
+    },
+    {
+      "i": 113,
+      "w": "despite",
+      "clean": "despite",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 52.509,
+      "end_s": 52.9259
+    },
+    {
+      "i": 114,
+      "w": "that,",
+      "clean": "that",
+      "punct": ",",
+      "sent_end": false,
+      "clause_end": true,
+      "start_s": 52.9259,
+      "end_s": 53.4795
+    },
+    {
+      "i": 115,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 53.9595,
+      "end_s": 54.8557
+    },
+    {
+      "i": 116,
+      "w": "vast",
+      "clean": "vast",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 54.8557,
+      "end_s": 55.4222
+    },
+    {
+      "i": 117,
+      "w": "stretches",
+      "clean": "stretches",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 55.4222,
+      "end_s": 56.1072
+    },
+    {
+      "i": 118,
+      "w": "of",
+      "clean": "of",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 56.1072,
+      "end_s": 56.5662
+    },
+    {
+      "i": 119,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 56.5662,
+      "end_s": 56.6805
+    },
+    {
+      "i": 120,
+      "w": "unknown",
+      "clean": "unknown",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 56.6805,
+      "end_s": 56.9599
+    },
+    {
+      "i": 121,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 58.0785,
+      "end_s": 58.3744
+    },
+    {
+      "i": 122,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 58.3744,
+      "end_s": 58.4144
+    },
+    {
+      "i": 123,
+      "w": "unanswered",
+      "clean": "unanswered",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 58.4144,
+      "end_s": 58.8015
+    },
+    {
+      "i": 124,
+      "w": "and",
+      "clean": "and",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 59.8041,
+      "end_s": 60.2792
+    },
+    {
+      "i": 125,
+      "w": "the",
+      "clean": "the",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 60.2792,
+      "end_s": 60.3285
+    },
+    {
+      "i": 126,
+      "w": "unfinished",
+      "clean": "unfinished",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 60.3285,
+      "end_s": 60.7616
+    },
+    {
+      "i": 127,
+      "w": "still",
+      "clean": "still",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 61.3404,
+      "end_s": 62.2197
+    },
+    {
+      "i": 128,
+      "w": "far",
+      "clean": "far",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 62.2197,
+      "end_s": 62.7749
+    },
+    {
+      "i": 129,
+      "w": "outstrip",
+      "clean": "outstrip",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 62.7749,
+      "end_s": 63.3909
+    },
+    {
+      "i": 130,
+      "w": "our",
+      "clean": "our",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 63.3909,
+      "end_s": 64.2649
+    },
+    {
+      "i": 131,
+      "w": "collective",
+      "clean": "collective",
+      "punct": "",
+      "sent_end": false,
+      "clause_end": false,
+      "start_s": 64.2649,
+      "end_s": 64.7075
+    },
+    {
+      "i": 132,
+      "w": "comprehension.",
+      "clean": "comprehension",
+      "punct": ".",
+      "sent_end": true,
+      "clause_end": false,
+      "start_s": 64.7075,
+      "end_s": 65.38
+    }
+  ],
+  "refined": 2
+}
