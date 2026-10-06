@@ -1,65 +1,64 @@
-# Flawline — Track C dataset + review dashboard
+# Flawline
 
-> Current status, known failures and next steps: see [PROGRESS.md](PROGRESS.md).
+Contrastive speech analytics (hackathon Track C). Real recorded speakers read a known text; controlled delivery flaws (pace, pauses, intonation, volume, fluency, clarity, text fidelity) are injected at known places and strengths, so every label is ground truth. An engine then finds the flaws blind, says where and why, and scores the delivery.
 
-Spec: `spec-v1.md`. Everything runs from the repo root.
+- **Dataset:** 564 clips, 9.97 h, 10 baseline recordings (8 VCTK voices + 2 excerpts of JFK's 1962 Rice University address), 15 flaws × 5 levels, 6 recording conditions. Datasheet: [`DATASHEET.md`](DATASHEET.md). Licences: [`flawline-dataset/LICENSES.md`](flawline-dataset/LICENSES.md).
+- **Download:** _link to the released zip (with `checksums.sha256`) goes here._
+- **Video:** _link goes here._
+- **Status, known failures, history:** [`PROGRESS.md`](PROGRESS.md).
+
+## Run it (3 commands)
 
 ```bash
-pip install -r requirements.txt
-cd flawline-dataset/generator
-python build_baselines.py                                   # 8 placeholder baselines + word alignments
-python make_dataset.py --pilot B01-CHAMP --l3 --invariance --flawed-cond 40
-python verify_flaws.py B01-CHAMP B05-CHAMP                  # objective dose-response check -> pilot/objective_check.csv
-python qa.py                                                # clipping / zero-runs / boundary checks
-python make_dataset.py --check-repro B01-CHAMP              # regenerate one clip, compare SHA-256
-cd ../.. && streamlit run dashboard/app.py                  # review dashboard
+make setup                  # pinned dependencies (requirements.lock) + spaCy model; needs ffmpeg
+make baselines dataset      # download VCTK + the JFK excerpts, align them, generate every clip   (or unzip the released dataset into flawline-dataset/)
+make app                    # dashboard: http://localhost:8501
 ```
 
-## Status (honest)
-- **Baselines**: 8 real VCTK 0.92 recordings (CC BY 4.0), studio, read aloud, 60-65 s each, ages 18-38 (US F 32, English M 38, Indian M 22 and F 23,
-  Irish F 24, Australian M 26, US M 22, South African F 26). 4 women, 4 men. `generator/audit_baselines.py`: 7 PASS, 1 minor pause (B05).
-- **Svarah was dropped as a baseline source**: its recordings contain the speakers' own fillers/dropped plurals (human transcripts omit them),
-  so it cannot be a clean yardstick. Code remains in `ingest_corpus.py`; the clean-speech/slang gap is covered by reader recordings
-  (`readers/RECORDING_SHEET.md`: slang scripts + protocol).
-- **Gaps**: no slang, no speakers over 38, no champion speeches, until readers record.
-- **Contract**: `schema/label.schema.json` (v1.1.0, frozen; optional prediction fields `severity/confidence/points_lost/explanation`). The generator
-  validates every label; `qa.py` re-validates. `eval/run.py --predictor oracle|null` proves the harness (oracle F1 = 1.0, null = 0, `eval/test_harness.py`).
-- **Flaw factory v1.1** (`generator/`): placement from the transcript's grammar (`linguistics.py`); natural-bundle rendering (`render.py`): ramped PACE with
-  gap/vowel/consonant proportions, UPTALK anchored at the nucleus (bug fixed), SHOUT = louder + brighter + higher, partial false starts for REPEAT,
-  EMPH_FLAT on focal words with three cues, believable WORD_SWAP (similar word / dropped -s). `--pure TAKE` renders the single-cue ablation slice.
-  Cross-cutting: pitch-synchronous joins (glottal epochs, SOLA), floor-preserving gain, same anchor at every level (nested), an artifact gate
-  (<=5% of joins above 6 dB, none above 12) that re-places until it passes, seeded Praat RNG (bit-identical reruns). Fillers: own-voice schwa only; TTS removed.
-- **Measured (8 baselines)**: all flaws scale with level on 8/8 speakers except EMPH_FLAT (2/8) and REPEAT (4/8, tied levels); join clicks above 6 dB: 0% PAUSE_BAD/REPEAT,
-  ~5-10% for splice flaws; reproducibility: identical SHA-256. **Leakage audit** (paired, `eval/leakage_audit.py`): overall AUC 0.61 (pass mark 0.60);
-  PAUSE_BAD 0.88, UPTALK 0.91, REPEAT 0.76, RARE_HESIT 0.74 still leak, others near chance. Open work.
-- Not built yet: readers, natural-flaw takes, chimeras, human panel, the detection engine.
+Docker: `docker build -t flawline . && docker run -p 8501:8501 flawline`. The image holds the code and dependencies only; put the released `takes/` (baseline audio + alignment JSON) in `flawline-dataset/takes/` for the engine, because re-aligning on another machine moves word timings by up to 0.37 s. `make eval` re-runs the checks below on the train and dev splits (never the test split).
 
-## Engine, scoring and evaluation (spec v1.1)
-```bash
-python -m engine.calibrate --mode same     # fit thresholds, REPEAT/FILLER classifier, isotonic severity maps on the TRAIN split only
-python -m engine.calibrate --mode cross
-python eval/run.py --split dev --mode cross --predictor engine       # grounding / timing / category / dose-response / invariance
-python eval/acceptance.py --mode cross                                # score dose-response, invariance, locality
-python eval/leakage_audit.py                                          # artifact-only classifier (pass mark AUC <= 0.60)
-python eval/test_harness.py                                           # oracle F1 = 1.0, null = 0 (proves the harness)
-streamlit run dashboard/app.py                                        # Analyse page is the default view
+## What the engine does
+
+Three ways to know what "good" is, chosen in the dashboard:
+
+| Mode | Needs | Use |
+|---|---|---|
+| **General** (default) | the text read + the audio | expectations from the speaker's own clip, the transcript (pause norms by boundary type, ASR vs text) and population norms from clean speakers |
+| **Same speaker** | the speaker's own clean reading | upper bound; the validated headline |
+| **Another speaker** (experimental) | other speakers reading the same sentences | a panel of references must agree before a flaw is reported |
+
+Pipeline: 16 kHz ingest and quality gate → (reference modes) degrade the clean reference to the participant's bandwidth/noise/reverb → DTW alignment, lag curve read as insertions/deletions and tempo → one detector per flaw → cross-detector arbitration → isotonic severity → rubric score `S = 100·exp(−P/35)` per category, genre-weighted → plain-language explanation with the measured numbers. The generator and the engine never import each other.
+
+## Results (honest)
+
+Event F1 at IoU 0.5 against the injected truth. Thresholds are fitted on **train** only; **dev** is B03; **extra** is the two JFK baselines (never tuned on); the **test** split (B05, B08) has not been run yet.
+
+| Mode | Train | Dev | JFK 1962 (extra) | Flaws counted |
+|---|---|---|---|---|
+| Same speaker (headline) | **0.59** | **0.71** | 0.59 | 11 |
+| General | 0.31 | 0.20 | 0.07 | 8 |
+| Another speaker (experimental) | 0.23 | 0.22 | n/a | 8 |
+
+- **Headline flaws (11):** FADE, FILLER, MONOTONE, PACE_FAST, PACE_SLOW, PAUSE_BAD, PAUSE_LOST, SHOUT, SLUR, WORD_SKIP, WORD_SWAP. FILLER and PAUSE_BAD are leakage-flagged (see below).
+- **Experimental, excluded from headline metrics and hidden by default:** EMPH_FLAT (VCTK voices are too flat for the flattening to scale with level; F1 0.09), REPEAT (0.13), UPTALK (0.25), RARE_HESIT (non-monotone dose-response, leakage 0.70).
+- **General mode does not reach the 0.4 bar** and does not transfer to the noisy 1962 recording (ASR errors and clean-speaker norms produce false flags). SLUR and MONOTONE are undetectable without a reference (effect about the size of natural variation).
+- **Score acceptance tests (same speaker):** score falls with level for 12 of 13 scored flaws (RARE_HESIT fails; EMPH_FLAT and UPTALK hidden); false flags under noise/phone/room/codec 0.35 per minute (target ≤ 0.5, passes); worst clean-speech score shift 13.5 pts (target < 3, **fails**; mean shifts ≤ 1.6); points lost in other categories 3.7 (target < 5 met, < 2 not).
+- **Leakage audit** (classifier sees only editing artifacts): AUC 0.598 on held-out test windows (mark 0.60), 0.616 leave-one-speaker-out, about 0.7 for RARE_HESIT, FILLER, PAUSE_BAD, EMPH_FLAT. Reported as is; the audit definition changed during the project (v2, see `PROGRESS.md`).
+- **Not done:** the by-ear realism rating of the injected flaws (nobody has listened to them yet), a human panel, speakers over 45 or with slang, a speech-accent corpus.
+
+## Layout
+
 ```
-- **engine/** (never imports the generator; reads only dataset assets): `audio` (16 kHz ingest, quality gate) -> `conditions` (degrade the clean reference to
-  the participant's measured bandwidth / noise / reverb so Where cannot masquerade as delivery) -> `dtw` + `compare` (baseline-vs-participant DTW; the lag
-  curve is read as EVENTS = insertions/deletions and a robust TEMPO slope) -> `detect` (one detector per flaw) -> `explain` (templates filled with measured
-  numbers) -> `score` (isotonic severity, penalty = w * confidence * s^1.5 * m, S = 100 exp(-P/tau), genre-weighted, `rubric.yaml`).
-- **Match-adaptive sensitivity**: the DTW path cost is a "how well do we match the reference" meter; sensitive thresholds scale with it, so noise or a different speaker
-  loosen sensitivity instead of creating false flags (condition clips: 7.4 -> ~0.6 false flags per clip).
-- Split hygiene: thresholds / classifiers / isotonic maps are fit on `train`, checked on `dev`, and `test` (B05, B08) is touched once at the end.
+flawline-dataset/   generator/ (flaw factory, ingest, QA)  takes/ (baseline audio + alignment)  variants/ (clips + labels)  manifest.csv
+engine/             audio, conditions, dtw, compare, detect, free (general mode), consensus, arbitrate, score, explain, calibrate*, model.json, norms.json
+eval/               metrics, acceptance tests, leakage audit, headline metrics, harness self-test
+schema/             label.schema.json (v1.1.0) + validator
+dashboard/          Streamlit: Analyse (default), Baselines, Alterations review, Pilot gate, Dataset
+spec-v1.1.md        the build spec
+```
 
-## Headline vs experimental flaws
+Dashboard pages: **Analyse** (score, per-category bars, timeline with the expected range, flaw cards with audio, JSON/HTML export, demo clips), **Alterations review** (original vs altered with a synced spectrogram player), **Pilot gate** (by-ear review sheet), **Dataset** (counts and all measured results).
 
-Headline (11 flaws, same-speaker F1@0.5 0.59 train / 0.71 dev): FADE, FILLER*, MONOTONE, PACE_FAST, PACE_SLOW, PAUSE_BAD*, PAUSE_LOST, SHOUT, SLUR, WORD_SKIP, WORD_SWAP. *leakage-flagged (audit AUC about 0.7).
-Experimental, excluded from headline metrics: EMPH_FLAT, REPEAT, UPTALK, RARE_HESIT (see `PROGRESS.md` for why). Cross-speaker mode is experimental overall (F1 0.20 train / 0.16 dev, 8 of 15 detectors active). General (reference-free) mode, the dashboard default, scores F1 0.25 train / 0.14 dev (headline-8: 0.31 / 0.20) and 0.06 on the JFK recording: below the 0.4 bar, so same-speaker mode remains the validated headline.
+## Licences
 
-## Current engine status (6 Oct 2026, honest numbers)
-- Same-speaker reference (upper bound): event F1@0.5 = 0.50 on train (235 clips), 0.62 on dev. Strong: PACE, PAUSE_LOST, WORD_SWAP; weak: EMPH_FLAT, REPEAT, UPTALK, SLUR.
-- Cross-speaker reference: F1@0.5 = 0.03 (natural speaker differences swamp the detectors). **Experimental**; the Analyse page defaults to same-speaker.
-- Acceptance (same mode): dose-response median Spearman -0.94 (fails PAUSE_LOST, EMPH_FLAT, SLUR); invariance 0.54 false flags/min, max shift 16.7 pts (fail vs <=0.5 / <3); locality 26 pts other-category loss (fail vs <2).
-- Leakage audit AUC 0.606 (mark 0.60); PAUSE_BAD, UPTALK, REPEAT, RARE_HESIT still leak editing cues.
-- Test split (B05, B08) has not been used for tuning.
+Code: see repository licence file. Data: per subset in `flawline-dataset/LICENSES.md` (VCTK CC BY 4.0, JFK public domain).
