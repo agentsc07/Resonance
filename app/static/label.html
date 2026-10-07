@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Listening study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#08080b;--ink:#f2f0ea;--ink2:#b4b1a8;--ink3:#7b7870;--line:rgba(255,255,255,.12);--gold:#f0c05a;--gold2:#d79a2b;--coral:#ff6b5e;--panel:#101014}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Hanken Grotesk",system-ui,sans-serif;min-height:100vh}
+main{max-width:920px;margin:0 auto;padding:28px 20px 80px}
+h1{font:600 30px/1.15 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 6px}
+p.sub{color:var(--ink2);margin:0 0 22px;max-width:62ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+button,select,input,textarea{font:inherit;color:inherit}
+button{background:#17171c;border:1px solid var(--line);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:hover{border-color:rgba(240,192,90,.55)}
+button.go{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#18120a;border:0;font-weight:700;padding:10px 20px}
+button:disabled{opacity:.4;cursor:not-allowed}
+input[type=text],textarea,select{background:#0c0c10;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+input[type=text]{width:260px}
+textarea{width:100%;min-height:64px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;color:var(--ink2);font-size:14px}
+.bar{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:18px}.bar i{display:block;height:100%;background:var(--gold)}
+canvas{width:100%;height:150px;display:block;background:#0b0b0f;border-radius:12px;cursor:pointer}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.time{font:500 15px "JetBrains Mono",monospace;color:var(--ink2);min-width:120px}
+kbd{font:500 12px "JetBrains Mono",monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 7px;color:var(--gold)}
+.marks{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.mk{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:#0c0c10}
+.mk .t{font:500 14px "JetBrains Mono",monospace;color:var(--gold);min-width:64px;cursor:pointer}
+.mk button{padding:3px 9px}
+.mk select.bad{border-color:var(--coral)}
+.scores{display:flex;gap:6px;flex-wrap:wrap}
+.scores button{width:44px;height:44px;font-weight:700}
+.scores button.on{background:var(--gold);color:#18120a;border-color:var(--gold)}
+.hint{color:var(--ink3);font-size:14px}
+.hide{display:none!important}
+.err{color:var(--coral);min-height:22px;margin-top:8px;font-size:14px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Listening study</h1>
+
+  <section id="s-name" class="panel">
+    <p class="sub">You will hear a few short readings. Press <kbd>Space</kbd> every time something sounds off: too fast, a strange pause, a stumble, a word missing, anything. Give each reading an overall score at the end. There are no right answers.</p>
+    <label for="nm" class="hint">Your name</label><br>
+    <input type="text" id="nm" autocomplete="off" placeholder="e.g. Asha"> <button class="go" id="start">Start</button>
+    <div class="err" id="e0"></div>
+  </section>
+
+  <section id="s-clip" class="hide">
+    <div class="top"><span id="prog"></span><span id="who"></span></div>
+    <div class="bar"><i id="barfill" style="width:0"></i></div>
+    <div class="panel">
+      <canvas id="wave" height="150"></canvas>
+      <div class="row">
+        <button id="play" class="go">▶ Play</button>
+        <span class="time" id="clock">0:00.0 / 0:00.0</span>
+        <span class="hint">Press <kbd>Space</kbd> to mark a slip at the playhead · <kbd>P</kbd> play / pause · click the wave to jump · <kbd>←</kbd> <kbd>→</kbd> ±2 s</span>
+      </div>
+      <div class="marks" id="marks"></div>
+      <div class="hint" id="nomarks" style="margin-top:10px">No marks yet. Nothing off? That is a fine answer too.</div>
+    </div>
+    <div class="panel">
+      <div style="margin-bottom:10px;font-weight:600">Overall delivery, 1 (poor) to 10 (excellent)</div>
+      <div class="scores" id="scores"></div>
+      <div style="margin:14px 0 6px" class="hint">Note (optional)</div>
+      <textarea id="note" placeholder="Anything else you noticed"></textarea>
+      <div class="row"><button class="go" id="next">Save and next</button><span class="err" id="e1"></span></div>
+    </div>
+  </section>
+
+  <section id="s-done" class="panel hide">
+    <h1>Thank you.</h1>
+    <p class="sub">All readings are done and saved. You can close this tab.</p>
+  </section>
+</main>
+<script src="/static/js/label.js" type="module"></script>
+</body>
+</html>

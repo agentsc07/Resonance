@@ -1,0 +1,172 @@
+{
+ "h01.flac": {
+  "source_clip": "B10-CHAMP_C0__PACE_SLOW_L4_s1612",
+  "injected": [
+   {
+    "flaw": "PACE_SLOW",
+    "level": 4,
+    "start_s": 46.3236,
+    "end_s": 47.9911,
+    "category": "Pacing"
+   }
+  ]
+ },
+ "h02.flac": {
+  "source_clip": "B01-CHAMP_C0__WORD_SKIP_L5_s5306",
+  "injected": [
+   {
+    "flaw": "WORD_SKIP",
+    "level": 5,
+    "start_s": 3.6991,
+    "end_s": 3.6991,
+    "category": "Text fidelity"
+   },
+   {
+    "flaw": "WORD_SKIP",
+    "level": 5,
+    "start_s": 4.3061,
+    "end_s": 4.3061,
+    "category": "Text fidelity"
+   },
+   {
+    "flaw": "WORD_SKIP",
+    "level": 5,
+    "start_s": 8.0274,
+    "end_s": 8.0274,
+    "category": "Text fidelity"
+   },
+   {
+    "flaw": "WORD_SKIP",
+    "level": 5,
+    "start_s": 34.2255,
+    "end_s": 34.2255,
+    "category": "Text fidelity"
+   },
+   {
+    "flaw": "WORD_SKIP",
+    "level": 5,
+    "start_s": 41.0775,
+    "end_s": 41.0775,
+    "category": "Text fidelity"
+   },
+   {
+    "flaw": "WORD_SKIP",
+    "level": 5,
+    "start_s": 43.4282,
+    "end_s": 43.4282,
+    "category": "Text fidelity"
+   },
+   {
+    "flaw": "WORD_SKIP",
+    "level": 5,
+    "start_s": 43.8449,
+    "end_s": 43.8449,
+    "category": "Text fidelity"
+   },
+   {
+    "flaw": "WORD_SKIP",
+    "level": 5,
+    "start_s": 54.5122,
+    "end_s": 54.5122,
+    "category": "Text fidelity"
+   }
+  ]
+ },
+ "h03.flac": {
+  "source_clip": "B06-CHAMP_C0__PAUSE_BAD_L3_s5270",
+  "injected": [
+   {
+    "flaw": "PAUSE_BAD",
+    "level": 3,
+    "start_s": 34.362,
+    "end_s": 35.336,
+    "category": "Pausing"
+   }
+  ]
+ },
+ "h04.flac": {
+  "source_clip": "B02-CHAMP_C0",
+  "injected": []
+ },
+ "h05.flac": {
+  "source_clip": "B04-CHAMP_C0__SHOUT_L3_s5399",
+  "injected": [
+   {
+    "flaw": "SHOUT",
+    "level": 3,
+    "start_s": 8.7394,
+    "end_s": 10.2974,
+    "category": "Volume"
+   },
+   {
+    "flaw": "SHOUT",
+    "level": 3,
+    "start_s": 24.7333,
+    "end_s": 27.248,
+    "category": "Volume"
+   },
+   {
+    "flaw": "SHOUT",
+    "level": 3,
+    "start_s": 35.1266,
+    "end_s": 37.4506,
+    "category": "Volume"
+   }
+  ]
+ },
+ "h06.flac": {
+  "source_clip": "B07-CHAMP_C0__FILLER_L3_s7599",
+  "injected": [
+   {
+    "flaw": "FILLER",
+    "level": 3,
+    "start_s": 2.285,
+    "end_s": 3.0095,
+    "category": "Fluency"
+   },
+   {
+    "flaw": "FILLER",
+    "level": 3,
+    "start_s": 17.8386,
+    "end_s": 18.6088,
+    "category": "Fluency"
+   },
+   {
+    "flaw": "FILLER",
+    "level": 3,
+    "start_s": 28.9108,
+    "end_s": 29.6254,
+    "category": "Fluency"
+   },
+   {
+    "flaw": "FILLER",
+    "level": 3,
+    "start_s": 33.3215,
+    "end_s": 33.7595,
+    "category": "Fluency"
+   },
+   {
+    "flaw": "FILLER",
+    "level": 3,
+    "start_s": 40.1459,
+    "end_s": 40.5839,
+    "category": "Fluency"
+   },
+   {
+    "flaw": "FILLER",
+    "level": 3,
+    "start_s": 43.645,
+    "end_s": 44.1031,
+    "category": "Fluency"
+   }
+  ]
+ },
+ "h07.flac": {
+  "source_clip": "B09-CHAMP_C0",
+  "injected": []
+ },
+ "h08.flac": {
+  "source_clip": "B03-CHAMP_C0",
+  "injected": []
+ }
+}

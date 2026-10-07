@@ -12,11 +12,13 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from . import human as H
 from . import service as S
 
 STATIC = Path(__file__).resolve().parent / "static"
 LAB = os.environ.get("LAB") == "1"
 LAB_PORT = int(os.environ.get("LAB_PORT", "8766"))
+HUMAN = LAB or os.environ.get("HUMAN") == "1"       # the human-listening pages (/label, /review) are lab-only
 app = FastAPI(title="Flawline", docs_url=None, redoc_url=None)
 
 
@@ -89,6 +91,18 @@ def about():
     return S.about()
 
 
+if HUMAN:
+    app.include_router(H.router)
+
+    @app.get("/label")
+    def label_page():
+        return FileResponse(STATIC / "label.html", headers={"Cache-Control": "no-store"})
+
+    @app.get("/review")
+    def review_page():
+        return FileResponse(STATIC / "review.html", headers={"Cache-Control": "no-store"})
+
+
 @app.get("/")
 def index():
     return FileResponse(STATIC / "index.html", headers={"Cache-Control": "no-store"})
@@ -105,6 +119,8 @@ def main():
         lab = subprocess.Popen([sys.executable, "-m", "streamlit", "run", str(Path(__file__).resolve().parent.parent / "dashboard" / "app.py"),
                                 "--server.headless", "true", "--server.port", str(LAB_PORT)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print(f"Lab pages: http://localhost:{LAB_PORT}")
+    if HUMAN:
+        print(f"Human listening pages: http://localhost:{port}/label  and  http://localhost:{port}/review")
     try:
         print(f"Flawline: http://localhost:{port}")
         uvicorn.run(app, host=os.environ.get("HOST", "127.0.0.1"), port=port, log_level="warning")
