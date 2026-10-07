@@ -55,12 +55,17 @@ def band(score: float, rub: dict, worst: float | None = None) -> str:
     return out
 
 
-def score(regions: list[dict], duration_s: float, genre: str | None, rub: dict | None = None, dont_score_fluency: bool = False) -> dict:
+def score(regions: list[dict], duration_s: float, genre: str | None, rub: dict | None = None, dont_score_fluency: bool = False, badge: str | None = None, rough: bool = False) -> dict:
     """regions: dicts with flaw, category, start_s, end_s, severity (0-5), confidence."""
     rub = rub or load_rubric()
     mins = max(duration_s / 60.0, 0.25)
     W = dict(rub["genre_weights"].get((genre or "").lower(), rub["genre_weights"]["interpretive reading"]))
     P = {c: 0.0 for c in rub["categories"]}
+    rough = rough or badge in ("fair", "poor")             # a rough recording: quality gate fair/poor, or its conditions differ from the clean reference
+    n_counted = {c: 0 for c in rub["categories"]}
+    for r in regions:
+        n_counted[r["category"]] += int(float(r.get("confidence", 1.0)) >= rub["min_confidence"] and not (dont_score_fluency and r["category"] == "Fluency"))
+    lone = {c for c, n in n_counted.items() if n == 1 and rough}      # a lone flag in a rough recording is shown and counts half, but cannot be the weakest area
     rows = []
     for r in regions:
         conf = float(r.get("confidence", 1.0))
@@ -69,6 +74,8 @@ def score(regions: list[dict], duration_s: float, genre: str | None, rub: dict |
         w = float(rub["flaw_weight"].get(r["flaw"], 1.0))
         counted = conf >= rub["min_confidence"] and not (dont_score_fluency and r["category"] == "Fluency")
         p = w * conf * float(r.get("reliability", 1.0)) * (s ** rub["severity_exponent"]) * m if counted else 0.0
+        if r["category"] in lone:
+            p *= rub.get("lone_discount", 0.5)
         P[r["category"]] += p
         rows.append({**{k: r[k] for k in ("flaw", "category", "start_s", "end_s")}, "severity": round(s, 2), "points_lost": 0.0,
                      "penalty": round(p, 3), "counted": counted, "explanation": r.get("explanation", "")})
@@ -79,6 +86,7 @@ def score(regions: list[dict], duration_s: float, genre: str | None, rub: dict |
     cat = {c: round(100.0 * float(np.exp(-(P[c] / mins) / rub["tau"])), 1) for c in rub["categories"]}
     mean = sum(W[c] * cat[c] for c in rub["categories"]) / max(sum(W.values()), 1e-9)
     live = [cat[c] for c in rub["categories"] if W[c] > 0]                      # areas that count under this genre / rubric
+    live = [cat[c] for c in rub["categories"] if W[c] > 0 and c not in lone] or live
     worst = min(live) if live else 100.0
     overall = round(rub.get("blend_mean", 0.6) * mean + (1 - rub.get("blend_mean", 0.6)) * worst, 1)   # one bad area drags the score, an average cannot hide it
     # points lost by a region = its share of its category's loss, expressed in overall points

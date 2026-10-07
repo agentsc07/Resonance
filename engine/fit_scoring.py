@@ -33,7 +33,7 @@ def collect(mode="same"):
             continue
         meta = {k: v for k, v in l.items() if k not in ("what", "seed", "join_check", "multi_set")}
         p = P.predict(str(T.DATA / "variants" / f"{l['clip_id']}.flac"), meta, mode)
-        out.append({"clip": l["clip_id"], "flaw": l["what"][0]["flaw"], "level": lv, "what": p["what"], "dur": l["duration_s"], "genre": l.get("genre")})
+        out.append({"clip": l["clip_id"], "flaw": l["what"][0]["flaw"], "level": lv, "what": p["what"], "dur": l["duration_s"], "genre": l.get("genre"), "badge": p["quality"]["badge"]})
     PKL.write_bytes(pickle.dumps(out))
     print("collected", len(out))
 

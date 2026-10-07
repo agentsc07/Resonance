@@ -107,7 +107,7 @@ def predict(audio_path: str, meta: dict, mode: str = "same", rubric: dict | None
                      "word_start": int(c.w0), "word_end": int(c.w1), "kind": "modify", "severity": round(sev, 3),
                      "confidence": q["confidence"], "reliability": round(rel.get(c.flaw, 1.0), 2), "explanation": sent,
                      "params": {"d": round(c.d, 3), "tip": tip, **c.facts}})
-    sc = scoring.score(what, meta["duration_s"], meta.get("genre"), rubric, dont_score_fluency)
+    sc = scoring.score(what, meta["duration_s"], meta.get("genre"), rubric, dont_score_fluency, q.get("badge"), bool(q.get("matched")))
     for r, row in zip(what, sc["regions"]):
         r["points_lost"] = row["points_lost"]
     out = {"schema_version": "1.1.0", "clip_id": meta["clip_id"], "take_id": meta["take_id"], "baseline_id": meta["baseline_id"],

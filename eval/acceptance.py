@@ -15,7 +15,7 @@ from scipy.stats import spearmanr
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from engine import predict as P  # noqa: E402
+from engine import predict as P, score as SC  # noqa: E402
 
 DATA = ROOT / "flawline-dataset"
 CACHE = Path("/tmp/engine_pred_cache")
@@ -33,11 +33,19 @@ def label_of(clip_id: str) -> dict:
             "where": {"base_condition": "C0", "added_condition": None}, "what": [], "duration_s": float(r["duration_s"])}
 
 
+def _rescore(out: dict) -> dict:
+    """Scores are recomputed from the cached regions with the CURRENT rubric, so scoring changes need no new engine run."""
+    q = out["quality"]
+    sc = SC.score(out["what"], out["duration_s"], out.get("genre"), None, False, q.get("badge"), bool(q.get("matched")))
+    out["scores"] = {**out["scores"], "overall": sc["overall"], "band": sc["band"], "worst_area_score": round(sc["worst"], 1), "categories": sc["categories"]}
+    return out
+
+
 def pred(clip_id: str, mode: str) -> dict:
     CACHE.mkdir(exist_ok=True)
     f = CACHE / f"{clip_id}__{mode}.json"
     if f.exists():
-        return json.loads(f.read_text())
+        return _rescore(json.loads(f.read_text()))
     lab = label_of(clip_id)
     meta = {k: v for k, v in lab.items() if k not in ("what", "seed", "join_check", "multi_set", "scenario")}
     audio = DATA / "variants" / f"{clip_id}.flac"
@@ -85,7 +93,7 @@ def main():
     for c, s in shifts:
         by.setdefault(c, []).append(s)
     res["invariance"] = {"false_flags_per_min": round(ff / max(mins, 1e-9), 3), "max_score_shift": round(max(s for _, s in shifts), 2) if shifts else None,
-                         "mean_shift_by_condition": {c: round(float(np.mean(v)), 2) for c, v in by.items()}, "n": len(shifts),
+                         "mean_shift_by_condition": {c: round(float(np.mean(v)), 2) for c, v in by.items()}, "n": len(shifts), "pass_under_10_points": bool(shifts and max(s for _, s in shifts) < 10),
                          "pass": bool(shifts and max(s for _, s in shifts) < 3 and ff / max(mins, 1e-9) <= 0.5)}
 
     # ---- 3. locality: single-flaw L3 clips: points lost in categories OTHER than the flaw's own
