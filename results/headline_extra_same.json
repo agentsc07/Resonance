@@ -3,9 +3,9 @@
  "mode": "same",
  "clips": 160,
  "all_flaws": {
-  "f1": 0.496,
-  "precision": 0.484,
-  "recall": 0.51
+  "f1": 0.485,
+  "precision": 0.52,
+  "recall": 0.454
  },
  "headline": {
   "flaws": [
@@ -21,9 +21,9 @@
    "WORD_SKIP",
    "WORD_SWAP"
   ],
-  "f1": 0.594,
-  "precision": 0.579,
-  "recall": 0.609
+  "f1": 0.551,
+  "precision": 0.569,
+  "recall": 0.533
  },
  "experimental": {
   "EMPH_FLAT": "VCTK speakers are not expressive enough for a flattening to scale with level; detector F1 0.09",
@@ -37,20 +37,20 @@
   "FILLER": 0.69
  },
  "per_flaw_f1": {
-  "EMPH_FLAT": 0.062,
+  "EMPH_FLAT": 0.038,
   "FADE": 0.286,
-  "FILLER": 0.751,
+  "FILLER": 0.786,
   "MONOTONE": 0.316,
-  "PACE_FAST": 0.508,
-  "PACE_SLOW": 0.625,
-  "PAUSE_BAD": 0.347,
+  "PACE_FAST": 0.17,
+  "PACE_SLOW": 0.308,
+  "PAUSE_BAD": 0.333,
   "PAUSE_LOST": 0.857,
-  "RARE_HESIT": 0.526,
+  "RARE_HESIT": 0.634,
   "REPEAT": 0.0,
-  "SHOUT": 0.345,
-  "SLUR": 0.632,
-  "UPTALK": 0.036,
-  "WORD_SKIP": 0.526,
-  "WORD_SWAP": 0.707
+  "SHOUT": 0.452,
+  "SLUR": 0.667,
+  "UPTALK": 0.067,
+  "WORD_SKIP": 0.507,
+  "WORD_SWAP": 0.627
  }
 }

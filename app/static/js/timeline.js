@@ -16,6 +16,12 @@ export class Timeline {
     canvas.addEventListener("mousemove", (e) => this.onMove(e));
     canvas.addEventListener("mouseleave", () => { this.hover = null; this.tip.style.opacity = 0; this.draw(); });
     canvas.addEventListener("click", (e) => this.onClick(e));
+    this.phase = 0; this.last = performance.now();
+    const loop = (t) => {                                    // a slow glint travels along the trace; paused when the tab is hidden or reduced motion is set
+      if (this.data && !document.hidden && !matchMedia("(prefers-reduced-motion: reduce)").matches) { this.phase += (t - this.last) / 7000; this.draw(); }
+      this.last = t; requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
   }
 
   set(data, regions) { this.data = data; this.regions = regions; this.sel = null; this.hover = null; this.rows(); this.draw(); }
@@ -50,7 +56,7 @@ export class Timeline {
 
   geo() {
     const pad = 12, W = this.W || this.cv.clientWidth, H = this.H || this.cv.clientHeight;
-    return { pad, W, H, wave: [6, 112], lane: [122, 196], stripTop: 204, rowH: this.rowH(), axisY: H - 14 };
+    return { pad, W, H, wave: [10, 196], lane: [10, 196], stripTop: 204, rowH: this.rowH(), axisY: H - 14 };
   }
 
   x(t) { const g = this.geo(); return g.pad + (t / this.data.dur) * (g.W - 2 * g.pad); }
@@ -103,60 +109,44 @@ export class Timeline {
     this.regions.forEach((r, i) => {
       const x0 = this.x(r.start), x1 = Math.max(this.x(r.end), x0 + 4), on = this.sel === r.id, hv = this.hover === i;
       c.fillStyle = on ? `rgba(${GOLD},.20)` : `rgba(${CORAL},${hv ? 0.22 : 0.13})`;
-      c.fillRect(x0, g.wave[0], x1 - x0, g.lane[1] - g.wave[0]);
+      c.fillRect(x0, g.wave[0], x1 - x0, g.lane[1] - g.wave[0]); if (on) { c.shadowColor = `rgba(${GOLD},.8)`; c.shadowBlur = 18; c.fillRect(x0, g.wave[0], x1 - x0, 2); c.shadowBlur = 0; }
       c.fillStyle = on ? `rgba(${GOLD},.95)` : `rgba(${CORAL},.6)`;
       c.fillRect(x0, g.wave[0], x1 - x0, 2);
     });
 
-    // ---- waveform (neutral)
-    const mid = (g.wave[0] + g.wave[1]) / 2, amp = (g.wave[1] - g.wave[0]) / 2 - 3, n = d.wave.length;
-    const gr = c.createLinearGradient(0, g.wave[0], 0, g.wave[1]);
-    gr.addColorStop(0, "#efede6"); gr.addColorStop(1, "#a9a69d");
-    const bw = (W - 2 * g.pad) / n;
-    for (let pass = 0; pass < 2; pass++) {
-      c.save(); c.beginPath();
-      if (px >= 0) { if (pass === 0) c.rect(0, 0, px, this.H); else c.rect(px, 0, W - px, this.H); } else c.rect(0, 0, W, this.H);
-      c.clip();
-      c.globalAlpha = pass === 0 || px < 0 ? 0.92 : 0.45; c.fillStyle = gr;
-      for (let i = 0; i < n; i++) {
-        const lo = d.wave[i][0], hi = d.wave[i][1], x = g.pad + i * bw, y0 = mid - hi * amp, y1 = mid - lo * amp;
-        c.fillRect(x, y0, Math.max(bw - 0.4, 1), Math.max(y1 - y0, 1));
-      }
-      c.restore();
-      if (px < 0) break;
+    // ---- waveform: a faint backdrop, never the subject (gold-tinted, brighter where it has already played)
+    const mid = (g.wave[0] + g.wave[1]) / 2, amp = (g.wave[1] - g.wave[0]) / 2 - 4, n = d.wave.length, bw = (W - 2 * g.pad) / n;
+    for (let i = 0; i < n; i++) {
+      const lo = d.wave[i][0], hi = d.wave[i][1], x = g.pad + i * bw, y0 = mid - hi * amp * 0.8, y1 = mid - lo * amp * 0.8;
+      c.fillStyle = px >= 0 && x < px ? "rgba(240,192,90,.34)" : "rgba(240,192,90,.17)";
+      c.fillRect(x, y0, Math.max(bw - 0.5, 1), Math.max(y1 - y0, 1));
     }
-    c.globalAlpha = 1;
 
-    // ---- second lane: expected range (soft grey band) + your line
+    // ---- one lane at a time: expected range (soft band) + your line, drawn as a glowing trace
     const L = LANES[this.lane], [ly0, ly1] = g.lane;
-    c.fillStyle = "rgba(255,255,255,.03)"; roundRect(c, g.pad, ly0, W - 2 * g.pad, ly1 - ly0, 8); c.fill();
-    c.fillStyle = "#8d8a82"; c.font = "500 10.5px 'Hanken Grotesk', sans-serif"; c.textBaseline = "top"; c.fillText(L.label, g.pad + 8, ly0 + 5);
-    const yv = (v) => ly1 - 8 - ((Math.max(L.lo, Math.min(L.hi, v)) - L.lo) / (L.hi - L.lo)) * (ly1 - ly0 - 24);
+    c.fillStyle = "#9a978d"; c.font = "500 11px 'Hanken Grotesk', sans-serif"; c.textBaseline = "top"; c.fillText(L.label, g.pad + 8, ly0 + 4);
+    const yv = (v) => ly1 - 10 - ((Math.max(L.lo, Math.min(L.hi, v)) - L.lo) / (L.hi - L.lo)) * (ly1 - ly0 - 40);
     const band = d[L.band];
     if (band) {
-      const yb0 = yv(band[1]), yb1 = yv(band[0]);
-      c.fillStyle = "rgba(255,255,255,.10)"; c.fillRect(g.pad, yb0, W - 2 * g.pad, yb1 - yb0);
-      c.strokeStyle = "rgba(255,255,255,.30)"; c.setLineDash([4, 4]); c.lineWidth = 1;
-      c.beginPath(); c.moveTo(g.pad, yb0); c.lineTo(W - g.pad, yb0); c.moveTo(g.pad, yb1); c.lineTo(W - g.pad, yb1); c.stroke(); c.setLineDash([]);
+      const yb0 = yv(band[1]), yb1 = yv(band[0]), bg = c.createLinearGradient(0, yb0, 0, yb1);
+      bg.addColorStop(0, "rgba(255,255,255,.02)"); bg.addColorStop(.5, "rgba(255,255,255,.09)"); bg.addColorStop(1, "rgba(255,255,255,.02)");
+      c.fillStyle = bg; c.fillRect(g.pad, yb0, W - 2 * g.pad, yb1 - yb0);
     }
-    const track = (arr, color, dash, width) => {
-      c.strokeStyle = color; c.lineWidth = width; c.setLineDash(dash); c.lineJoin = "round"; c.beginPath();
-      let pen = false;
-      for (let i = 0; i < arr.length; i++) {
-        const v = arr[i];
-        if (v === null) { pen = false; continue; }
-        const x = this.x(i * d.step), y = yv(v);
-        if (!pen) { c.moveTo(x, y); pen = true; } else c.lineTo(x, y);
-      }
-      c.stroke(); c.setLineDash([]);
+    const sweepX = g.pad + (((this.phase || 0) % 1.25) - 0.1) * (W - 2 * g.pad);
+    const trace = (pts) => {                                    // pts: [[x,y]|null,...]
+      const path = () => { c.beginPath(); let pen = false; for (const p of pts) { if (!p) { pen = false; continue; } if (!pen) { c.moveTo(p[0], p[1]); pen = true; } else c.lineTo(p[0], p[1]); } };
+      c.lineJoin = "round"; c.lineCap = "round";
+      c.shadowColor = "rgba(124,183,255,.9)"; c.shadowBlur = 16; c.strokeStyle = "rgba(124,183,255,.35)"; c.lineWidth = 5; path(); c.stroke();
+      c.shadowBlur = 6; c.strokeStyle = "#8cc2ff"; c.lineWidth = 1.7; path(); c.stroke(); c.shadowBlur = 0;
+      const sg = c.createLinearGradient(sweepX - 110, 0, sweepX + 110, 0);                         // the passing glint
+      sg.addColorStop(0, "rgba(255,244,214,0)"); sg.addColorStop(.5, "rgba(255,244,214,.95)"); sg.addColorStop(1, "rgba(255,244,214,0)");
+      c.strokeStyle = sg; c.lineWidth = 2.4; path(); c.stroke();
     };
     if (this.lane === "rate") {
-      c.strokeStyle = "#7cb7ff"; c.lineWidth = 1.6; c.beginPath();
-      d.rate.forEach(([a, b, v], i) => { const y = yv(Math.min(v, 12)); if (i === 0) c.moveTo(this.x(a), y); else c.lineTo(this.x(a), y); c.lineTo(this.x(b), y); });
-      c.stroke();
+      const pts = []; d.rate.forEach(([a, b, v]) => { const y = yv(Math.min(v, 12)); pts.push([this.x(a), y], [this.x(b), y]); }); trace(pts);
     } else {
-      if (L.ref && d[L.ref]) track(d[L.ref], "rgba(217,214,204,.7)", [3, 4], 1.2);
-      track(d[L.key], "#7cb7ff", [], 1.5);
+      if (L.ref && d[L.ref]) { c.strokeStyle = "rgba(217,214,204,.55)"; c.setLineDash([3, 5]); c.lineWidth = 1.2; c.beginPath(); let pen = false; d[L.ref].forEach((v, i) => { if (v === null) { pen = false; return; } const X = this.x(i * d.step), Y = yv(v); if (!pen) { c.moveTo(X, Y); pen = true; } else c.lineTo(X, Y); }); c.stroke(); c.setLineDash([]); }
+      trace(d[L.key].map((v, i) => (v === null ? null : [this.x(i * d.step), yv(v)])));
     }
 
     // ---- numbered flagged moments

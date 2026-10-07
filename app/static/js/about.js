@@ -7,14 +7,20 @@ export async function initAbout() {
   const a = await api("/api/about");
   const same = (a.eval.same || {}), free = (a.eval.free || {}), ac = a.accept;
 
-  // three numbers, in plain words
+  // three numbers, as things a person can picture (precision and recall at IoU 0.5 on the headline flaws)
+  const of10 = (v) => (v == null ? "–" : Math.round(v * 10)), mins = ac ? Math.round(1 / ac.flags_per_min) : null;
+  const ICON = {
+    find: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>',
+    alarm: '<svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>',
+    solo: '<svg viewBox="0 0 24 24"><path d="M4 12h2M8 7v10M12 4v16M16 8v8M20 11v2"/></svg>',
+  };
   $("#big3").innerHTML = [
-    [f2(same.train?.headline), "How well it finds flaws when it has the speaker's own clean reading to compare with.", `Score from 0 to 1, where 1 is perfect. On the held-in dev speaker: ${f2(same.dev?.headline)}. On a 1962 speech it never saw: ${f2(same.extra?.headline)}.`],
-    [ac ? ac.flags_per_min.toFixed(2) : "–", "False alarms per minute on clean speech recorded in poor conditions: noise, a phone line, an echoey room.", `Lower is better. Our limit was 0.5. The score itself still moves more than we would like under noise (worst case ${ac ? ac.max_shift.toFixed(1) : "–"} points).`],
-    [f2(free.train?.headline), "How well it does with no reference at all, only the text and the recording.", `Much weaker: dev ${f2(free.dev?.headline)}, and ${f2(free.extra?.headline)} on the noisy 1962 speech. It is the default in the app because it needs nothing from you.`],
-  ].map(([n, p, s]) => `<div class="panel big"><b class="mono">${n}</b><p>${p}</p><small>${s}</small></div>`).join("");
+    [ICON.find, `${of10(same.train?.r)}<small> of 10</small>`, "flaws found", `${of10(same.train?.p)} of 10 flags are real. Needs a clean reading to compare with (yours or the one you upload).`],
+    [ICON.alarm, mins ? `1<small> per ${mins} min</small>` : "–", "wrong flag on clean speech", `Even recorded with noise, a phone line or an echoey room. Our limit was one per 2 minutes.`],
+    [ICON.solo, `${of10(free.train?.r)}<small> of 10</small>`, "flaws found with no reference", `Only the text and the recording: ${of10(free.train?.p)} of 10 flags are real. Honest and much weaker: that is what the app does by default.`],
+  ].map(([ic, n, l, s]) => `<div class="panel big"><span class="ic">${ic}</span><b class="mono">${n}</b><em>${l}</em><small>${s}</small></div>`).join("");
 
-  $("#gloss").innerHTML = `<b>F1</b>: one number from 0 to 1 that is high only when the engine finds the flaws <i>and</i> avoids false alarms. &nbsp; <b>IoU</b>: how much a flagged moment overlaps the true one; we count a hit at half or more. &nbsp; <b>AUC</b>: how well a classifier can tell edited audio from untouched audio using only editing traces; 0.5 means it cannot, and 0.60 is our pass mark.`;
+  $("#gloss").innerHTML = `<b>How it is scored.</b> A flag counts as right when it overlaps the true flaw by half or more. “Found” is recall, “real” is precision, F1 is the two combined (${f2(same.train?.headline)} with a reference, ${f2(free.train?.headline)} without).`;
 
   // full results (collapsed)
   const modes = [["same", "Same speaker", "Compared with the speaker's own clean reading. The validated upper bound."], ["free", "General", "No reference. The app's default."], ["cross", "Another speaker", "Experimental."]];
@@ -33,7 +39,7 @@ export async function initAbout() {
       <div><div class="mono" style="font:700 26px var(--display);color:var(--coral)">${ac.max_shift.toFixed(1)}</div><div class="dim" style="font-size:12.5px">worst clean-speech score shift (target &lt; 3, not met)</div></div></div>
     <div class="dim" style="font-size:13px;margin-top:12px">Leakage audit: AUC ${f3(a.leak.test)} on held-out windows, ${f3(a.leak.loso)} leave-one-speaker-out. Pass mark 0.60.</div>` : "";
 
-  $("#lim").innerHTML = `<h3>What it does not do</h3><ul class="limits"><li>Nobody has listened to the injected flaws yet: realism is unverified.</li><li>Eight studio voices aged 18–38 plus one 1962 voice. No slang, spontaneous speech or older speakers.</li><li>It scores departure from a chosen yardstick, not how good a speaker is. Do not use it to rank people.</li></ul>`;
+  $("#lim").innerHTML = `<h3>What it does not do</h3><ul class="limits"><li>Only one listener has checked the injected flaws by ear, on a handful of clips: realism is only partly verified.</li><li>Eight studio voices aged 18–38 plus one 1962 voice. No slang, spontaneous speech or older speakers.</li><li>It scores departure from a chosen yardstick, not how good a speaker is. Do not use it to rank people.</li></ul>`;
 
   const L = a.links, link = (label, url, hint) => url ? `<a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${label} ↗</a>` : `<span class="btn" style="opacity:.45;cursor:default" title="${hint}">${label} · to be added</span>`;
   const abs = (u) => (u && /^https?:/.test(u) ? u : "");

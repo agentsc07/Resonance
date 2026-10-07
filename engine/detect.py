@@ -15,7 +15,7 @@ CATEGORY = {"PACE_FAST": "Pacing", "PACE_SLOW": "Pacing", "PAUSE_BAD": "Pausing"
             "RARE_HESIT": "Fluency", "SLUR": "Clarity", "WORD_SKIP": "Text fidelity", "WORD_SWAP": "Text fidelity"}
 
 # thresholds (tuned on train/dev only; see calibrate.py)
-TH = {"pause_ins_min": 0.20, "pace_fast": 1.12, "pace_slow": 0.88, "pace_min_s": 1.2, "mono_ratio": 0.62, "mono_min_s": 2.4,
+TH = {"skip_min": 0.08, "skip_frac": 0.6, "pause_ins_min": 0.20, "pace_fast": 1.12, "pace_slow": 0.88, "pace_min_s": 1.2, "mono_ratio": 0.62, "mono_min_s": 2.4,
       "cost_ref": 0.03, "g_max": 5.0, "repeat_min": 0.14, "emph_min_words": 2, "swap_contrast": 0.12, "expand_emph": 1, "expand_slur": 0, "abs_pause": 0, "abs_lost": 0, "pause_abs": 0.7, "lost_frac": 0.35, "rare_min": 0.30, "uptalk_st": 1.5, "fade_db": 3.5, "shout_db": 3.0, "slur_db": 3.0, "emph_drop": 0.9}
 
 
@@ -161,7 +161,7 @@ def pauses_and_events(C: Cmp, bt: list[str], zipf_next: list[float]) -> list[Can
         elif e.kind == "del":
             # words wholly inside the deleted reference span => skipped words, else a removed pause
             inside = [i for i in range(C.n) if C.w[i]["rs"] >= e.t0 - 0.05 and C.w[i]["re"] <= e.t1 + 0.05]
-            if inside and e.mag >= 0.08 and sum(C.w[i]["dur_r"] for i in inside) > 0.6 * e.mag:
+            if inside and e.mag >= TH.get("skip_min", 0.08) and sum(C.w[i]["dur_r"] for i in inside) > TH.get("skip_frac", 0.6) * e.mag:
                 a, b = C.w[inside[0]]["ps"], C.w[inside[-1]]["pe"]
                 out.append(Cand("WORD_SKIP", a, max(b, a + 0.05), e.mag, inside[0], inside[-1], {"n_words": len(inside)}))
             elif not absl and bt[k] in ("clause_punct", "sentence") and C.w[k]["gap_r"] >= 0.15:

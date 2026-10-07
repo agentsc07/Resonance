@@ -1,3 +1,4 @@
+import "./room.js";
 import { initAnalyse } from "./analyse.js";
 import { initDataset } from "./dataset.js";
 import { initAbout } from "./about.js";

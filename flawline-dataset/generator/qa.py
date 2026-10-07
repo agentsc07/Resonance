@@ -36,8 +36,9 @@ for jp in sorted(VARIANTS.glob("*.json")):
         if not (0 <= r["start_s"] <= r["end_s"] <= lab["duration_s"] + 1e-3):
             bad.append((cid, f"{r['flaw']} region outside clip"))
         if r["kind"] in ("modify", "delete") and r["flaw"] not in ("PAUSE_LOST",):
-            ok_s = any(abs(r["baseline_start_s"] - w) < 0.021 for w in starts | ends)
-            ok_e = any(abs(r["baseline_end_s"] - w) < 0.021 for w in starts | ends)
+            tol = 0.06 if r["flaw"] == "WORD_SKIP" else 0.021          # deletions are cut in the energy valley beside the word edge
+            ok_s = any(abs(r["baseline_start_s"] - w) < tol for w in starts | ends)
+            ok_e = any(abs(r["baseline_end_s"] - w) < tol for w in starts | ends)
             if not (ok_s and ok_e):
                 bad.append((cid, f"{r['flaw']} boundary off word boundary"))
 n = len(list(VARIANTS.glob("*.json")))

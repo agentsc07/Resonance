@@ -267,3 +267,44 @@ table.t td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-a
   .tiles { grid-template-columns: repeat(2, 1fr); } .flaw { grid-template-columns: 1fr; } .flaw .when { border: 0; text-align: left; } .verdict { grid-template-columns: 1fr; } .nav a { padding: 7px 14px; } .catlist { grid-template-columns: 1fr; } .hbar { grid-template-columns: 120px 1fr 30px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+button.play.sm { width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer; background: rgba(255, 255, 255, .1); color: var(--ink); font-size: 11px; }
+button.play.sm.on { outline: 2px solid var(--gold); }
+
+/* ---------- the room: black, one glowing thing at a time (overrides the earlier glass look) ---------- */
+#room { position: fixed; inset: 0; z-index: -2; pointer-events: none; }
+body { background: #050507; }
+body::before { background: radial-gradient(1100px 600px at 50% -10%, rgba(240, 192, 90, .08), transparent 65%), radial-gradient(800px 500px at 50% 110%, rgba(0, 0, 0, .9), transparent 70%); }
+.panel { background: linear-gradient(180deg, rgba(14, 14, 18, .88), rgba(8, 8, 11, .9)); border: 1px solid rgba(255, 255, 255, .07); backdrop-filter: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .6), 0 30px 60px -34px rgba(0, 0, 0, .95); transition: border-color .3s, box-shadow .3s; }
+.panel:hover { border-color: rgba(240, 192, 90, .22); box-shadow: 0 0 0 1px rgba(0, 0, 0, .6), 0 0 36px -14px rgba(240, 192, 90, .35), 0 30px 60px -34px rgba(0, 0, 0, .95); }
+.top { background: linear-gradient(180deg, rgba(5, 5, 7, .92), rgba(5, 5, 7, .55)); }
+.btn.gold { box-shadow: 0 0 26px -6px rgba(240, 192, 90, .75); animation: breathe 3.6s ease-in-out infinite; }
+@keyframes breathe { 50% { box-shadow: 0 0 34px -2px rgba(240, 192, 90, .95); } }
+.tl-card { box-shadow: 0 0 0 1px rgba(0, 0, 0, .6), 0 0 70px -30px rgba(124, 183, 255, .35), 0 30px 60px -34px #000; }
+.hero { position: relative; padding: 18px 4px 6px; }
+.hero h1 { font-size: clamp(28px, 3.4vw, 44px); line-height: 1.08; max-width: 18ch; background: linear-gradient(180deg, #fff, #cfc6ae 70%, #8d8470); -webkit-background-clip: text; background-clip: text; color: transparent; text-wrap: balance; }
+.hero p { max-width: 62ch; color: var(--ink-2); }
+.logo-sweep path { stroke-dasharray: 60; animation: dash 3.2s ease-in-out infinite alternate; }
+@keyframes dash { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .btn.gold, .logo-sweep path { animation: none; } }
+
+/* about: three things a person can picture */
+.big { position: relative; padding: 26px 28px 24px; overflow: hidden; }
+.big::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(240, 192, 90, .16), transparent 65%); pointer-events: none; }
+.big .ic { display: grid; place-content: center; width: 38px; height: 38px; border-radius: 12px; border: 1px solid rgba(240, 192, 90, .35); color: var(--gold); margin-bottom: 14px; box-shadow: 0 0 22px -8px rgba(240, 192, 90, .6); }
+.big .ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.big b small { display: inline; font: 500 17px var(--body); color: var(--ink-2); letter-spacing: 0; margin: 0 0 0 4px; }
+.big em { display: block; margin-top: 6px; font: 600 16px var(--display); font-style: normal; color: var(--ink); }
+.big small { margin-top: 10px; }
+.gloss { padding: 14px 20px; font-size: 13.5px; color: var(--ink-2); }
+
+.catlist > div { display: flex; gap: 12px; align-items: flex-start; }
+.catlist .cic { flex: none; display: grid; place-content: center; width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(240, 192, 90, .3); color: var(--gold); box-shadow: 0 0 18px -8px rgba(240, 192, 90, .6); font-style: normal; }
+.catlist .cic svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.catlist > div > div { min-width: 0; }
+.preset { background: rgba(9, 9, 12, .94); }
+.preset.on { background: linear-gradient(180deg, rgba(240, 192, 90, .16), rgba(9, 9, 12, .94)); }
+.preset-label { text-shadow: 0 0 8px #000; }
+.hero h1, .hero p { text-shadow: 0 0 22px #000, 0 0 6px #000; }
+.catlist > div > div { border-top: 0; padding: 0; }
+.catlist > div { border-top: 1px solid var(--line); padding: 10px 0; }

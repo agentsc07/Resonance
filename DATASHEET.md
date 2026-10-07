@@ -39,7 +39,7 @@ Contrastive speech-analytics dataset for hackathon Track C. Version 0.7 (7 Oct 2
 ## Quality checks (measured)
 - `generator/qa.py`: no clipping, no zero-runs, schema valid, boundary checks on all clips.
 - Dose-response: flaw strength grows with level on 8 of 8 VCTK speakers for 12 of 15 flaws; UPTALK on 7 of 8, REPEAT on 4 of 8 (tied levels) and EMPH_FLAT on 2 of 8.
-- **Leakage audit** (can a classifier find the flaw from editing artifacts alone): 0.598 AUC on held-out test windows (pass mark 0.60), 0.616 leave-one-speaker-out. Per flaw about 0.7 for RARE_HESIT, FILLER, PAUSE_BAD and EMPH_FLAT. The dataset still carries detectable editing traces for those flaws.
+- **Leakage audit** (can a classifier find the flaw from editing artifacts alone): 0.591 AUC on held-out test windows (pass mark 0.60), 0.612 leave-one-speaker-out. Per flaw about 0.7 for RARE_HESIT, FILLER, PAUSE_BAD and EMPH_FLAT. The dataset still carries detectable editing traces for those flaws.
 - **Not done:** the by-ear pilot gate (realism rating of each flaw by human listeners) has not been run. No human panel. Whether the flaws sound natural has not been verified by listening.
 
 ## Uses and limits

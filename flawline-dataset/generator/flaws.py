@@ -113,6 +113,17 @@ class Ctx:
         lo, hi = max(1, t - rad), min(len(self.x) - 1, t + rad)
         return lo + int(np.argmin(np.abs(self.x[lo:hi]))) if hi > lo else t
 
+    def valley(self, t: int, back_s: float = 0.04, fwd_s: float = 0.04) -> int:
+        """Quietest point within [t-back_s, t+fwd_s] (5 ms energy), snapped to a glottal epoch / zero crossing. ASR word edges are
+        +-40 ms, so a deletion cut at the raw edge leaves a sliver of the removed word's onset or coda; cutting in the valley does not."""
+        h = s2n(0.005)
+        lo, hi = max(0, t - s2n(back_s)), min(len(self.x) - 2 * h, t + s2n(fwd_s))
+        if hi <= lo:
+            return t
+        idx = np.arange(lo, hi, h)
+        e = np.array([rms(self.x[i:i + 2 * h]) for i in idx])
+        return self.snap_cut(int(idx[int(np.argmin(e))] + h))
+
     @property
     def floor_db(self) -> float:
         if getattr(self, "_floor", None) is None:
@@ -400,7 +411,7 @@ def own_filler(ctx: "Ctx", k: int, token: str = "uh", rng=None) -> tuple[np.ndar
         y = crossfade_concat([y, hum.astype(np.float32)], s2n(0.03))
     lvl = rms(ctx.x[W[k]["start"]: W[k]["end"]]) * undb(-2.0)
     y = y * (lvl / (rms(y) + 1e-9))
-    n_in, n_out = s2n(0.015), s2n(0.03)
+    n_in, n_out = s2n(0.045), s2n(0.06)
     y = y.astype(np.float32).copy()
     y[:n_in] *= np.linspace(0, 1, n_in)
     y[-n_out:] *= np.linspace(1, 0, n_out)
@@ -545,7 +556,7 @@ def inj_pause_bad(ctx, code, level, rng, zone, n):
     pause = CFG["flaws"][code]["levels"][level - 1]
     W, L = ctx.words, ctx.ling
     ks = boundaries(ctx, zone, lambda k: L["b"][k] == "phrase_tight" and not W[k]["punct"] and not W[k + 1]["punct"]
-                    and W[k + 1]["start"] - W[k]["end"] < s2n(0.08))
+                    and W[k + 1]["start"] - W[k]["end"] < s2n(0.08) and W[k + 1]["start"] < 0.8 * len(ctx.x))      # mid-sentence, never the end of the clip
     wts = [3.0 if (L["w"][k]["reducible"] and len(W[k]["clean"]) <= 3) else 1.5 if L["w"][k]["function"] else 0.8 for k in ks]
     edits = []
     for k in weighted_order(rng, ks, wts):
@@ -869,7 +880,7 @@ def inj_filler(ctx, code, level, rng, zone, n):
         f, src = own_filler(ctx, k, token)
         if f is None:
             continue
-        seg = np.concatenate([ctx.tone(s2n(0.05)), f, ctx.tone(s2n(0.07))])
+        seg = np.concatenate([ctx.tone(s2n(0.14)), f, ctx.tone(s2n(0.09))])      # a real gap before the 'uh': it is a breath-length stop, not a glued-on sound
         if ctx.claim(a, a + s2n(1.0), 0.4):
             edits.append(Edit(a, a, seg, lab(code, level, {"per_30s": per30, "token": token, "filler_source": src}, k, k + 1,
                                              "insert", inserted_s=round(len(seg) / SR, 3), **explain(ctx, k))))
@@ -1012,11 +1023,17 @@ def inj_word_skip(ctx, code, level, rng, zone, n):
         if pos in wpos and (W[k]["end"] - W[k]["start"]) > s2n(0.06) and len(W[k]["clean"]) > 1 and not W[k - 1]["sent_end"]:
             ks.append(k)
             wts.append(wpos[pos])
+    bl_path = Path(__file__).with_name("skip_blacklist.json")                     # words the removal gate caught leaving a sliver
+    black = set(json.loads(bl_path.read_text()).get(ctx.take_id, [])) if bl_path.exists() else set()
+    keep = [i for i, k in enumerate(ks) if k not in black]
+    ks, wts = [ks[i] for i in keep], [wts[i] for i in keep]
     edits = []
     for k in weighted_order(rng, ks, wts):
         k = int(k)
-        a, b = W[k]["start"], W[k]["end"]
-        if ctx.claim(a, b, 0.25):
+        a, b = ctx.valley(W[k]["start"], back_s=0.06, fwd_s=0.02), ctx.valley(W[k]["end"], back_s=0.02, fwd_s=0.06)
+        a = max(a, W[k - 1]["end"] - s2n(0.01))
+        b = min(b, W[k + 1]["start"] + s2n(0.01))
+        if b - a > s2n(0.05) and ctx.claim(a, b, 0.25):
             edits.append(Edit(a, b, np.zeros(0, np.float32),
                               lab(code, level, {"n_words": count}, k, k, "delete", word=W[k]["clean"], pos=Lg["w"][k]["pos"],
                                   context=context(W, k, k), why=f"reader skips the {Lg['w'][k]['pos'].lower()} '{W[k]['clean']}'")))

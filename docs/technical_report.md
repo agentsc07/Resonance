@@ -32,7 +32,7 @@ The system has four parts that agree through one label format (`schema/label.sch
 
 **Checks.** Flaw strength grows with level on all eight VCTK speakers for 12 of the 15 flaws; UPTALK on 7 of 8, REPEAT on 4 of 8 (tied levels) and EMPH_FLAT on 2 of 8 do not. Clean-machine reproduction (fresh Linux container, pinned packages, shipped baseline takes): 75 of 80 clips were bit-identical to the macOS build and the other 5 differed by one 16-bit step. Re-aligning the baselines on another machine moves word times by up to 0.37 s, so the released package ships `takes/`.
 
-**Leakage audit.** Can a classifier tell the edited clip from the clean one using only editing artifacts (click energy at the join, noise-floor step, spectral flux spike, exact repetition)? The control is paired: for every edit, the same place in the clean baseline. For flaws that *are* a silence the control is a natural silence edge. Held-out test windows give AUC 0.598 (pass mark 0.60); leave-one-speaker-out over the six train and dev speakers gives 0.616. Four flaws sit near 0.7 (RARE_HESIT, FILLER, PAUSE_BAD, EMPH_FLAT). We changed the audit definition once during the project (v1 compared noise floors across a pause edge, which measured the pause itself); the v1 value was 0.606. We report both and do not claim a clean pass.
+**Leakage audit.** Can a classifier tell the edited clip from the clean one using only editing artifacts (click energy at the join, noise-floor step, spectral flux spike, exact repetition)? The control is paired: for every edit, the same place in the clean baseline. For flaws that *are* a silence the control is a natural silence edge. Held-out test windows give AUC 0.591 (pass mark 0.60); leave-one-speaker-out over the six train and dev speakers gives 0.612. Four flaws sit near 0.7 (RARE_HESIT, FILLER, PAUSE_BAD, EMPH_FLAT). We changed the audit definition once during the project (v1 compared noise floors across a pause edge, which measured the pause itself); the v1 value was 0.606. We report both and do not claim a clean pass.
 
 ## 3. Engine
 
@@ -60,7 +60,7 @@ Event F1 at IoU ≥ 0.5, thresholds fitted on train only.
 
 | Mode | Train | Dev | JFK 1962 | Flaws counted |
 |---|---|---|---|---|
-| Same speaker | 0.59 | 0.71 | 0.59 | 11 |
+| Same speaker | 0.61 | 0.66 | 0.55 | 11 |
 | General (no reference) | 0.31 | 0.20 | 0.07 | 8 |
 | Another speaker | 0.23 | 0.22 | n/a | 8 |
 

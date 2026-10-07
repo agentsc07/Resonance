@@ -35,16 +35,18 @@ Event F1 at IoU 0.5 against the injected truth. Thresholds are fitted on **train
 
 | Mode | Train | Dev | JFK 1962 (extra) | Flaws counted |
 |---|---|---|---|---|
-| Same speaker (headline) | **0.59** | **0.71** | 0.59 | 11 |
-| General | 0.31 | 0.20 | 0.07 | 8 |
-| Another speaker (experimental) | 0.23 | 0.22 | n/a | 8 |
+| Same speaker (headline) | **0.61** | **0.66** | 0.55 | 11 |
+| General | 0.35 | 0.38 | 0.10 | 5 |
+| Another speaker (experimental, not re-run after the 7 Oct regeneration) | 0.23 | 0.22 | n/a | 8 |
+
+In plain terms (same speaker, train): it finds about 6 of 10 flaws and about 6 of 10 of its flags are real (precision 0.61, recall 0.61). With no reference: about 4 of 10 found, 3 of 10 flags real.
 
 - **Headline flaws (11):** FADE, FILLER, MONOTONE, PACE_FAST, PACE_SLOW, PAUSE_BAD, PAUSE_LOST, SHOUT, SLUR, WORD_SKIP, WORD_SWAP. FILLER and PAUSE_BAD are leakage-flagged (see below).
 - **Experimental, excluded from headline metrics and hidden by default:** EMPH_FLAT (VCTK voices are too flat for the flattening to scale with level; F1 0.09), REPEAT (0.13), UPTALK (0.25), RARE_HESIT (non-monotone dose-response, leakage 0.70).
-- **General mode does not reach the 0.4 bar** and does not transfer to the noisy 1962 recording (ASR errors and clean-speaker norms produce false flags). SLUR and MONOTONE are undetectable without a reference (effect about the size of natural variation).
+- **General mode does not reach the 0.4 bar** and does not transfer to the noisy 1962 recording (ASR errors and clean-speaker norms produce false flags). Localised pace changes, slurring, skipped words and monotone are not detectable without a reference, so only 5 flaws count there.
 - **Score acceptance tests (same speaker, after the worst-area blend):** score falls with level for 12 of 13 scored flaws (RARE_HESIT fails, rho -0.52), and a level-5 flaw now lands at about 55-85 overall instead of 83-96; false flags under noise/phone/room/codec 0.35 per minute (target <= 0.5, passes); clean-speech score shift under those conditions averages 3.5-3.7 pts for babble and reverb (target < 3, **fails**) with a worst case of 29.8 pts (the blend makes one false flag in one area cost more); points lost in other categories 3.7 (target < 5 met, < 2 not).
-- **Leakage audit** (classifier sees only editing artifacts): AUC 0.598 on held-out test windows (mark 0.60), 0.616 leave-one-speaker-out, about 0.7 for RARE_HESIT, FILLER, PAUSE_BAD, EMPH_FLAT. Reported as is; the audit definition changed during the project (v2, see `PROGRESS.md`).
-- **Not done:** the by-ear realism rating of the injected flaws (nobody has listened to them yet), a human panel, speakers over 45 or with slang, a speech-accent corpus.
+- **Leakage audit** (classifier sees only editing artifacts): AUC 0.591 on held-out test windows (mark 0.60), 0.612 leave-one-speaker-out, about 0.7 for RARE_HESIT, FILLER, PAUSE_BAD, EMPH_FLAT. Reported as is; the audit definition changed during the project (v2, see `PROGRESS.md`).
+- **Not done:** the by-ear realism rating of the injected flaws (one listener checked 8 pairs on 7 Oct; fixes from that listening are in), a human panel, speakers over 45 or with slang, a speech-accent corpus.
 
 ## Layout
 

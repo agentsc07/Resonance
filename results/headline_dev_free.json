@@ -3,24 +3,21 @@
  "mode": "free",
  "clips": 20,
  "all_flaws": {
-  "f1": 0.143,
-  "precision": 0.207,
-  "recall": 0.109
+  "f1": 0.182,
+  "precision": 0.667,
+  "recall": 0.105
  },
  "headline": {
   "flaws": [
    "FADE",
    "FILLER",
-   "PACE_FAST",
-   "PACE_SLOW",
    "PAUSE_BAD",
    "SHOUT",
-   "WORD_SKIP",
    "WORD_SWAP"
   ],
-  "f1": 0.197,
-  "precision": 0.207,
-  "recall": 0.188
+  "f1": 0.375,
+  "precision": 0.667,
+  "recall": 0.261
  },
  "experimental": {
   "EMPH_FLAT": "VCTK speakers are not expressive enough for a flattening to scale with level; detector F1 0.09",
@@ -31,10 +28,13 @@
  "cross_disabled": [
   "EMPH_FLAT",
   "MONOTONE",
+  "PACE_FAST",
+  "PACE_SLOW",
   "PAUSE_LOST",
   "RARE_HESIT",
   "REPEAT",
-  "SLUR"
+  "SLUR",
+  "WORD_SKIP"
  ],
  "leakage_flagged": {
   "PAUSE_BAD": 0.68,
@@ -45,8 +45,8 @@
   "FADE": 0.0,
   "FILLER": 0.222,
   "MONOTONE": 0.0,
-  "PACE_FAST": 0.333,
-  "PACE_SLOW": 0.19,
+  "PACE_FAST": 0.0,
+  "PACE_SLOW": 0.0,
   "PAUSE_BAD": 0.5,
   "PAUSE_LOST": 0.0,
   "RARE_HESIT": 0.0,
@@ -55,6 +55,6 @@
   "SLUR": 0.0,
   "UPTALK": 0.0,
   "WORD_SKIP": 0.0,
-  "WORD_SWAP": 0.0
+  "WORD_SWAP": 0.545
  }
 }

@@ -18,10 +18,10 @@ Rules kept throughout: generator and engine never import each other; the test sp
 
 | Mode | Train (235) | Dev (B03, 20) | JFK extra (160) | Flaws counted |
 |---|---|---|---|---|
-| Same speaker, headline flaws | 0.588 | 0.705 | 0.594 | 11 |
-| Same speaker, all 15 | 0.489 | 0.628 | 0.496 | 15 |
-| General (reference-free), headline flaws | 0.315 | 0.197 | 0.071 | 8 |
-| General, all flaws | 0.254 | 0.143 | 0.064 | 15 |
+| Same speaker, headline flaws | 0.611 | 0.659 | 0.551 | 11 |
+| Same speaker, all 15 | 0.521 | 0.586 | 0.485 | 15 |
+| General (reference-free), headline flaws | 0.351 | 0.375 | 0.095 | 5 |
+| General, all flaws | 0.229 | 0.182 | 0.064 | 15 |
 | Another speaker (experimental), headline | 0.230 | 0.217 | n/a | 8 |
 | Another speaker, all flaws | 0.200 | 0.162 | n/a | 15 |
 
@@ -143,3 +143,14 @@ python eval/headline.py --split dev --mode free     # train|dev|extra (test only
 - `--check-repro` shows a MISMATCH on its first run after a change; run it twice.
 - `ingest_corpus.py` with no arguments rewrites `baselines.yaml` without B09/B10; run `scripts/fetch_jfk.sh` after it (the Makefile does).
 - Keep the generator and the engine from importing each other: it is what makes the evaluation blind.
+
+
+## 7 Oct (evening): listening-driven generator fixes, regeneration, new numbers
+
+Sai listened to the 8 level-4 pairs and reported: pace changes sounded like network lag; the filler "uh" was random and glued to the previous word; the misplaced pause fell at the end; slur was barely audible; skipped words kept a sliver of the removed word.
+- **Generator changes (`flawline-dataset/generator/flaws.py`, `config.yaml`):** pace regions shortened (fast 1-2 s, slow 0.7-1.4 s); filler gets a 140 ms room-tone gap before it and 45 ms/60 ms fades; misplaced pause only mid-sentence (before 80% of the clip); slur strengthened (-3..-16 dB); word removal cut in the energy valley beside the word (`Ctx.valley`) with a wider margin.
+- **New gate (`generator/verify_skips.py`):** re-runs speech recognition on every joined region; if the recogniser still hears "previous word, removed word, next word" the clip fails and that word is blacklisted (`skip_blacklist.json`) and regenerated. After 3 rounds: 0 of 81 removals still audible. QA: 553 clips, 0 problems (word-removal boundary tolerance 60 ms).
+- **Dataset regenerated:** 563 clips (all flawed clips; clean condition clips kept).
+- **Engine refit on train only:** same speaker now train 0.611 / dev 0.659 / JFK 0.551 (precision 0.61, recall 0.61 on train); SLUR rose from 0.17 to 0.71 once audible; WORD_SKIP fell from 0.67 to 0.46 (cleaner cuts are harder to find; refitting the new skip thresholds gave no gain). General mode train 0.351 (5 flaws), dev 0.375, JFK 0.095. Cross-speaker not re-run.
+- **Acceptance/leakage on the new data:** dose-response 12 of 13 scored flaws (RARE_HESIT -0.52 fails), false flags 0.35/min, worst clean-speech shift still 29.8 (fails), locality 3.65; leakage AUC 0.591 held-out, 0.612 leave-one-speaker-out.
+- **UI:** black room with a drifting hologram waveform, dark panels with gold glow instead of glass, one lane at a time with a glowing trace and the waveform as a faint backdrop, an icon per flaw area, a play button on every manifest row, plain "6 of 10" tiles on About.

@@ -6,8 +6,8 @@ region_s: {min: 1.0, max: 6.0}          # modify-type regions; word-aligned
 max_regions: 3
 
 flaws:
-  PACE_FAST:  {category: Pacing,         param: rate,       levels: [1.10, 1.20, 1.35, 1.50, 1.75], region_s: [2.0, 4.0]}
-  PACE_SLOW:  {category: Pacing,         param: rate,       levels: [0.90, 0.80, 0.70, 0.60, 0.50], region_s: [1.5, 3.0]}
+  PACE_FAST:  {category: Pacing,         param: rate,       levels: [1.10, 1.20, 1.35, 1.50, 1.75], region_s: [1.0, 2.0]}
+  PACE_SLOW:  {category: Pacing,         param: rate,       levels: [0.90, 0.80, 0.70, 0.60, 0.50], region_s: [0.7, 1.4]}
   PAUSE_BAD:  {category: Pausing,        param: pause_s,    levels: [0.3, 0.6, 1.0, 1.6, 2.5]}
   PAUSE_LOST: {category: Pausing,        param: removed,    levels: [0.20, 0.40, 0.60, 0.80, 1.00]}
   MONOTONE:   {category: Intonation,     param: range_mult, levels: [0.8, 0.6, 0.4, 0.2, 0.0], region_s: [3.0, 5.0]}
@@ -18,7 +18,7 @@ flaws:
   FILLER:     {category: Fluency,        param: per_30s,    levels: [1, 2, 3, 5, 8]}
   REPEAT:     {category: Fluency,        param: repeat,     levels: [[1, 1], [1, 2], [2, 1], [4, 1], [4, 2]]}   # [words, extra copies]
   RARE_HESIT: {category: Fluency,        param: pause_s,    levels: [0.2, 0.4, 0.7, 1.0, 1.5], zipf_below: 3.5, word_slow: [0.9, 0.85, 0.8, 0.75, 0.7], filler_from_level: 3}
-  SLUR:       {category: Clarity,        param: atten_db,   levels: [-2, -4, -6, -9, -12], region_s: [1.5, 3.5]}
+  SLUR:       {category: Clarity,        param: atten_db,   levels: [-3, -6, -9, -12, -16], region_s: [1.5, 3.5]}
   WORD_SKIP:  {category: Text fidelity,  param: n_words,    levels: [1, 2, 3, 5, 8]}
   WORD_SWAP:  {category: Text fidelity,  param: n_words,    levels: [1, 2, 3, 5, 8]}
 

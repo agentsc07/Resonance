@@ -32,6 +32,7 @@ GRID = {
     "FADE": {"fade_db": [3.5, 4.5, 5.5, 7.0]},
     "SHOUT": {"shout_db": [3.0, 4.0, 5.0, 6.5, 8.0]},
     "SLUR": {"slur_db": [1.5, 2.0, 2.5, 3.0, 4.0, 5.0], "expand_slur": [0, 1]},
+    "WORD_SKIP": {"skip_min": [0.05, 0.08, 0.12], "skip_frac": [0.3, 0.45, 0.6]},
     "WORD_SWAP": {"swap_contrast": [0.2, 0.3, 0.4, 0.55, 0.75, 1.0]},
 }
 

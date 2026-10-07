@@ -44,11 +44,11 @@ MODES = [
 LANE = {"PACE_FAST": "rate", "PACE_SLOW": "rate", "WORD_SKIP": "rate", "WORD_SWAP": "rate", "MONOTONE": "pitch", "UPTALK": "pitch", "EMPH_FLAT": "pitch", "RARE_HESIT": "rate",
         "SHOUT": "level", "FADE": "level", "PAUSE_BAD": "level", "PAUSE_LOST": "level", "FILLER": "level", "REPEAT": "level", "SLUR": "level"}
 PRESETS = [
-    {"id": "accent", "title": "Accent, no reference", "sub": "Clean reading by an Indian-English speaker", "clip": "B03-CHAMP_C0", "mode": "free"},
-    {"id": "noise", "title": "Noisy room", "sub": "Clean delivery under 20 dB babble", "clip": "B03-CHAMP_N20", "mode": "free"},
-    {"id": "shout", "title": "Sudden shouting", "sub": "A loud stretch injected at level 5", "clip": "B01-CHAMP_C0__SHOUT_L5_s4068", "mode": "free"},
-    {"id": "pause", "title": "A real long pause", "sub": "Unedited reading, 1.7 s silence", "clip": "B07-CHAMP_C0", "mode": "free"},
-    {"id": "jfk", "title": "JFK, 1962", "sub": "Rice University address, words removed", "clip": "B09-CHAMP_C0__WORD_SKIP_L5_s5972", "mode": "free"},
+    {"id": "accent", "title": "Accent, no reference", "sub": "Clean reading", "clip": "B03-CHAMP_C0", "mode": "free"},
+    {"id": "noise", "title": "Noisy room", "sub": "Clean, with chatter", "clip": "B03-CHAMP_N20", "mode": "free"},
+    {"id": "shout", "title": "Sudden shouting", "sub": "Injected loud stretch", "clip": "B01-CHAMP_C0__SHOUT_L5_s4068", "mode": "free"},
+    {"id": "pause", "title": "A real long pause", "sub": "A 1.7 s silence", "clip": "B07-CHAMP_C0", "mode": "free"},
+    {"id": "jfk", "title": "JFK, 1962", "sub": "Words removed", "clip": "B09-CHAMP_C0__WORD_SKIP_L5_s5972", "mode": "free"},
 ]
 
 _MAN: list[dict] | None = None
@@ -364,7 +364,7 @@ def about() -> dict:
         for mode in ("same", "free", "cross"):
             h = _json(f"headline_{split}_{mode}.json")
             if h:
-                ev.setdefault(mode, {})[split] = {"headline": h["headline"]["f1"], "all": h["all_flaws"]["f1"], "clips": h["clips"], "flaws": len(h["headline"]["flaws"]), "per": h["per_flaw_f1"]}
+                ev.setdefault(mode, {})[split] = {"headline": h["headline"]["f1"], "all": h["all_flaws"]["f1"], "p": h["headline"]["precision"], "r": h["headline"]["recall"], "clips": h["clips"], "flaws": len(h["headline"]["flaws"]), "per": h["per_flaw_f1"]}
     acc = _json("acceptance_same.json")
     accept = None
     if acc:
