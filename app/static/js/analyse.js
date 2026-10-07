@@ -157,8 +157,8 @@ function step(d) {
 
 function renderTable() {
   const R = S.result;
-  $("#flaws-table").innerHTML = `<tr><th>#</th><th>Time</th><th>Area</th><th>What</th><th>Severity</th><th>Points lost</th><th>Why</th></tr>` +
-    (R.regions.length ? R.regions.slice().sort((a, b) => a.start - b.start).map((r) => `<tr><td class="mono">${tl.numberOf(r.id)}</td><td class="mono">${r.start.toFixed(1)}–${r.end.toFixed(1)} s</td><td>${r.category}</td><td>${esc(r.name)}</td><td class="mono">${r.severity.toFixed(1)}</td><td class="mono" style="color:var(--coral)">−${r.points.toFixed(1)}</td><td>${esc(r.why.replace(/^Words \d+–\d+ /, ""))}</td></tr>`).join("") : `<tr><td colspan="7" class="dim">Nothing flagged.</td></tr>`);
+  $("#flaws-table").innerHTML = `<tr><th>#</th><th>Time</th><th>Area</th><th>What</th><th>Severity</th><th>Points lost</th><th>Why</th><th>Tip</th></tr>` +
+    (R.regions.length ? R.regions.slice().sort((a, b) => a.start - b.start).map((r) => `<tr><td class="mono">${tl.numberOf(r.id)}</td><td class="mono">${r.start.toFixed(1)}–${r.end.toFixed(1)} s</td><td>${r.category}</td><td>${esc(r.name)}</td><td class="mono">${r.severity.toFixed(1)}</td><td class="mono" style="color:var(--coral)">−${r.points.toFixed(1)}</td><td>${esc(r.why.replace(/^Words \d+–\d+ /, ""))}</td><td>${esc(r.tip || "")}</td></tr>`).join("") : `<tr><td colspan="8" class="dim">Nothing flagged.</td></tr>`);
 }
 
 // ------------------------------------------------------------------ playback
@@ -237,6 +237,13 @@ function download(name, text, type) {
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 function reportHtml(R) {
-  const rows = R.regions.map((r) => `<tr><td>${r.start.toFixed(1)}–${r.end.toFixed(1)}</td><td>${r.category}</td><td>${esc(r.name)}</td><td>${r.severity.toFixed(1)}</td><td>${r.points.toFixed(1)}</td><td>${esc(r.why)}</td></tr>`).join("");
-  return `<!doctype html><meta charset="utf-8"><title>Delivery report</title><body style="font:14px system-ui;max-width:900px;margin:2rem auto"><h1>Delivery report</h1><h2>${R.overall} / 100 · ${R.band}</h2><p>${esc(R.summary)}</p><ul>${R.categories.map((c) => `<li>${c.name}: ${c.score}</li>`).join("")}</ul><table border="1" cellpadding="4" cellspacing="0"><tr><th>Time</th><th>Area</th><th>What</th><th>Severity</th><th>Points lost</th><th>Why</th></tr>${rows}</table></body>`;
+  const t = (r) => `${r.start.toFixed(1)}–${r.end.toFixed(1)} s`;
+  const clean = (r) => esc(r.why.replace(/^Words \d+–\d+ /, "").replace(/\s*\([^()]*severity[^()]*\)\.?$/, "."));
+  const rows = R.regions.slice().sort((a, b) => a.start - b.start).map((r, i) => `<tr><td>${i + 1}</td><td>${t(r)}</td><td>${esc(r.name)}<br><small>${r.category}</small></td><td>${r.severity.toFixed(1)} / 5</td><td>−${r.points.toFixed(1)}</td><td>${clean(r)}</td><td>${esc(r.tip || "")}</td></tr>`).join("");
+  const q = R.quality ? `<p><small>Recording quality: ${esc(R.quality.badge)} (noise margin ${R.quality.snr_db} dB). Mode: ${esc(R.mode)}.</small></p>` : "";
+  const brand = esc((document.querySelector("[data-brand]") || {}).textContent || "Delivery");
+  return `<!doctype html><meta charset="utf-8"><title>${brand} report</title><body style="font:14px/1.5 system-ui;max-width:960px;margin:2rem auto;padding:0 1rem;color:#222"><h1>${brand} delivery report</h1><h2>${R.overall} / 100 · ${esc(R.band)}</h2><p>${esc(R.summary)}</p>${q}
+<h3>Scores by area</h3><ul>${R.categories.map((c) => `<li>${c.name}: ${c.score}</li>`).join("")}</ul>
+<h3>${R.regions.length ? R.regions.length + " moment" + (R.regions.length > 1 ? "s" : "") + " that cost points" : "Nothing stood out"}</h3>
+${R.regions.length ? `<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%"><tr><th>#</th><th>Time</th><th>What</th><th>Severity</th><th>Points</th><th>Why</th><th>Tip</th></tr>${rows}</table>` : ""}</body>`;
 }
