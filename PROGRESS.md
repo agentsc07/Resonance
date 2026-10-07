@@ -160,3 +160,10 @@ Sai listened to the 8 level-4 pairs and reported: pace changes sounded like netw
 - **Dataset:** pair order is trailing off, sudden loud stretch, then the others; all descriptions rewritten in plain words; manifest rows have a play button; hero and gate wording clarified.
 - **About:** rewritten as a product page: three strengths (12 of 13 flaw types score steadily lower as they get worse; fewer than 0.4 false flags per minute on clean speech in rough recordings; 6 in 10 injected flaws found blind with a clean reading, 6 in 10 flags real), "How a score is made" (find, weigh, score) and the full scoring rubric (collapsed: formula, bands, genre weights per area). The weak/negative blocks (full results table, "what it does not do", the no-reference tile) were removed from the page; the numbers remain in this file, the README and the technical report.
 - **Scoring attempt:** placing the skipped-word prediction at the join point did not improve WORD_SKIP (0.44 vs 0.46) and was reverted.
+
+## 7 Oct night — Part A (scoring and metrics)
+
+**A1 — standard metrics next to the strict one (no engine change).** `eval/headline.py` now writes `metrics_headline` (plain-English labels) into `results/headline_<split>_<mode>.json`.
+Headline flaws, F1 at overlap ≥ 0.5 (strict) / overlap ≥ 0.3 / onset within 250 ms · median onset error · area accuracy:
+same train 0.611 / 0.670 / 0.580 · 17.5 ms · 98%; same dev 0.659 / 0.729 / 0.541 · 29.5 ms · 100%; same extra (JFK) 0.551 / 0.607 / 0.528 · 26.1 ms · 96%.
+free train 0.351 / 0.362 / 0.325 · 67 ms · 86%; free dev 0.375 / 0.375 / 0.375 · 70 ms · 86% (6 of 23 found); free extra (JFK) 0.095 / 0.103 / 0.085 · 66 ms · 74% (794 flags on 199 true; noisy 1962 recording).

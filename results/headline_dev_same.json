@@ -25,6 +25,53 @@
   "precision": 0.667,
   "recall": 0.651
  },
+ "metrics_headline": {
+  "strict_iou50": {
+   "label": "Strict: flag overlaps the real moment by at least half",
+   "f1": 0.659,
+   "precision": 0.667,
+   "recall": 0.651,
+   "tp": 28,
+   "n_gt": 43,
+   "n_pred": 42
+  },
+  "overlap_iou30": {
+   "label": "Standard: flag overlaps the real moment by at least 30%",
+   "f1": 0.729,
+   "precision": 0.738,
+   "recall": 0.721,
+   "tp": 31,
+   "n_gt": 43,
+   "n_pred": 42
+  },
+  "onset_250ms": {
+   "label": "Onset: right flaw type, start within 250 ms of the real start",
+   "f1": 0.541,
+   "precision": 0.548,
+   "recall": 0.535,
+   "tp": 23,
+   "n_gt": 43,
+   "n_pred": 42
+  },
+  "median_onset_error_ms": {
+   "label": "How far off the flag start is, median (milliseconds)",
+   "value": 29.5,
+   "n": 31
+  },
+  "category_accuracy": {
+   "label": "Share of located flags that name the right area",
+   "value": 1.0,
+   "categories": [
+    "Clarity",
+    "Fluency",
+    "Intonation",
+    "Pacing",
+    "Pausing",
+    "Text fidelity",
+    "Volume"
+   ]
+  }
+ },
  "experimental": {
   "EMPH_FLAT": "VCTK speakers are not expressive enough for a flattening to scale with level; detector F1 0.09",
   "REPEAT": "detector F1 0.13; leakage AUC 0.64",

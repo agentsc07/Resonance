@@ -48,6 +48,37 @@ def match(gt: list[dict], pred: list[dict], thr: float, key=None):
     return out
 
 
+def match_onset(gt: list[dict], pred: list[dict], collar_s: float, key=None):
+    """One-to-one matching on onset time alone: predicted start within +-collar_s of the true start (same key)."""
+    cand = []
+    for i, g in enumerate(gt):
+        for j, p in enumerate(pred):
+            if key is not None and key(g) != key(p):
+                continue
+            d = abs(float(g["start_s"]) - float(p["start_s"]))
+            if d <= collar_s:
+                cand.append((d, i, j))
+    cand.sort()
+    ug, up, out = set(), set(), []
+    for d, i, j in cand:
+        if i in ug or j in up:
+            continue
+        ug.add(i)
+        up.add(j)
+        out.append((i, j, d))
+    return out
+
+
+def onset_f1(pairs, collar_s: float = 0.25) -> dict:
+    tp = ng = npd = 0
+    for gt, pr in pairs:
+        tp += len(match_onset(gt["what"], pr["what"], collar_s, lambda r: r["flaw"]))
+        ng += len(gt["what"])
+        npd += len(pr["what"])
+    p, r, f = prf(tp, ng, npd)
+    return {"precision": p, "recall": r, "f1": f, "tp": tp, "n_gt": ng, "n_pred": npd}
+
+
 def prf(tp: int, n_gt: int, n_pred: int) -> tuple[float, float, float]:
     p = tp / n_pred if n_pred else 0.0
     r = tp / n_gt if n_gt else 0.0
