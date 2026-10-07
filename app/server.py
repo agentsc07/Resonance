@@ -2,6 +2,7 @@
 LAB=1 adds the lab pages (Baselines, Alterations review, Pilot gate); they run as the Streamlit lab app, started alongside and linked from the nav."""
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import sys
@@ -19,7 +20,8 @@ STATIC = Path(__file__).resolve().parent / "static"
 LAB = os.environ.get("LAB") == "1"
 LAB_PORT = int(os.environ.get("LAB_PORT", "8766"))
 HUMAN = LAB or os.environ.get("HUMAN") == "1"       # the human-listening pages (/label, /review) are lab-only
-app = FastAPI(title="Flawline", docs_url=None, redoc_url=None)
+BRAND = json.loads((Path(__file__).resolve().parent / "brand.json").read_text())      # product name + tagline: the only place the name is set (dataset stays "Flawline")
+app = FastAPI(title=BRAND["product"], docs_url=None, redoc_url=None)
 
 
 class AnalyseReq(BaseModel):
@@ -37,7 +39,7 @@ class AnalyseReq(BaseModel):
 
 @app.get("/api/meta")
 def meta():
-    return {**S.catalog(), "lab": LAB, "lab_url": f"http://localhost:{LAB_PORT}" if LAB else None}
+    return {**S.catalog(), "brand": BRAND, "lab": LAB, "lab_url": f"http://localhost:{LAB_PORT}" if LAB else None}
 
 
 @app.post("/api/analyse")
