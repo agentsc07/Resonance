@@ -4,6 +4,7 @@
 #   make dataset    generate every flawed / conditioned clip, then the manifest
 #   make eval       harness self-test, acceptance tests, leakage audit, headline metrics on train and dev (never the test split)
 #   make app        the web app on http://localhost:8501 (Analyse, Dataset, About)
+#   make label      the listening-study pages /label and /review on http://localhost:8501
 #   make lab        the same plus the lab pages (Baselines, Alterations review, Pilot gate)
 PY ?= python
 GEN = flawline-dataset/generator
@@ -34,4 +35,9 @@ app:
 lab:
 	LAB=1 $(PY) -m app.server
 
-.PHONY: setup baselines dataset eval app lab
+.PHONY: setup baselines dataset eval app lab label review
+
+label:
+	HUMAN=1 $(PY) -m app.server
+
+review: label

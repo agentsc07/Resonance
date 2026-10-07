@@ -42,6 +42,9 @@ Contrastive speech-analytics dataset for hackathon Track C. Version 0.7 (7 Oct 2
 - **Leakage audit** (can a classifier find the flaw from editing artifacts alone): 0.591 AUC on held-out test windows (pass mark 0.60), 0.612 leave-one-speaker-out. Per flaw about 0.7 for RARE_HESIT, FILLER, PAUSE_BAD and EMPH_FLAT. The dataset still carries detectable editing traces for those flaws.
 - **Not done:** the by-ear pilot gate (realism rating of each flaw by human listeners) has not been run. No human panel. Whether the flaws sound natural has not been verified by listening.
 
+## Human reference set
+`flawline-dataset/human/` holds a small set of readings listened to by people: `clips/` (neutral file names; unedited readings plus five dataset clips with hidden injected flaws at levels 3 to 5), `labels_<rater>.json` (per clip: marks with time and area, an overall 1 to 10 score, an optional note, timestamp), `hidden_map.json` (which clips carry injected flaws; never shown to raters), `transcripts.json` (the read-aloud text of each clip) and `review_<reviewer>.json` (agree / disagree / unsure on engine flags that no listener marked). Raters entered a name or alias of their choice. Only recordings whose speakers consented are included; the VCTK and JFK clips keep their own licences. It is a small reference for checking the engine against listeners, not a rating of any speaker.
+
 ## Uses and limits
 - Suited to: benchmarking detectors of delivery flaws against known truth; invariance tests (does a noisy recording look flawed?); score-calibration experiments.
 - Not suited to: claims about how humans rate speakers; accent or demographic analysis (one or two speakers per accent).

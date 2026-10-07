@@ -48,9 +48,31 @@ In plain terms (same speaker, train): it finds about 6 of 10 flaws and about 6 o
 - **Headline flaws (11):** FADE, FILLER, MONOTONE, PACE_FAST, PACE_SLOW, PAUSE_BAD, PAUSE_LOST, SHOUT, SLUR, WORD_SKIP, WORD_SWAP. FILLER and PAUSE_BAD are leakage-flagged (see below).
 - **Experimental, excluded from headline metrics and hidden by default:** EMPH_FLAT (VCTK voices are too flat for the flattening to scale with level; F1 0.09), REPEAT (0.13), UPTALK (0.25), RARE_HESIT (non-monotone dose-response, leakage 0.70).
 - **General mode does not reach the 0.4 bar** and does not transfer to the noisy 1962 recording (ASR errors and clean-speaker norms produce false flags). Localised pace changes, slurring, skipped words and monotone are not detectable without a reference, so only 5 flaws count there.
-- **Score acceptance tests (same speaker, after the worst-area blend):** score falls with level for 12 of 13 scored flaws (RARE_HESIT fails, rho -0.52), and a level-5 flaw now lands at about 55-85 overall instead of 83-96; false flags under noise/phone/room/codec 0.35 per minute (target <= 0.5, passes); clean-speech score shift under those conditions averages 3.5-3.7 pts for babble and reverb (target < 3, **fails**) with a worst case of 29.8 pts (the blend makes one false flag in one area cost more); points lost in other categories 3.7 (target < 5 met, < 2 not).
+- **Other ways to count the same events** (headline flaws; strict = flag overlaps the real moment by at least half, standard = at least 30 %, onset = right flaw type and start within 250 ms):
+
+| | Strict F1 | Standard F1 | Onset F1 | Typical gap to the real start | Names the right area |
+|---|---|---|---|---|---|
+| Same speaker, train | 0.61 | 0.67 | 0.58 | 18 ms | 98 % |
+| Same speaker, dev | 0.66 | 0.73 | 0.54 | 30 ms | 100 % |
+| Same speaker, JFK 1962 | 0.55 | 0.61 | 0.53 | 26 ms | 96 % |
+| General, train | 0.35 | 0.36 | 0.33 | 67 ms | 86 % |
+| General, dev (6 of 23 found) | 0.38 | 0.38 | 0.38 | 70 ms | 86 % |
+| General, JFK 1962 | 0.10 | 0.10 | 0.09 | 66 ms | 74 % |
+
+- **Score acceptance tests (same speaker):** score falls with level for 12 of 13 scored flaws (RARE_HESIT fails, rho -0.64; UPTALK and EMPH_FLAT are experimental and not scored). One weight per flaw now makes a single level-5 flaw land at about 60 overall for every flaw type (56 to 65; it was 56 to 92 before). False flags under noise/phone/room/codec: 0.45 per minute (target <= 0.5, passes). Worst clean-speech score shift under those conditions: 6.5 points (target < 10, met; the older target < 3 is **not** met); mean shift by condition 0.0 to 1.6. A lone flag in a rough recording counts half and cannot be the weakest area. Points lost in other areas on level-3 clips: 6.1 (target < 2, **not met**; it rose from 3.7 when the flaw weights went up).
 - **Leakage audit** (classifier sees only editing artifacts): AUC 0.591 on held-out test windows (mark 0.60), 0.612 leave-one-speaker-out, about 0.7 for RARE_HESIT, FILLER, PAUSE_BAD, EMPH_FLAT. Reported as is; the audit definition changed during the project (v2, see `PROGRESS.md`).
-- **Not done:** the by-ear realism rating of the injected flaws (one listener checked 8 pairs on 7 Oct; fixes from that listening are in), a human panel, speakers over 45 or with slang, a speech-accent corpus.
+- **Not done:** the by-ear realism rating of the injected flaws (one listener checked 8 pairs on 7 Oct; fixes from that listening are in), a speech-accent corpus, speakers over 45 or with slang. Skipped-word detection with no reference reading was tried again and stays off (precision 0.07 on train); the human reference set below is the independent check.
+
+## Human reference set (listening study)
+
+People listen to a few readings, press Space where something slips, name the area, and give an overall score from 1 to 10. The engine (upload mode, never tuned on this set) is then compared with them: how many of the human marks it flagged, how many of its flags a listener also marked, and whether its score ranks the readings the way listeners do. Five of the clips are dataset clips with hidden injected flaws, so the listeners' own hit rate on known flaws is measured too.
+
+```bash
+make label                       # http://localhost:8501/label  (each rater opens it on their own machine and enters a name)
+python eval/human_agreement.py   # results/human_agreement.json and .txt, with counts next to every percentage
+make review                      # http://localhost:8501/review: listen to engine flags no listener marked; Agree / Disagree / Unsure
+```
+Clips live in `flawline-dataset/human/clips/` (WAV, M4A or FLAC; neutral file names, order shuffled per rater); labels are saved to `flawline-dataset/human/labels_<rater>.json`. To add your own recordings, drop the files in `clips/` and, optionally, their text in `transcripts.json`. Only recordings whose speakers agreed to it are released. Results appear here and on the About page once raters have finished.
 
 ## Layout
 
