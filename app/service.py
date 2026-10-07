@@ -404,6 +404,14 @@ def about() -> dict:
     rub = yaml.safe_load((ROOT / "engine" / "rubric.yaml").read_text())
     links = _json("../app/links.json") or {}
     hl = _json("headline_train_same.json") or {}
-    return _clean({"eval": ev, "accept": accept, "rubric": {"tau": rub["tau"], "blend": rub["blend_mean"], "bands": rub["bands"], "weights": rub["genre_weights"], "categories": rub["categories"]}, "experimental": hl.get("experimental", {}), "links": links,
+    mh = hl.get("metrics_headline", {})
+    hum = _json("human_agreement.json")
+    human = None
+    if hum and hum.get("raters") and (hum.get("all_clips", {}).get("pooled", {}).get("human_marks", 0) > 0):
+        pl, un, fa = hum["all_clips"]["pooled"], hum.get("unedited_clips", {}).get("pooled", {}), hum.get("flags_agreed_with", {})
+        ua = fa.get("unedited_only", {})
+        human = {"raters": len(hum["raters"]), "clips": hum["clips"], "marks": pl["human_marks"], "caught": pl["recall_any_area"], "spearman": pl.get("score_spearman_mean_human"), "score_clips": pl.get("score_n_clips"),
+                 "unedited_flags": ua.get("flags"), "unedited_agreed": (ua.get("matched", 0) + ua.get("agreed_on_listening", 0)) if ua else None}
+    return _clean({"eval": ev, "metrics": {"onset_ms": (mh.get("median_onset_error_ms") or {}).get("value"), "area_acc": (mh.get("category_accuracy") or {}).get("value")}, "human": human, "accept": accept, "rubric": {"tau": rub["tau"], "blend": rub["blend_mean"], "bands": rub["bands"], "weights": rub["genre_weights"], "categories": rub["categories"]}, "experimental": hl.get("experimental", {}), "links": links,
             "leak": {"test": next((float(r["auc"]) for r in _read_csv(RES / "leakage.csv") if r["scope"] == "ALL"), None),
                      "loso": next((float(r["auc"]) for r in _read_csv(RES / "leakage_loso.csv") if r["scope"] == "ALL"), None)}})

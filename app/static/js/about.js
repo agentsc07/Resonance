@@ -15,14 +15,22 @@ export async function initAbout() {
   const a = await api("/api/about");
   const same = a.eval.same || {}, ac = a.accept, rub = a.rubric;
   const dose = ac ? Object.values(ac.dose_per_flaw).filter((v) => v != null) : [], ok = dose.filter((v) => v <= -0.9).length;
-  const of10 = (v) => (v == null ? "–" : Math.round(v * 10)), lim = ac ? Math.ceil(ac.flags_per_min * 10) / 10 : null;
+  const of10 = (v) => (v == null ? "–" : Math.round(v * 10)), lim = ac ? Math.ceil(ac.flags_per_min * 10) / 10 : null;      // 0.448 -> 0.5
 
   // three headline numbers, each a strength we can back with a number
-  $("#big3").innerHTML = [
+  const hu = a.human, mt = a.metrics || {};
+  const tiles = [];
+  if (hu && hu.marks) tiles.push([ICON.find, `${hu.caught}<small> of ${hu.marks}</small>`, "slips human listeners marked, caught", `Score agreement with listeners: Spearman ${hu.spearman == null ? "–" : (+hu.spearman).toFixed(2)}. ${hu.raters} listener${hu.raters > 1 ? "s" : ""}, ${hu.clips} clips.`]);
+  if (hu && hu.unedited_flags) tiles.push([ICON.calm, `${Math.round(100 * hu.unedited_agreed / hu.unedited_flags)}<small>%</small>`, "of flags on unedited speech a listener agreed with", `${hu.unedited_agreed} of ${hu.unedited_flags} flags.`]);
+  tiles.push(...[
     [ICON.rise, `${ok}<small> of ${dose.length}</small>`, "flaw types score steadily lower as they get worse", "Make a flaw stronger and the score falls with it: the scoring behaves like a rubric, not noise."],
     [ICON.calm, `&lt; ${lim ?? "–"}<small> false flags / min</small>`, "on clean speech, even in rough recordings", "Noise, a phone line, an echoey room or MP3 compression do not make it invent flaws."],
-    [ICON.find, `${of10(same.train?.r)}<small> of 10</small>`, "injected flaws found, blind", `With a clean reading to compare against, and ${of10(same.train?.p)} in 10 of its flags are real. Missing pauses: every flag real, 3 in 4 found.`],
-  ].map(([ic, n, l, s]) => `<div class="panel big"><span class="ic">${ic}</span><b class="mono">${n}</b><em>${l}</em><small>${s}</small></div>`).join("");
+    [ICON.find, `${of10(same.train?.r)}<small> of 10</small>`, "injected flaws found, blind", `When a clean reading of the same text is available to compare against; ${of10(same.train?.p)} in 10 of its flags are real. Missing pauses: every flag real, 3 in 4 found.`],
+  ]);
+  if (mt.onset_ms != null) tiles.push([ICON.find, `${Math.round(mt.onset_ms)}<small> ms</small>`, "typical gap between a flag and the real moment", "Measured on the injected flaws, so the real moment is known to the millisecond."]);
+  if (mt.area_acc != null) tiles.push([ICON.calm, `${Math.round(mt.area_acc * 100)}<small>%</small>`, "of the time it names the right area", "Pacing, pausing, intonation, volume, fluency, clarity or text fidelity."]);
+  $("#big3").className = "big3 n" + tiles.length;
+  $("#big3").innerHTML = tiles.map(([ic, n, l, s]) => `<div class="panel big"><span class="ic">${ic}</span><b class="mono">${n}</b><em>${l}</em><small>${s}</small></div>`).join("");
 
   // how scoring works: three steps
   $("#how").innerHTML = `<h3>How a score is made</h3><div class="steps">
