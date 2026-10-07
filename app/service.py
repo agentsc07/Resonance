@@ -37,8 +37,8 @@ PLAIN = {"PACE_FAST": "Rushed pace", "PACE_SLOW": "Dragging pace", "PAUSE_BAD": 
          "REPEAT": "False start", "RARE_HESIT": "Hesitation before a hard word", "SLUR": "Slurred consonants", "WORD_SKIP": "Skipped words", "WORD_SWAP": "Misread word"}
 MODES = [
     {"id": "reference", "label": "Your reference reading", "note": "Compared with a reference recording you supplied.", "f1": "n/a"},
-    {"id": "free", "label": "General", "note": "No reference recording. Uses your own clip, the text and clean-speaker norms.", "f1": "0.31 train · 0.20 dev"},
-    {"id": "same", "label": "Same speaker", "note": "Compared with the speaker's own clean reading. Upper bound.", "f1": "0.59 train · 0.71 dev"},
+    {"id": "free", "label": "General", "note": "No reference recording. Uses your own clip, the text and clean-speaker norms.", "f1": "0.35 train · 0.38 dev"},
+    {"id": "same", "label": "Same speaker", "note": "Compared with the speaker's own clean reading. Upper bound.", "f1": "0.61 train · 0.66 dev"},
     {"id": "cross", "label": "Another speaker", "note": "Experimental. Several other voices must agree.", "f1": "0.23 train · 0.22 dev"},
 ]
 LANE = {"PACE_FAST": "rate", "PACE_SLOW": "rate", "WORD_SKIP": "rate", "WORD_SWAP": "rate", "MONOTONE": "pitch", "UPTALK": "pitch", "EMPH_FLAT": "pitch", "RARE_HESIT": "rate",
@@ -254,7 +254,7 @@ def analyse(opts: dict) -> dict:
     return out
 
 
-PAIR_FLAWS = ["PACE_SLOW", "SHOUT", "PAUSE_BAD", "FADE", "FILLER", "PACE_FAST", "WORD_SKIP", "SLUR"]
+PAIR_FLAWS = ["FADE", "SHOUT", "PACE_SLOW", "PAUSE_BAD", "FILLER", "PACE_FAST", "WORD_SKIP", "SLUR"]
 CAT_WORDS = [("Pacing", "Rushing, or dragging"), ("Pausing", "Stopping in the middle of a phrase, or not stopping where a pause belongs"), ("Intonation", "A flat voice, a rise at the end of a statement, buried emphasis"),
              ("Volume", "Trailing off, or a sudden loud stretch"), ("Fluency", "Filler sounds, false starts, hesitating before a hard word"), ("Clarity", "Slurred consonants"),
              ("Text fidelity", "Skipped or misread words")]
@@ -370,8 +370,10 @@ def about() -> dict:
     if acc:
         accept = {"flags_per_min": acc["invariance"]["false_flags_per_min"], "max_shift": acc["invariance"]["max_score_shift"], "locality": acc["locality"]["mean_other_category_loss"],
                   "dose_failing": acc["dose_response"]["failing"], "dose_per_flaw": {k: v["spearman"] for k, v in acc["dose_response"]["per_flaw"].items()}}
+    import yaml
+    rub = yaml.safe_load((ROOT / "engine" / "rubric.yaml").read_text())
     links = _json("../app/links.json") or {}
     hl = _json("headline_train_same.json") or {}
-    return _clean({"eval": ev, "accept": accept, "experimental": hl.get("experimental", {}), "links": links,
+    return _clean({"eval": ev, "accept": accept, "rubric": {"tau": rub["tau"], "blend": rub["blend_mean"], "bands": rub["bands"], "weights": rub["genre_weights"], "categories": rub["categories"]}, "experimental": hl.get("experimental", {}), "links": links,
             "leak": {"test": next((float(r["auc"]) for r in _read_csv(RES / "leakage.csv") if r["scope"] == "ALL"), None),
                      "loso": next((float(r["auc"]) for r in _read_csv(RES / "leakage_loso.csv") if r["scope"] == "ALL"), None)}})

@@ -11,7 +11,7 @@ export function initAnalyse(meta) {
   if (M.lab) document.body.classList.add("lab");
   tl = new Timeline($("#tl"), $("#tip"), { select: (id, play) => selectRegion(id, play), seek: (t) => playFrom(t) });
   buildPresets(); buildAdvanced(); wire();
-  runPreset(M.presets[2] || M.presets[0]);
+  $("#again").addEventListener("click", home);
 }
 
 // ------------------------------------------------------------------ inputs
@@ -32,7 +32,7 @@ function wire() {
   drop.addEventListener("drop", (ev) => { if (ev.dataTransfer.files[0]) upload(ev.dataTransfer.files[0]); });
   drop.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); file.click(); } });
   file.addEventListener("change", () => file.files[0] && upload(file.files[0]));
-  $("#run").addEventListener("click", () => { S.transcript = $("#transcript").value.trim(); if (S.source === "clip" && S.transcript) toast("The pasted text applies to your own recordings; the demo clips already have their text."); analyse(); });
+  $("#run").addEventListener("click", () => { if (S.source === "clip" ? !S.clipId : !S.uploadId) { toast("Choose a recording first, or try one of the examples."); return; } S.transcript = $("#transcript").value.trim(); if (S.source === "clip" && S.transcript) toast("The pasted text applies to your own recordings; the demo clips already have their text."); analyse(); });
   $("#nofl").addEventListener("change", (e) => { S.noFluency = e.target.checked; if (S.result) analyse(); });
   $("#playall").addEventListener("click", () => (audio.paused ? playFrom(0) : stop()));
   $$("#lanesel button").forEach((b) => b.addEventListener("click", () => setLane(b.dataset.k)));
@@ -68,7 +68,7 @@ function setRef(r) {
 // ------------------------------------------------------------------ analysis
 async function analyse() {
   if (S.busy) return;
-  S.busy = true; stop(); veil(true);
+  S.busy = true; stop(); document.body.classList.add("results"); veil(true);
   const t0 = performance.now(), tick = setInterval(() => { $("#veil-s").textContent = `${Math.round((performance.now() - t0) / 1000)} s · ` + (S.source === "upload" ? "recognising speech, aligning, scoring (about 30 s for a new recording)" : "aligning, measuring, scoring"); }, 500);
   const body = { source: S.source, id: S.source === "clip" ? S.clipId : S.uploadId, mode: S.mode, genre: S.genre || null, no_fluency: S.noFluency, experimental: S.experimental, rubric: S.rubric, text_id: S.textId || null, transcript: S.transcript || null, reference_id: S.referenceId };
   try {
@@ -76,6 +76,10 @@ async function analyse() {
     render();
   } catch (e) { toast(e.message); }
   finally { clearInterval(tick); veil(false); S.busy = false; }
+}
+function home() {
+  stop(); document.body.classList.remove("results"); S.result = null; S.preset = null; S.source = "clip"; S.clipId = null; S.uploadId = null;
+  $("#transcript").value = ""; setDrop(null); setRef(null); $$(".preset").forEach((b) => b.classList.remove("on")); window.scrollTo({ top: 0, behavior: "smooth" });
 }
 function veil(on) { $("#veil1").classList.toggle("on", on); $("#veil2").classList.toggle("on", on); $("#run").disabled = on; }
 

@@ -308,3 +308,36 @@ body::before { background: radial-gradient(1100px 600px at 50% -10%, rgba(240, 1
 .hero h1, .hero p { text-shadow: 0 0 22px #000, 0 0 6px #000; }
 .catlist > div > div { border-top: 0; padding: 0; }
 .catlist > div { border-top: 1px solid var(--line); padding: 10px 0; }
+
+/* ---------- home (upload + examples) vs results ---------- */
+.res-only { display: none !important; }
+body.results .res-only { display: revert !important; }
+body.results #verdict.res-only { display: grid !important; }
+body.results #flaw.res-only { display: grid !important; }
+body.results #adv.res-only { display: block !important; }
+body.results #again.res-only { display: inline-flex !important; }
+body.results .home-only { display: none !important; }
+.btn.ghost { background: transparent; color: var(--ink-2); }
+.homehead { text-align: center; padding-top: clamp(30px, 9vh, 96px); }
+.homehead h1 { font-size: clamp(32px, 4.4vw, 56px); line-height: 1.06; text-wrap: balance; background: linear-gradient(180deg, #fff, #d3c9ad 70%, #8d8470); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; }
+.homehead p { max-width: 54ch; margin: 14px auto 0; color: var(--ink-2); font-size: 16.5px; }
+body:not(.results) .input-strip { max-width: 920px; width: 100%; margin: 14px auto 0; grid-template-columns: 1fr; padding: 16px; gap: 12px; }
+body:not(.results) .drop { padding: 26px 20px; justify-content: center; text-align: left; min-width: 0; }
+body:not(.results) .go { justify-content: flex-end; }
+body:not(.results) .presets { justify-content: center; margin-top: 8px; align-items: center; }
+body:not(.results) .preset-label { width: 100%; text-align: center; margin: 6px 0 2px; }
+/* the room is a backdrop on the busy page: softened so nothing competes with the results */
+body.results[data-page=analyse] #room { filter: blur(5px); opacity: .55; }
+#room { transition: filter .6s, opacity .6s; }
+/* headings: one clean display face, no clipped gradient fill artefacts */
+.hero h1 { font-family: var(--display); font-weight: 600; letter-spacing: -.025em; max-width: 24ch; line-height: 1.1; padding-bottom: .08em; }
+.hero h1, .homehead h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #f6f1e4; text-shadow: none; }
+.hero h1 { font-size: clamp(30px, 3.2vw, 42px); }
+.hero p { text-shadow: none; }
+
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+.steps > div { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: start; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, .02); }
+.steps i { grid-row: span 2; display: grid; place-content: center; width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(240, 192, 90, .45); color: var(--gold); font: 700 13px var(--mono); font-style: normal; box-shadow: 0 0 16px -6px rgba(240, 192, 90, .7); }
+.steps b { font: 600 16px var(--display); }
+.steps span { color: var(--ink-2); font-size: 13.5px; line-height: 1.45; }
+@media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }

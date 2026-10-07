@@ -29,6 +29,7 @@ function show(name) {
   if (!PAGES.includes(name)) name = "analyse";
   $$(".page").forEach((p) => p.classList.toggle("on", p.id === "p-" + name));
   $$("#nav a[data-page]").forEach((a) => a.classList.toggle("on", a.dataset.page === name));
+  document.body.dataset.page = name;
   const a = $(`#nav a[data-page="${name}"]`), pill = $("#navpill");
   pill.style.left = a.offsetLeft + "px"; pill.style.width = a.offsetWidth + "px";
   if (name === "dataset" && !loaded.dataset) { loaded.dataset = true; initDataset(); }

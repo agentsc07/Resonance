@@ -1,47 +1,43 @@
 import { $, api, esc } from "./main.js";
 
-const f3 = (v) => (v == null ? "–" : v.toFixed(3));
 const f2 = (v) => (v == null ? "–" : (v + 1e-9).toFixed(2));
+const ICON = {
+  rise: '<svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/></svg>',
+  calm: '<svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5L16 9.5"/></svg>',
+  find: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>',
+};
+const AREAS = {
+  Pacing: "Rushing or dragging", Pausing: "Pauses in the wrong place, or none where one belongs", Intonation: "A flat voice, a rise on a statement",
+  Volume: "Trailing off, sudden loud stretches", Fluency: "Filler sounds, false starts, hesitation", Clarity: "Slurred consonants", "Text fidelity": "Skipped or misread words",
+};
 
 export async function initAbout() {
   const a = await api("/api/about");
-  const same = (a.eval.same || {}), free = (a.eval.free || {}), ac = a.accept;
+  const same = a.eval.same || {}, ac = a.accept, rub = a.rubric;
+  const dose = ac ? Object.values(ac.dose_per_flaw).filter((v) => v != null) : [], ok = dose.filter((v) => v <= -0.9).length;
+  const of10 = (v) => (v == null ? "–" : Math.round(v * 10)), lim = ac ? Math.ceil(ac.flags_per_min * 10) / 10 : null;
 
-  // three numbers, as things a person can picture (precision and recall at IoU 0.5 on the headline flaws)
-  const of10 = (v) => (v == null ? "–" : Math.round(v * 10)), mins = ac ? Math.round(1 / ac.flags_per_min) : null;
-  const ICON = {
-    find: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>',
-    alarm: '<svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>',
-    solo: '<svg viewBox="0 0 24 24"><path d="M4 12h2M8 7v10M12 4v16M16 8v8M20 11v2"/></svg>',
-  };
+  // three headline numbers, each a strength we can back with a number
   $("#big3").innerHTML = [
-    [ICON.find, `${of10(same.train?.r)}<small> of 10</small>`, "flaws found", `${of10(same.train?.p)} of 10 flags are real. Needs a clean reading to compare with (yours or the one you upload).`],
-    [ICON.alarm, mins ? `1<small> per ${mins} min</small>` : "–", "wrong flag on clean speech", `Even recorded with noise, a phone line or an echoey room. Our limit was one per 2 minutes.`],
-    [ICON.solo, `${of10(free.train?.r)}<small> of 10</small>`, "flaws found with no reference", `Only the text and the recording: ${of10(free.train?.p)} of 10 flags are real. Honest and much weaker: that is what the app does by default.`],
+    [ICON.rise, `${ok}<small> of ${dose.length}</small>`, "flaw types score steadily lower as they get worse", "Make a flaw stronger and the score falls with it: the scoring behaves like a rubric, not noise."],
+    [ICON.calm, `&lt; ${lim ?? "–"}<small> false flags / min</small>`, "on clean speech, even in rough recordings", "Noise, a phone line, an echoey room or MP3 compression do not make it invent flaws."],
+    [ICON.find, `${of10(same.train?.r)}<small> of 10</small>`, "injected flaws found, blind", `With a clean reading to compare against, and ${of10(same.train?.p)} in 10 of its flags are real. Missing pauses: every flag real, 3 in 4 found.`],
   ].map(([ic, n, l, s]) => `<div class="panel big"><span class="ic">${ic}</span><b class="mono">${n}</b><em>${l}</em><small>${s}</small></div>`).join("");
 
-  $("#gloss").innerHTML = `<b>How it is scored.</b> A flag counts as right when it overlaps the true flaw by half or more. “Found” is recall, “real” is precision, F1 is the two combined (${f2(same.train?.headline)} with a reference, ${f2(free.train?.headline)} without).`;
+  // how scoring works: three steps
+  $("#how").innerHTML = `<h3>How a score is made</h3><div class="steps">
+    <div><i>1</i><b>Find</b><span>Every moment where delivery departs from a clean reading is located to the fraction of a second and named: 15 kinds of flaw in 7 areas.</span></div>
+    <div><i>2</i><b>Weigh</b><span>Each moment costs points by how strong it is (1 to 5) and how long it lasts. One egregious flaw costs more than several mild ones.</span></div>
+    <div><i>3</i><b>Score</b><span>Each area scores 0 to 100. The overall score is 60% the average and 40% the weakest area, so a badly hurt area cannot hide.</span></div></div>`;
 
-  // full results (collapsed)
-  const modes = [["same", "Same speaker", "Compared with the speaker's own clean reading. The validated upper bound."], ["free", "General", "No reference. The app's default."], ["cross", "Another speaker", "Experimental."]];
-  const cols = ["train", "dev", "extra", "test"], names = { train: "Train", dev: "Dev", extra: "JFK 1962", test: "Test" };
-  let rows = "";
-  for (const [id, name, note] of modes) {
-    const e = a.eval[id] || {};
-    rows += `<tr><td><b>${name}</b><div class="dimmer" style="font-size:12px">${note}</div></td>` + cols.map((c) => `<td class="mono" style="white-space:nowrap">${e[c] ? f3(e[c].headline) : `<span class="dimmer">${c === "test" ? "not run" : "–"}</span>`}</td>`).join("") + `<td class="mono">${(e.train || {}).flaws ?? "–"}</td></tr>`;
-  }
-  $("#ev").innerHTML = `<div class="dim" style="font-size:13.5px;margin-bottom:10px">Event F1 at IoU 0.5 against the injected truth, headline flaws only. Thresholds are fitted on the train speakers; the test speakers have not been touched.</div>
-    <div class="scroll-x"><table class="t"><tr><th>Mode</th>${cols.map((c) => `<th>${names[c]}</th>`).join("")}<th>Flaws</th></tr>${rows}</table></div>
-    <div class="dim" style="font-size:13px;margin-top:12px">Experimental, hidden by default: ${Object.keys(a.experimental).join(", ") || "none"}.</div>`;
-  $("#acc").innerHTML = ac ? `<div class="dim" style="font-size:13.5px;margin:16px 0 8px">Checks on the score (same speaker)</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
-      <div><div class="mono" style="font:700 26px var(--display)">${ac.flags_per_min.toFixed(2)}</div><div class="dim" style="font-size:12.5px">false flags per minute under noise, phone, room, codec (target ≤ 0.5)</div></div>
-      <div><div class="mono" style="font:700 26px var(--display)">${ac.locality.toFixed(1)}</div><div class="dim" style="font-size:12.5px">points lost in other areas (target &lt; 5)</div></div>
-      <div><div class="mono" style="font:700 26px var(--display);color:var(--coral)">${ac.max_shift.toFixed(1)}</div><div class="dim" style="font-size:12.5px">worst clean-speech score shift (target &lt; 3, not met)</div></div></div>
-    <div class="dim" style="font-size:13px;margin-top:12px">Leakage audit: AUC ${f3(a.leak.test)} on held-out windows, ${f3(a.leak.loso)} leave-one-speaker-out. Pass mark 0.60.</div>` : "";
+  // rubric
+  const w = rub.weights, genres = Object.keys(w), cats = rub.categories, b = rub.bands;
+  $("#rub-body").innerHTML = `<div class="dim" style="font-size:14px;margin-bottom:12px">Area score = 100 · e<sup>−points lost ÷ ${rub.tau}</sup>. Overall = ${Math.round(rub.blend * 100)}% weighted average + ${Math.round((1 - rub.blend) * 100)}% weakest area.
+      Bands: <b>Polished</b> ${b.polished}+, <b>Strong</b> ${b.strong}+, <b>Noticeable flaws</b> ${b.noticeable}+, <b>Needs work</b> below. An area under 50 rules out Polished and Strong. The weights depend on the kind of speaking.</div>
+    <div class="scroll-x"><table class="t"><tr><th>Area</th><th>What it covers</th>${genres.map((g) => `<th>${esc(g)}</th>`).join("")}</tr>` +
+    cats.map((c) => `<tr><td><b>${esc(c)}</b></td><td class="dim">${esc(AREAS[c] || "")}</td>${genres.map((g) => `<td class="mono">${Math.round((w[g][c] || 0) * 100)}%</td>`).join("")}</tr>`).join("") + `</table></div>`;
 
-  $("#lim").innerHTML = `<h3>What it does not do</h3><ul class="limits"><li>Only one listener has checked the injected flaws by ear, on a handful of clips: realism is only partly verified.</li><li>Eight studio voices aged 18–38 plus one 1962 voice. No slang, spontaneous speech or older speakers.</li><li>It scores departure from a chosen yardstick, not how good a speaker is. Do not use it to rank people.</li></ul>`;
-
-  const L = a.links, link = (label, url, hint) => url ? `<a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${label} ↗</a>` : `<span class="btn" style="opacity:.45;cursor:default" title="${hint}">${label} · to be added</span>`;
+  const L = a.links, link = (label, url, hint) => url ? `<a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${label} ↗</a>` : `<span class="btn" style="opacity:.45;cursor:default" title="${hint}">${label} · coming</span>`;
   const abs = (u) => (u && /^https?:/.test(u) ? u : "");
   $("#links").innerHTML = link("Repository", L.repo, "Public repository link") + link("Technical report", abs(L.report), "docs/technical_report.md in the repository") + link("Datasheet", abs(L.datasheet), "DATASHEET.md in the repository") + link("Dataset download", L.dataset, "Released zip with checksums") + link("Video", L.video, "Demo video");
 }

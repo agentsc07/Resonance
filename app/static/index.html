@@ -29,6 +29,7 @@
 <!-- ================= ANALYSE ================= -->
 <section class="page on" id="p-analyse">
   <div class="stack">
+    <div class="homehead home-only"><h1>Hear where your delivery slips.</h1><p>Drop a recording of someone reading aloud. Flawline finds the moments that cost points and plays them back.</p></div>
     <div class="panel input-strip" id="strip">
       <label class="drop" id="drop" tabindex="0">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7 8l5-5 5 5M4 15v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3"/></svg>
@@ -38,12 +39,13 @@
       <textarea class="text-in" id="transcript" rows="1" placeholder="Paste the text you read (optional). Without it, the engine uses what it hears."></textarea>
       <div class="go">
         <label class="ignore" title="Fillers like “um” and false starts stay on the timeline but cost no points."><input type="checkbox" id="nofl"><span>Ignore fillers and false starts</span></label>
+        <button class="btn ghost res-only" id="again" type="button">Start over</button>
         <button class="btn gold" id="run">Analyse</button>
       </div>
     </div>
-    <div class="presets" id="presets"><span class="eyebrow preset-label">Try one</span></div>
+    <div class="presets home-only" id="presets"><span class="eyebrow preset-label">Or try an example</span></div>
 
-    <div class="panel verdict" id="verdict">
+    <div class="panel verdict res-only" id="verdict">
       <div class="gauge">
         <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"/><circle class="kept" id="kept" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/><circle class="lost" id="lostarc" cx="60" cy="60" r="52" stroke-dasharray="0 326.7" stroke-dashoffset="0"/></svg>
         <div class="num"><b id="score">–</b><span id="band">score</span></div>
@@ -53,12 +55,12 @@
       <div class="veil" id="veil1"><div class="eq"><i></i><i></i><i></i><i></i><i></i></div><div><b id="veil-t">Listening…</b><div class="dim" id="veil-s">Aligning, measuring, scoring</div></div></div>
     </div>
 
-    <div class="panel tl-card" id="tlcard">
+    <div class="panel tl-card res-only" id="tlcard">
       <div class="tl-head">
         <h3>Timeline</h3>
         <div class="seg" id="lanesel" role="group" aria-label="What the second lane shows"><button data-k="pitch" class="on">Pitch</button><button data-k="level">Loudness</button><button data-k="rate">Speed</button></div>
         <button class="btn sm" id="playall">▶ Play all</button>
-        <button class="btn sm" id="reveal" hidden>Reveal what was injected</button>
+        <button class="btn sm labonly" id="reveal" hidden>Reveal what was injected</button>
         <div class="legend"><span data-tip="The shape of your recording over time. Taller means louder."><i style="background:var(--data)"></i>Waveform</span><span data-tip="Your own voice: how high or low it goes, how loud it is, or how fast you speak, depending on the lane chosen."><i style="background:var(--blue)"></i>You</span><span data-tip="Where your own delivery normally sits. Leaving the grey band is not a mistake by itself; the numbered moments below are what cost points."><i class="band"></i>Expected range</span><span id="lg-ref" data-tip="The same words from your reference reading, lined up with yours." hidden><i class="ref"></i>Reference</span></div>
       </div>
       <div class="canvas-wrap"><canvas id="tl" width="1200" height="256" aria-label="Waveform and a second lane, with numbered flagged moments. Click a number to select and play it."></canvas><div class="tip" id="tip"></div></div>
@@ -66,10 +68,10 @@
       <div class="veil" id="veil2"><div class="eq"><i></i><i></i><i></i><i></i><i></i></div></div>
     </div>
 
-    <div class="panel flaw" id="flaw"></div>
-    <div class="panel transcript" id="trpanel"><div class="eyebrow">Transcript</div><div class="words" id="words"></div></div>
+    <div class="panel flaw res-only" id="flaw"></div>
+    <div class="panel transcript res-only" id="trpanel"><div class="eyebrow">Transcript</div><div class="words" id="words"></div></div>
 
-    <details class="panel adv" id="adv">
+    <details class="panel adv res-only" id="adv">
       <summary>Advanced</summary>
       <div class="adv-body">
         <div class="field"><span class="lab">Reference reading (optional)</span>
@@ -96,19 +98,19 @@
 <!-- ================= DATASET ================= -->
 <section class="page" id="p-dataset">
   <div class="stack">
-    <div class="hero"><h1>Real voices, controlled flaws, known truth.</h1>
-      <p>We start from clean recordings of real speakers, then change one thing at a time: a rushed phrase, a misplaced pause, a skipped word. Because we made each change, we know exactly where it is.</p></div>
+    <div class="hero"><h1>Real voices with flaws we added on purpose.</h1>
+      <p>We start with clean recordings of real speakers, then change one thing at a time: speed up a phrase, add a pause in the wrong place, remove a word. Because we made every change ourselves, we know exactly where and how strong it is.</p></div>
     <div class="tiles" id="tiles"></div>
     <div class="cols2">
-      <div class="panel card"><h3>What we change</h3><div class="sub">Fifteen kinds of delivery flaw, in seven areas, each at five strengths from barely there to egregious.</div><div class="catlist" id="catlist"></div></div>
-      <div class="panel card"><h3>Hear a pair</h3><div class="sub" id="pair-sub">The same reading, clean and with one flaw.</div>
+      <div class="panel card"><h3>What we change</h3><div class="sub">The 15 kinds of delivery flaw we add, grouped into 7 areas. Each comes in 5 strengths, from barely noticeable to extreme.</div><div class="catlist" id="catlist"></div></div>
+      <div class="panel card"><h3>Hear a pair</h3><div class="sub" id="pair-sub">A few sample pairs of modifications: the original and the modified version.</div>
         <div class="pair"><div class="pairrow"><button class="play" id="pc" aria-label="Play the clean reading">▶</button><div><b>Clean reading</b><span id="pc-s"></span></div></div>
           <div class="pairrow fl"><button class="play" id="pf" aria-label="Play the flawed reading">▶</button><div><b id="pf-t">With a flaw</b><span id="pf-s"></span></div></div>
           <div style="display:flex;align-items:center;gap:12px"><button class="btn sm" id="pnext">Another pair</button><span class="dimmer" id="pn" style="font-size:12.5px"></span></div></div></div>
     </div>
     <div class="cols2b">
-      <div class="panel card"><h3>Recording conditions</h3><div class="sub">Every voice also appears in rougher recordings, to check that a bad microphone is not mistaken for bad delivery.</div><div class="hbars" id="conds"></div></div>
-      <div class="panel card"><h3>Speakers</h3><div class="sub">Eight studio voices and two excerpts of a 1962 speech.</div><div class="spk" id="spk"></div></div>
+      <div class="panel card"><h3>Recording conditions</h3><div class="sub">Each voice is also re-recorded with noise, echo, a phone line and compression, to check that a poor microphone is never mistaken for poor delivery.</div><div class="hbars" id="conds"></div></div>
+      <div class="panel card"><h3>Speakers</h3><div class="sub">The voices behind the clips: eight studio speakers and two excerpts of a 1962 speech. Some are kept aside for testing.</div><div class="spk" id="spk"></div></div>
     </div>
     <div class="panel gates" id="gates"></div>
     <details class="panel adv"><summary>Manifest</summary><div class="adv-body"><input type="search" id="mf-q" placeholder="Filter by clip, speaker, flaw or split"><div class="scroll-x"><table class="t" id="mf"></table></div>
@@ -119,12 +121,11 @@
 <!-- ================= ABOUT ================= -->
 <section class="page" id="p-about">
   <div class="stack">
-    <div class="hero"><h1>Spoken delivery, measured against a known truth.</h1>
-      <p>Flawline injects controlled flaws into real recordings, then asks an engine to find them blind: where each one is, what it is, and what it costs. Because the truth is known, every number below can be checked.</p></div>
+    <div class="hero"><h1>Delivery, scored with evidence.</h1>
+      <p>Flawline finds the exact moments a reading slips (a rushed phrase, a misplaced pause, a skipped word), shows what each one cost, and lets you hear it. It was built and checked on real recordings with flaws we added ourselves, so the answer is always known.</p></div>
     <div class="big3" id="big3"></div>
-    <div class="panel gloss" id="gloss"></div>
-    <details class="panel adv"><summary>Full results</summary><div class="adv-body"><div id="ev"></div><div id="acc"></div></div></details>
-    <div class="panel card" id="lim"></div>
+    <div class="panel card" id="how"></div>
+    <details class="panel adv" id="rubric"><summary>The scoring rubric</summary><div class="adv-body" id="rub-body"></div></details>
     <div class="panel card"><h3>Links</h3><div class="links" id="links" style="margin-top:12px"></div></div>
   </div>
 </section>

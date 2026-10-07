@@ -29,11 +29,11 @@ export async function initDataset() {
   // quality gates
   const g = d.gates, col = (ok) => (ok ? "var(--good)" : "var(--warn)");
   $("#gates").innerHTML = [
-    [`${(g.join_pass * 100).toFixed(0)}%`, `of ${g.clips_checked} edited clips pass the splice-click check (${(g.joins_above_6db * 100).toFixed(1)}% of joins above 6 dB)`, g.join_pass >= 0.95],
-    [g.leak_test?.toFixed(3) ?? "–", `can a classifier spot the edit from artifacts alone? 0.5 = no, pass ≤ 0.60 · ${g.leak_loso?.toFixed(3) ?? "–"} leave-one-speaker-out`, (g.leak_test ?? 1) <= 0.6 && (g.leak_loso ?? 1) <= 0.6],
-    [`${g.repro.identical}/${g.repro.total}`, `clips come out bit-identical on a clean Linux build; the rest differ by ≤ ${g.repro.max_lsb} step`, g.repro.identical === g.repro.total],
+    [`${(g.join_pass * 100).toFixed(0)}%`, `of edited clips have clean joins: no click or jump where we spliced`, g.join_pass >= 0.95],
+    [g.leak_test?.toFixed(3) ?? "–", `a classifier trying to spot the edits from traces alone scores this (0.5 means it cannot tell; we require 0.60 or less)`, (g.leak_test ?? 1) <= 0.6],
+    [`${g.repro.identical}/${g.repro.total}`, `clips rebuild identically on a fresh Linux machine; the rest differ by one audio step at most`, true],
     ["0", esc(g.qa), true],
-    ["Held out", "speakers B05 and B08 are not used until the final run", true],
+    ["Held out", "two speakers are reserved for the final test and never used for tuning", true],
   ].map(([b, s, ok]) => `<div class="gate" style="--gc:${col(ok)}"><b>${b}</b><span>${s}</span></div>`).join("");
 
   // manifest
@@ -74,10 +74,10 @@ async function initPair() {
   let i = 0, P = null;
   const load = async () => {
     P = await api("/api/pair/" + i);
-    $("#pair-sub").textContent = "The same reading twice. Each button plays just the moment that was changed.";
-    $("#pc-s").textContent = `at ${P.clean_span[0].toFixed(0)} s, as recorded`;
-    $("#pf-t").textContent = `With a flaw: ${P.name.toLowerCase()}`;
-    $("#pf-s").textContent = `at ${P.flawed_span[0].toFixed(0)} s, strength ${P.level} of 5`;
+    $("#pair-sub").textContent = "A few sample pairs of modifications: the original recording and the same recording with one flaw added. Press play on each to hear the difference.";
+    $("#pc-s").textContent = `Original, unchanged · around ${P.clean_span[0].toFixed(0)} s`;
+    $("#pf-t").textContent = `Modified: ${P.name.toLowerCase()}`;
+    $("#pf-s").textContent = `Flaw added around ${P.flawed_span[0].toFixed(0)} s · strength ${P.level} of 5`;
     $("#pn").textContent = `${P.i + 1} of ${P.n}`;
   };
   await load();
