@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import human as H
+from . import retake as RT
 from . import service as S
 
 STATIC = Path(__file__).resolve().parent / "static"
@@ -61,6 +62,25 @@ async def upload(file: UploadFile = File(...)):
         return S.save_upload(data, file.filename or "audio.wav")
     except Exception:
         raise HTTPException(400, "Could not read this audio file. Try WAV, FLAC, MP3 or M4A.")
+
+
+@app.get("/api/retake/prepare")
+def retake_prepare(key: str, region: int):
+    try:
+        return S.retake_prepare(key, region)
+    except (ValueError, KeyError, IndexError) as e:
+        raise HTTPException(400, str(e))
+
+
+@app.post("/api/retake")
+async def retake(key: str, region: int, file: UploadFile = File(...)):
+    data = await file.read()
+    try:
+        return S.retake_score(key, region, data)
+    except (ValueError, KeyError, IndexError) as e:
+        raise HTTPException(400, str(e))
+    except Exception as e:
+        raise HTTPException(500, f"{type(e).__name__}: {e}")
 
 
 @app.get("/api/audio/{kind}/{ident}.wav")

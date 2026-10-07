@@ -1,5 +1,6 @@
 import { $, $$, api, esc, toast } from "./main.js";
 import { Timeline } from "./timeline.js";
+import { RETAKE_FLAWS, mountRetake } from "./retake.js";
 
 const S = { source: "clip", clipId: null, uploadId: null, uploadName: "", referenceId: null, mode: "free", genre: "", noFluency: false, experimental: false, rubric: null, textId: "", transcript: "", result: null, truth: false, busy: false, preset: null, sel: null };
 let M, tl, audio;
@@ -145,8 +146,10 @@ function selectRegion(id, play) {
   el.className = "panel flaw";
   el.innerHTML = `<div class="when"><b class="mono">${r.start.toFixed(1)}s</b><span>${(r.end - r.start).toFixed(1)} s long</span></div>
     <div><h3><span class="num-badge">${tl.numberOf(r.id)}</span>${esc(r.name)}<span class="chip">${r.category}</span></h3><p class="why">${esc(why)}</p>${r.tip ? `<p class="tip-t">${esc(r.tip)}</p>` : ""}</div>
-    <div class="cost"><b>−${r.points.toFixed(1)}</b><span>points · severity ${r.severity.toFixed(1)} of 5</span><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn sm" id="fp" ${n < 2 ? "hidden" : ""} aria-label="Previous flaw">‹</button><button class="btn sm gold" id="fplay">▶ Play this</button><button class="btn sm" id="fn" ${n < 2 ? "hidden" : ""} aria-label="Next flaw">›</button></div></div>`;
+    <div class="cost"><b>−${r.points.toFixed(1)}</b><span>points · severity ${r.severity.toFixed(1)} of 5</span><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn sm" id="fp" ${n < 2 ? "hidden" : ""} aria-label="Previous flaw">‹</button><button class="btn sm gold" id="fplay">▶ Play this</button>${RETAKE_FLAWS.has(r.flaw) ? `<button class="btn sm" id="fretry">↻ Try that part again</button>` : ""}<button class="btn sm" id="fn" ${n < 2 ? "hidden" : ""} aria-label="Next flaw">›</button></div></div>`;
   $("#fplay").onclick = () => playRegion(r); $("#fp").onclick = () => step(-1); $("#fn").onclick = () => step(1);
+  const rt = $("#retake"); rt.hidden = true; rt.innerHTML = "";
+  if ($("#fretry")) $("#fretry").onclick = () => mountRetake(rt, R, r, (a, b) => playSpan(a, b));
   if (play) playRegion(r);
 }
 function step(d) {

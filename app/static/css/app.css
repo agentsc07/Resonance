@@ -341,3 +341,17 @@ body.results[data-page=analyse] #room { filter: blur(5px); opacity: .55; }
 .steps b { font: 600 16px var(--display); }
 .steps span { color: var(--ink-2); font-size: 13.5px; line-height: 1.45; }
 @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+
+/* ---- Try that part again ---- */
+.retake { padding: 16px 22px 18px; }
+.retake[hidden] { display: none; }
+.rt-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.rt-head b { font: 600 18px var(--display); }
+.rt-say { font: 500 17px/1.5 var(--display); margin: 6px 0 4px; color: var(--ink); border-left: 2px solid var(--gold); padding-left: 12px; }
+.rt-hint { font-size: 13.5px; margin: 0 0 12px; }
+.rt-act { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.rt-t { width: 100%; border-collapse: collapse; font-size: 14px; }
+.rt-t th { text-align: left; font: 600 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.rt-t td { padding: 7px 8px; border-bottom: 1px solid var(--line); }
+.rt-t .tick { font-weight: 700; color: var(--coral); }
+.rt-t tr.ok .tick { color: var(--good); }

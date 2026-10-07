@@ -254,6 +254,36 @@ def analyse(opts: dict) -> dict:
     return out
 
 
+def _original(key: str):
+    R = _CACHE[key]
+    src = R["audio_url"].split("/")                       # /api/audio/<kind>/<id>.wav
+    kind, ident = src[-2], src[-1][:-4]
+    return R, eaudio.load(str(audio_file(kind, ident)))
+
+
+def retake_prepare(key: str, region: int) -> dict:
+    from . import retake as RT
+    R, x = _original(key)
+    return RT.prepare(R, region, x)
+
+
+def retake_score(key: str, region: int, wav: bytes) -> dict:
+    """Score only the retaken phrase (see retake.py). The browser sends a 16-bit WAV."""
+    import io
+    from . import retake as RT
+    R, x = _original(key)
+    y, sr = sf.read(io.BytesIO(wav), dtype="float32")
+    if y.ndim > 1:
+        y = y.mean(axis=1)
+    if sr != eaudio.SR:
+        from scipy.signal import resample_poly
+        from math import gcd
+        g = gcd(eaudio.SR, sr)
+        y = resample_poly(y, eaudio.SR // g, sr // g).astype("float32")
+    with LOCK:
+        return RT.score(R, region, x, y)
+
+
 PAIR_FLAWS = ["FADE", "SHOUT", "PACE_SLOW", "PAUSE_BAD", "FILLER", "PACE_FAST", "WORD_SKIP", "SLUR"]
 CAT_WORDS = [("Pacing", "Rushing, or dragging"), ("Pausing", "Stopping in the middle of a phrase, or not stopping where a pause belongs"), ("Intonation", "A flat voice, a rise at the end of a statement, buried emphasis"),
              ("Volume", "Trailing off, or a sudden loud stretch"), ("Fluency", "Filler sounds, false starts, hesitating before a hard word"), ("Clarity", "Slurred consonants"),
