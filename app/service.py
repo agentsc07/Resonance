@@ -39,7 +39,7 @@ MODES = [
     {"id": "reference", "label": "Your reference reading", "note": "Compared with a reference recording you supplied.", "f1": "n/a"},
     {"id": "free", "label": "General", "note": "No reference recording. Uses your own clip, the text and clean-speaker norms.", "f1": "0.35 train · 0.38 dev"},
     {"id": "same", "label": "Same speaker", "note": "Compared with the speaker's own clean reading. Upper bound.", "f1": "0.61 train · 0.66 dev"},
-    {"id": "cross", "label": "Another speaker", "note": "Experimental. Several other voices must agree.", "f1": "0.23 train · 0.22 dev"},
+    {"id": "cross", "label": "Another speaker", "note": "Experimental. Several other voices must agree.", "f1": "not reported"},
 ]
 LANE = {"PACE_FAST": "rate", "PACE_SLOW": "rate", "WORD_SKIP": "rate", "WORD_SWAP": "rate", "MONOTONE": "pitch", "UPTALK": "pitch", "EMPH_FLAT": "pitch", "RARE_HESIT": "rate",
         "SHOUT": "level", "FADE": "level", "PAUSE_BAD": "level", "PAUSE_LOST": "level", "FILLER": "level", "REPEAT": "level", "SLUR": "level"}

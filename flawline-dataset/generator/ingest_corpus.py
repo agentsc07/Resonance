@@ -1,4 +1,4 @@
-"""Ingest REAL recorded baselines from VCTK and Svarah (see real_sources.yaml). Usage: python ingest_corpus.py [B01 ...]
+"""Ingest recorded baselines from VCTK (see real_sources.yaml; an optional Svarah path runs only when an entry sets corpus: svarah). Usage: python ingest_corpus.py [B01 ...]
 
 Real audio is never altered beyond: first-N-utterance selection, silence trimmed to 0.3 s margins,
 resample to 22.05 kHz mono, and a single gain to -3 dBFS peak. No noise floor is added.
@@ -14,7 +14,7 @@ import requests
 import soundfile as sf
 from scipy.signal import resample_poly
 
-from build_baselines import align
+from align_words import align
 from common import BASELINES, GEN, SR, TAKES, db, dump_json, frame_rms_db, load_yaml, pink_noise, s2n, undb, write_audio
 
 API = "https://datasets-server.huggingface.co/rows?dataset=sanchit-gandhi/vctk&config=default&split=train"

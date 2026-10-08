@@ -19,4 +19,3 @@ All fillers ("uh", "um", drawls) are built from the SAME speaker's own recorded 
 ## Planned subsets (not yet in the dataset; add a section here when ingested)
 - LibriVox Gettysburg Address readers: public domain (USA).
 - Speech Accent Archive (GMU): non-commercial; mirrors list CC BY-NC-SA, confirm on the site. Altered clips inherit the same terms.
-- Svarah (AI4Bharat): CC BY 4.0. Tried as a baseline source and dropped (speakers' own disfluencies); may return as a natural-disfluency test set.

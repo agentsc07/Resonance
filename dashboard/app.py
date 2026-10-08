@@ -1,4 +1,4 @@
-"""Flawline LAB pages (for the team, and for screen-recording the data-engineering part of the video). Started by `LAB=1 python -m app.server`
+"""Resonance lab pages (dataset engineering tools). Started by `LAB=1 python -m app.server`
 (or `make lab`) and linked from the web app's nav; the public pages (Analyse, Dataset, About) live in app/.
 
   streamlit run dashboard/app.py
@@ -66,12 +66,11 @@ def load_manifest(mtime: float) -> pd.DataFrame:
 @st.cache_data
 def load_baselines():
     cfg = yaml.safe_load(open(ROOT / "generator" / "baselines.yaml"))["baselines"]
-    cand = yaml.safe_load(open(ROOT / "generator" / "candidates.yaml"))["candidates"]
     status = {}
     for b in cfg:
         p = ROOT / "baselines" / b["id"] / "source.json"
         status[b["id"]] = json.loads(p.read_text())["status"] if p.exists() else "unbuilt"
-    return cfg, cand, status
+    return cfg, status
 
 
 @st.cache_data
@@ -120,11 +119,11 @@ if not mf.exists():
     st.error("manifest.csv not found. Run `python flawline-dataset/generator/make_dataset.py --pilot B01-CHAMP --l3`.")
     st.stop()
 M = load_manifest(mf.stat().st_mtime)
-BASE, CAND, STATUS = load_baselines()
+BASE, STATUS = load_baselines()
 
 page = st.sidebar.radio("View", ["Alterations review", "Baselines", "Pilot gate"], label_visibility="collapsed")
-st.sidebar.caption("Flawline · Track C dataset v1 (dev)")
-reviewer = st.sidebar.text_input("Reviewer", value="Sai")
+st.sidebar.caption("Flawline dataset v1.0")
+reviewer = st.sidebar.text_input("Reviewer", value="")
 rated = load_realism()
 st.sidebar.metric("Clips reviewed", f"{len(rated)}")
 
@@ -172,16 +171,10 @@ if page == "Baselines":
     bdf["status"] = bdf.id.map(STATUS)
     AUD = json.loads((ROOT / "baselines" / "audit.json").read_text()) if (ROOT / "baselines" / "audit.json").exists() else {}
     bdf["disfluency audit"] = bdf.id.map(lambda i: AUD.get(i, {}).get("status", "not run"))
-    placeholder = (bdf.status == "placeholder_tts").any()
     real = bdf.status.str.startswith("real")
     if real.any():
         st.success(f"**{int(real.sum())} of {len(bdf)} baselines are real recordings** (VCTK 0.92: studio-recorded, CC BY 4.0, read aloud). "
-                   "Limits: speakers are aged 18–38 only, the text is read (no slang, not a champion speech). "
-                   "Slang and older speakers are planned through reader recordings (`readers/RECORDING_SHEET.md`).")
-    if placeholder:
-        st.warning("**Placeholder audio.** These baselines are original CC0 scripts read by macOS system voices matched to the target accent. "
-                   "They let the flaw factory and this dashboard be built now. Age band is the *target slot* (a TTS voice can't sound its age). "
-                   "The frozen v1.0 set must use real champion recordings (see the candidate pool below).")
+                   "Limits: speakers are aged 18–38 only and the text is read aloud (no slang).")
 
     c1, c2, c3, c4 = st.columns(4)
     f_age = c1.multiselect("Age band", AGE_ORDER)
@@ -217,14 +210,14 @@ if page == "Baselines":
         ("All four age bands present", set(AGE_ORDER) <= set(bdf.age_band)),
         ("All four genres, 2 each", (bdf.genre.value_counts() == 2).all() and bdf.genre.nunique() == 4),
         ("Slang-heavy and colloquial registers present", {"slang-heavy", "colloquial"} <= set(bdf.register)),
-        ("Real recordings (not placeholders)", bdf.status.str.startswith("real").all()),
+        ("All baselines are recordings", bdf.status.str.startswith("real").all()),
     ]
     st.markdown("\n".join(f"- {ok_(c)} {t}" for t, c in checks))
 
     st.subheader("Listen")
     pick = st.selectbox("Baseline", v.id.tolist() or bdf.id.tolist(), key="base_pick", format_func=lambda i: f"{i} · {bdf[bdf.id == i].title.iloc[0]}")
     b = bdf[bdf.id == pick].iloc[0]
-    st.markdown(f'<span class="pill {"warn" if b.status == "placeholder_tts" else "ok"}">{b.status.replace("_", " ")}</span>'
+    st.markdown(f'<span class="pill ok">{b.status.replace("_", " ")}</span>'
                 f'<span class="pill mute">{b.genre}</span><span class="pill mute">{b.age_band}</span><span class="pill mute">{b.accent}</span>'
                 f'<span class="pill mute">{b.gender}</span><span class="pill mute">{b.register}</span>', unsafe_allow_html=True)
     prov = json.loads((ROOT / "baselines" / pick / "source.json").read_text())
@@ -255,9 +248,6 @@ if page == "Baselines":
         st.markdown(f'<span class="small">Highlighted = slang / dialect terms: {", ".join(b.slang_terms)}. Never scored (spec: vocabulary is not scored); '
                     f'listed so WORD_SWAP is never confused with slang.</span>', unsafe_allow_html=True)
 
-    with st.expander("Candidate real speeches to replace the placeholders (unverified)"):
-        st.caption("From memory, nothing here is verified. Check each licence and source before use; spec rule: licence unclear → drop it.")
-        st.dataframe(pd.DataFrame(CAND), hide_index=True, use_container_width=True)
 
 
 # --------------------------------------------------------------------------- page: review
@@ -286,8 +276,6 @@ elif page == "Alterations review":
     base_id = f"{take}_C0"
 
     st.markdown(f"**{cid}**")
-    if STATUS.get(take.split("-")[0]) == "placeholder_tts":
-        st.markdown('<span class="pill warn">baseline = synthetic TTS voice, not a human recording</span>', unsafe_allow_html=True)
     what = lab["what"]
     words = load_align(take)
     flagged = {}

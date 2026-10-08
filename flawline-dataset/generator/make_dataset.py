@@ -178,7 +178,7 @@ def build_manifest():
             "added_condition": where["added_condition"] or "", "flaw_codes": "|".join(sorted({r["flaw"] for r in w})),
             "categories": "|".join(sorted({r["category"] for r in w})), "max_level": max([r["level"] for r in w], default=0),
             "n_regions": len(w), "duration_s": lab["duration_s"], "split": split_of(lab["baseline_id"]),
-            "labels_from": lab.get("labels_from", "generator"), "licence": "CC0 (synthetic placeholder)" if who["synthetic_voice"] else "see LICENSES.md",
+            "labels_from": lab.get("labels_from", "generator"), "licence": "CC0 (synthetic voice)" if who["synthetic_voice"] else "see LICENSES.md",
             "sha256": sha256(audio), "origin": who.get("origin", ""), "register": who.get("register", ""),
             "synthetic_voice": who["synthetic_voice"], "multi_set": "|".join(lab.get("multi_set") or []),
         })

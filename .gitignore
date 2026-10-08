@@ -10,3 +10,8 @@ results/.done
 .cache/
 *.wav
 *.pkl
+
+# local / release artefacts
+_internal/
+dist/
+*.zip
