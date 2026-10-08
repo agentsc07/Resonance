@@ -28,7 +28,8 @@ Requirements: Python 3.13 (tested with 3.13.1) and `ffmpeg`.
 
 ```bash
 make setup                     # pinned dependencies (requirements.lock) and the spaCy model
-# download the Flawline dataset (link above) and unzip it into flawline-dataset/
+# download the Flawline dataset (link above), then:
+unzip -o flawline-v1.0.zip -d flawline-dataset
 make app                       # http://localhost:8501  (Analyse, Dataset, About)
 ```
 
