@@ -23,12 +23,12 @@ export async function initAbout() {
   if (hu && hu.marks) tiles.push([ICON.find, `${hu.caught}<small> of ${hu.marks}</small>`, "slips human listeners marked, caught", `Score agreement with listeners: Spearman ${hu.spearman == null ? "–" : (+hu.spearman).toFixed(2)}. ${hu.raters} listener${hu.raters > 1 ? "s" : ""}, ${hu.clips} clips.`]);
   if (hu && hu.unedited_flags) tiles.push([ICON.calm, `${Math.round(100 * hu.unedited_agreed / hu.unedited_flags)}<small>%</small>`, "of flags on unedited speech a listener agreed with", `${hu.unedited_agreed} of ${hu.unedited_flags} flags.`]);
   tiles.push(...[
-    [ICON.rise, `${ok}<small> of ${dose.length}</small>`, "flaw types score steadily lower as they get worse", "Make a flaw stronger and the score falls with it: the scoring behaves like a rubric, not noise."],
-    [ICON.calm, `&lt; ${lim ?? "–"}<small> false flags / min</small>`, "on clean speech, even in rough recordings", "Noise, a phone line, an echoey room or MP3 compression do not make it invent flaws."],
-    [ICON.find, `${of10(same.train?.r)}<small> of 10</small>`, "injected flaws found, blind", `When a clean reading of the same text is available to compare against; ${of10(same.train?.p)} in 10 of its flags are real. Missing pauses: every flag real, 3 in 4 found.`],
+    [ICON.rise, `${ok}<small> of ${dose.length}</small>`, "flaw types score steadily lower as they get worse", "Make a flaw stronger and the score falls with it. Measured on the Flawline benchmark: one clip per flaw at five strengths."],
+    [ICON.calm, `&lt; ${lim ?? "–"}<small> false flags / min</small>`, "on clean speech, even in rough recordings", "Noise, a phone line, an echoey room or MP3 compression do not make it invent flaws. Measured on 60 unaltered clips re-recorded under those conditions."],
+    [ICON.find, `${of10(same.train?.r)}<small> of 10</small>`, "injected flaws found, blind", `When a clean reading of the same text is available to compare against; ${of10(same.train?.p)} in 10 of its flags are real. Measured on the 235 training clips.`],
   ]);
-  if (mt.onset_ms != null) tiles.push([ICON.find, `${Math.round(mt.onset_ms)}<small> ms</small>`, "typical gap between a flag and the real moment", "Measured on the injected flaws, so the real moment is known to the millisecond."]);
-  if (mt.area_acc != null) tiles.push([ICON.calm, `${Math.round(mt.area_acc * 100)}<small>%</small>`, "of the time it names the right area", "Pacing, pausing, intonation, volume, fluency, clarity or text fidelity."]);
+  if (mt.onset_ms != null) tiles.push([ICON.find, `${Math.round(mt.onset_ms)}<small> ms</small>`, "typical gap between a flag and the real moment", "Median over the injected flaws it found, with a clean reading available (235 training clips)."]);
+  if (mt.area_acc != null) tiles.push([ICON.calm, `${Math.round(mt.area_acc * 100)}<small>%</small>`, "of the time it names the right area", "Pacing, pausing, intonation, volume, fluency, clarity or text fidelity. Measured on the 235 training clips."]);
   $("#big3").className = "big3 n" + tiles.length;
   $("#big3").innerHTML = tiles.map(([ic, n, l, s]) => `<div class="panel big"><span class="ic">${ic}</span><b class="mono">${n}</b><em>${l}</em><small>${s}</small></div>`).join("");
 
@@ -45,7 +45,8 @@ export async function initAbout() {
     <div class="scroll-x"><table class="t"><tr><th>Area</th><th>What it covers</th>${genres.map((g) => `<th>${esc(g)}</th>`).join("")}</tr>` +
     cats.map((c) => `<tr><td><b>${esc(c)}</b></td><td class="dim">${esc(AREAS[c] || "")}</td>${genres.map((g) => `<td class="mono">${Math.round((w[g][c] || 0) * 100)}%</td>`).join("")}</tr>`).join("") + `</table></div>`;
 
-  const L = a.links, link = (label, url, hint) => url ? `<a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${label} ↗</a>` : `<span class="btn" style="opacity:.45;cursor:default" title="${hint}">${label} · coming</span>`;
-  const abs = (u) => (u && /^https?:/.test(u) ? u : "");
-  $("#links").innerHTML = link("Repository", L.repo, "Public repository link") + link("Technical report", abs(L.report), "docs/technical_report.md in the repository") + link("Datasheet", abs(L.datasheet), "DATASHEET.md in the repository") + link("Dataset download", L.dataset, "Released zip with checksums") + link("Video", L.video, "Demo video");
+  const L = a.links, abs = (u) => (u && /^https?:/.test(u) ? u : "");
+  const link = (label, url) => (url ? `<a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${label} ↗</a>` : "");
+  $("#links").innerHTML = link("Repository", abs(L.repo)) + link("Technical report", abs(L.report)) + link("Datasheet", abs(L.datasheet)) + link("Dataset download", abs(L.dataset)) + link("Video", abs(L.video));
+  $("#links").closest(".card").hidden = !$("#links").innerHTML;
 }

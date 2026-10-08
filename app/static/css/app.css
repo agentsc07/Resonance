@@ -360,3 +360,4 @@ body.results[data-page=analyse] #room { filter: blur(5px); opacity: .55; }
 .rt-t td { padding: 7px 8px; border-bottom: 1px solid var(--line); }
 .rt-t .tick { font-weight: 700; color: var(--coral); }
 .rt-t tr.ok .tick { color: var(--good); }
+[hidden] { display: none !important; }
