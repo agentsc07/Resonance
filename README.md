@@ -7,7 +7,7 @@
 Speech delivery analytics built on the Flawline benchmark (Track C: Contrastive Speech Analytics & Temporal Flaw Grounding).
 
 <!-- LINKS:start -->
-[Dataset download](https://drive.google.com/drive/folders/1HUwjgzhGVNBPQMHhGchfYjcXd-iLGn8T?usp=sharing) · [Technical report (PDF)](docs/technical_report.pdf) · [Datasheet](DATASHEET.md)
+[Demo video](https://www.youtube.com/watch?v=F_atyx2BA7c) · [Dataset download](https://drive.google.com/drive/folders/1HUwjgzhGVNBPQMHhGchfYjcXd-iLGn8T?usp=sharing) · [Technical report (PDF)](docs/technical_report.pdf) · [Datasheet](DATASHEET.md)
 <!-- LINKS:end -->
 
 ![Resonance analysing a reading: score, timeline with flagged moments, and the cause of each](docs/screenshots/analyse_shout_1440x900.png)
@@ -105,7 +105,7 @@ Every metric, split, acceptance test and leakage-audit result, with how it was m
 | Temporal flaw grounding | Start and end of every flagged moment; metrics in [`docs/RESULTS.md`](docs/RESULTS.md) |
 | Causal explanations | Cause, points lost and coaching tip per moment ([`engine/explain.py`](engine/explain.py)) |
 | Technical report (6 pages) | [`docs/technical_report.pdf`](docs/technical_report.pdf) |
-| Demo video | Submitted with the hackathon entry |
+| Demo video | Link above |
 | Reproducibility | `make` targets, `Dockerfile`, [`requirements.lock`](requirements.lock), [`flawline-dataset/checksums.sha256`](flawline-dataset/checksums.sha256) |
 
 ## Repository layout
