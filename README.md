@@ -1,7 +1,7 @@
 <!-- BRAND:start -->
-# Flawline
+# Resonance
 
-**Detect. Explain. Improve.**
+**Detect. Explain. Improve.** The product built on the Flawline dataset and benchmark.
 <!-- BRAND:end -->
 
 Contrastive speech analytics (hackathon Track C). Real recorded speakers read a known text; controlled delivery flaws (pace, pauses, intonation, volume, fluency, clarity, text fidelity) are injected at known places and strengths, so every label is ground truth. An engine then finds the flaws blind, says where and why, and scores the delivery.

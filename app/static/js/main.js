@@ -23,7 +23,7 @@ export function toast(msg) {
   clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 6000);
 }
 
-let BRAND = { product: "Flawline", tagline: "Detect. Explain. Improve." };   // replaced by /api/meta (app/brand.json: the one place the product name lives)
+let BRAND = { product: "Resonance", tagline: "Detect. Explain. Improve." };   // replaced by /api/meta (app/brand.json: the one place the product name lives)
 const PAGES = ["analyse", "dataset", "about"];
 const loaded = {};
 function show(name) {
@@ -35,7 +35,7 @@ function show(name) {
   pill.style.left = a.offsetLeft + "px"; pill.style.width = a.offsetWidth + "px";
   if (name === "dataset" && !loaded.dataset) { loaded.dataset = true; initDataset(); }
   if (name === "about" && !loaded.about) { loaded.about = true; initAbout(); }
-  document.title = (BRAND.product || "Flawline") + " · " + name[0].toUpperCase() + name.slice(1);
+  document.title = (BRAND.product || "Resonance") + " · " + name[0].toUpperCase() + name.slice(1);
 }
 
 const meta = await api("/api/meta");

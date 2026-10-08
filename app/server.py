@@ -144,7 +144,7 @@ def main():
     if HUMAN:
         print(f"Human listening pages: http://localhost:{port}/label  and  http://localhost:{port}/review")
     try:
-        print(f"Flawline: http://localhost:{port}")
+        print(f"{BRAND['product']}: http://localhost:{port}")
         uvicorn.run(app, host=os.environ.get("HOST", "127.0.0.1"), port=port, log_level="warning")
     finally:
         if lab:
