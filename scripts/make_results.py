@@ -91,6 +91,12 @@ for r in lk:
     w(f"| {r['scope']} | {r['auc']} | {lm.get(r['scope'], '')} |")
 w("\nFlaws above 0.65 in leave-one-speaker-out (FILLER, PAUSE_BAD, PAUSE_LOST, RARE_HESIT, REPEAT) can be separated from clean speech partly by their editing artifacts. FILLER and PAUSE_BAD remain headline flaws and are flagged as such.\n")
 
+af = J("acceptance_free.json")
+if af:
+    w("## 3b. Upload-mode invariance\n")
+    iv = af["invariance"]
+    w(f"Unaltered readings under noise, phone band, room reverb, MP3 and gain change, upload mode: **{iv['false_flags_per_min']:.3f} false flags per minute**, worst score shift **{iv['max_score_shift']} points**, mean shift by condition " + ", ".join(f"{k} {v}" for k, v in iv["mean_shift_by_condition"].items()) + f" (n = {iv['n']}).\n")
+
 c = J("clean_clone.json")
 if c:
     w("## 4. Reproduction check\n")

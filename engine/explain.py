@@ -64,6 +64,8 @@ def explain_free(c, fa, ref_words: list[dict], sev: float) -> tuple[str, str]:
         return (f"{ctx}: {F.get('syll_per_s', 0):.1f} syllables/s here against {F.get('clip_median', 0):.1f} over the rest of your reading "
                 f"({(F.get('syll_per_s', 0) / max(F.get('clip_median', 1), 1e-3) - 1) * 100:+.0f}%). {verb} delivery{tail}.",
                 "Let key phrases land: slow down on the words that carry the point." if f == "PACE_FAST" else "Keep momentum through the phrase; trust your preparation.")
+    if f == "PAUSE_BAD" and F.get("long_hesitation"):
+        return (f"{ctx}: a {c.d:.1f} s silence in the middle of the sentence. Long hesitation{tail}.", "Keep going through a stumble; if you lose your place, pause at a clause boundary rather than mid-phrase.")
     if f == "PAUSE_BAD":
         return (f'{ctx}: {c.d:.2f} s of silence inside a phrase ({F.get("boundary", "")}); readers do not stop here. Misplaced pause{tail}.',
                 "Keep phrases together; pause at commas and full stops, not between a word and its phrase.")

@@ -23,6 +23,10 @@ def _ref(bid: str):
     return _REF_CACHE[bid]
 
 
+SHORT_S = 10.0
+SELF_NORMALISED = {"PACE_FAST", "PACE_SLOW", "FADE", "SHOUT", "SLUR", "MONOTONE"}
+
+
 def _analyse_free(audio_path: str, meta: dict, ref_override: str | None):
     """Reference-free: the transcript (the text the speaker read) plus the clip itself and clean-speaker norms; no reference recording."""
     from . import free
@@ -41,6 +45,9 @@ def _analyse_free(audio_path: str, meta: dict, ref_override: str | None):
     fa = free.analyse(x, bid, ref_w)
     q["text_checks"] = text_checks
     cands = [c for c in free.run(fa, detect.TH) if c.flaw not in detect.DISABLED and (text_checks or c.flaw not in ("WORD_SKIP", "WORD_SWAP", "REPEAT"))]
+    q["short"] = bool(fa.dur < SHORT_S)
+    if q["short"]:                                            # too little speech to know this speaker's own pace and level: skip the detectors that compare a stretch with the rest of the clip
+        cands = [c for c in cands if c.flaw not in SELF_NORMALISED]
     return fa, cands, q, "free:" + bid, fa.n
 
 

@@ -48,9 +48,9 @@ Per-flaw strict F1, train split (same):
 
 | Split | Clips | Strict F1 | P | R | Standard F1 | Onset F1 | Median onset error | Area accuracy | Found / true | All 15 flaws F1 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Train (B01, B02, B04, B06, B07) | 235 | 0.351 | 0.347 | 0.354 | 0.362 | 0.325 | 67.3 ms | 86% | 95 / 268 | 0.229 |
-| Dev (B03) | 20 | 0.375 | 0.667 | 0.261 | 0.375 | 0.375 | 70.4 ms | 86% | 6 / 23 | 0.182 |
-| JFK 1962 (B09, B10; never tuned on) | 160 | 0.095 | 0.059 | 0.236 | 0.103 | 0.085 | 65.5 ms | 74% | 47 / 199 | 0.078 |
+| Train (B01, B02, B04, B06, B07) | 235 | 0.363 | 0.341 | 0.388 | 0.380 | 0.325 | 84.5 ms | 89% | 104 / 268 | 0.241 |
+| Dev (B03) | 20 | 0.412 | 0.636 | 0.304 | 0.412 | 0.412 | 45.7 ms | 88% | 7 / 23 | 0.206 |
+| JFK 1962 (B09, B10; never tuned on) | 160 | 0.116 | 0.074 | 0.261 | 0.125 | 0.107 | 47.0 ms | 78% | 52 / 199 | 0.091 |
 
 Per-flaw strict F1, train split (free):
 
@@ -58,9 +58,9 @@ Per-flaw strict F1, train split (free):
 |---|---|---|
 | SHOUT | 0.756 | headline |
 | WORD_SWAP | 0.402 | headline |
-| PAUSE_BAD | 0.353 | headline |
-| FILLER | 0.250 | headline |
-| FADE | 0.222 | headline |
+| FILLER | 0.337 | headline |
+| PAUSE_BAD | 0.270 | headline |
+| FADE | 0.239 | headline |
 | UPTALK | 0.197 | experimental |
 | EMPH_FLAT | 0.000 | experimental |
 | MONOTONE | 0.000 | not detectable without a reference |
@@ -141,4 +141,8 @@ A classifier that sees only editing artifacts (click energy at the join, noise-f
 | WORD_SWAP | 0.723 | 0.637 |
 
 Flaws above 0.65 in leave-one-speaker-out (FILLER, PAUSE_BAD, PAUSE_LOST, RARE_HESIT, REPEAT) can be separated from clean speech partly by their editing artifacts. FILLER and PAUSE_BAD remain headline flaws and are flagged as such.
+
+## 3b. Upload-mode invariance
+
+Unaltered readings under noise, phone band, room reverb, MP3 and gain change, upload mode: **2.240 false flags per minute**, worst score shift **23.5 points**, mean shift by condition GAIN 1.38, MP3 1.41, N10 6.93, N20 5.71, PHN 14.37, RVB 4.6 (n = 60).
 

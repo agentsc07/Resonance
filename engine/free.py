@@ -22,7 +22,8 @@ NORMS_PATH = Path(__file__).parent / "norms.json"
 POP_SPEAKERS = ["B01", "B02", "B04", "B06", "B07"]                  # TRAIN speakers only (never dev B03, test B05/B08, extra B09/B10)
 FTH = {"pause_bad": 0.8, "pause_loose_mult": 1.6, "lost_frac": 0.25, "pace_k_fast": 2.0, "pace_k_slow": 2.0, "pace_min_s": 1.2, "pace_win": 2,
        "mono_ratio": 0.62, "mono_min_s": 2.4, "uptalk_st": 2.0, "fade_db": 3.5, "shout_db": 4.0, "slur_db": 4.0,
-       "swap_sim": 0.8, "ins_p": 0.5, "filler_min_s": 0.1, "repeat_sim": 0.6, "skip_min_words": 1}
+       "swap_sim": 0.8, "ins_p": 0.5, "filler_min_s": 0.1, "repeat_sim": 0.6, "skip_min_words": 1,
+       "flat_range": 2.0, "flat_min_s": 0.25, "flat_istd": 4.0, "flat_mult": 0.8, "flat_unexpl": 0.2, "long_pause": 1.0}
 FILLERS = asr.FILLERS
 _NORMS: dict | None = None
 
@@ -60,6 +61,41 @@ def _zipf(ref_w, ling):
             for k in range(n)]
 
 
+def snap_words(words: list[dict], fr, sil, min_gap: float = 0.12, first_frac: float = 0.6) -> None:
+    """Make word times agree with the audio. A recogniser may stretch a word across a silence (its timestamps come from the decoder, not the signal).
+    For every silence of at least min_gap seconds that lies inside a word's span: if it sits in the first `first_frac` of the word, the word really starts
+    when the silence ends (the pause belongs to the boundary before the word, and the voiced tail before it goes back to the previous word); otherwise
+    the word ends where the silence starts. Each word also gets ts/te: its first and last non-silent frame (ps/pe stay as they are, because the level detectors and their norms use windows cut at ps/pe)."""
+    heard = [i for i, w in enumerate(words) if w["status"] != "skip"]
+    for pos, i in enumerate(heard):
+        w = words[i]
+        for _ in range(20):
+            L = w["pe"] - w["ps"]
+            hit = next(((a, b) for a, b in sil if b - a >= min_gap and a > w["ps"] + 0.02 and b < w["pe"] - 0.02), None)
+            if hit is None:
+                break
+            a, b = hit
+            if (a - w["ps"]) < first_frac * L:
+                if pos > 0 and w["ps"] - words[heard[pos - 1]]["pe"] <= 0.1:       # the voiced tail before the silence goes back to the previous word
+                    words[heard[pos - 1]]["pe"] = a
+                elif pos > 0:
+                    words[heard[pos - 1]]["pe"] = min(words[heard[pos - 1]]["pe"], a)
+                w["ps"] = b
+            else:
+                old_pe = w["pe"]
+                w["pe"] = a
+                if pos + 1 < len(heard) and words[heard[pos + 1]]["ps"] - old_pe <= 0.1:   # the voiced bit after the silence is the start of the next word
+                    words[heard[pos + 1]]["ps"] = min(words[heard[pos + 1]]["ps"], b)
+    I = fr.inten
+    thr = float(np.percentile(I, 5)) * 0.65
+    for i in heard:
+        w = words[i]
+        a, b = int(w["ps"] * 100), min(len(I), int(w["pe"] * 100) + 1)
+        act = np.where(I[a:b] >= thr)[0]
+        if len(act) and (act[-1] - act[0]) * 0.01 >= 0.04:
+            w["ts"], w["te"] = float(max(w["ps"], (a + act[0]) * 0.01)), float(min(w["pe"], (a + act[-1] + 1) * 0.01))       # voiced extent, kept apart from ps/pe
+
+
 def analyse(x: np.ndarray, bid: str, ref_w: list[dict] | None = None) -> FA:
     """ASR twice (unprompted + disfluency-prompted, cached), align the transcript to what was heard, extract frames and silences."""
     ref_w = ref_w or reference.words_of(bid)
@@ -89,8 +125,10 @@ def analyse(x: np.ndarray, bid: str, ref_w: list[dict] | None = None) -> FA:
         prev = [w["i"] for w in words if w["status"] != "skip" and w["pe"] <= e["start"] + 0.02]
         e["after"] = prev[-1] if prev else -1
     fr = features.compute(x)
+    sil = silence_runs(fr, 0.1)
+    snap_words(words, fr, sil)
     bt = ling["b"][: len(words) - 1] + ["sentence"]
-    return FA(bid=bid, words=words, bt=bt, zipf_next=_zipf(ref_w, ling), fr=fr, sil=silence_runs(fr, 0.1), hyp=hyp, verb=verb, ins=ins, dur=len(x) / audio.SR)
+    return FA(bid=bid, words=words, bt=bt, zipf_next=_zipf(ref_w, ling), fr=fr, sil=sil, hyp=hyp, verb=verb, ins=ins, dur=len(x) / audio.SR)
 
 
 # ----------------------------------------------------------------------------- shared measurements
@@ -150,7 +188,9 @@ def d_pauses(fa: FA, th) -> list[Cand]:
         if a < 0.4 or b > fa.dur - 0.3:
             continue
         t = fa.bt[k]
-        if t in ("phrase_tight", "phrase_loose"):
+        if t != "sentence" and L >= th["long_pause"]:           # a long hesitation, whatever the grammar says about the boundary
+            out.append(Cand("PAUSE_BAD", a, b, L, k, k + 1, {"boundary": t, "long_hesitation": True}))
+        elif t in ("phrase_tight", "phrase_loose"):
             lim = th["pause_bad"] * (1.0 if t == "phrase_tight" else th["pause_loose_mult"])
             if L >= lim:
                 rare = fa.zipf_next[k] is not None and fa.zipf_next[k] < 3.5
@@ -420,8 +460,80 @@ def d_insert(fa: FA, th) -> list[Cand]:
     return out
 
 
+def flat_stretches(fr, rng_st: float, min_s: float, gap: int = 2):
+    """Voiced stretches whose pitch stays within rng_st semitones for at least min_s seconds (a held vowel such as "uh"). Returns (start, end, intensity SD, spectral change)."""
+    f0 = fr.f0_st
+    v = ~np.isnan(f0)
+    n = len(f0)
+    out, i = [], 0
+    while i < n:
+        if not v[i]:
+            i += 1
+            continue
+        lo = hi = f0[i]
+        last, k = i, i + 1
+        while k < n:
+            if v[k]:
+                nlo, nhi = min(lo, f0[k]), max(hi, f0[k])
+                if nhi - nlo >= rng_st:
+                    break
+                lo, hi, last = nlo, nhi, k
+            elif k - last > gap:
+                break
+            k += 1
+        if (last - i + 1) * 0.01 >= min_s:
+            seg = slice(i, last + 1)
+            out.append((i * 0.01, (last + 1) * 0.01, float(np.std(fr.inten[seg])), float(np.mean(np.abs(np.diff(fr.hf[seg])))) if last > i else 0.0))
+        i = last + 1
+    return out
+
+
+def expected_durations(fa: FA) -> np.ndarray:
+    """Seconds each word should take given its length and position, at this clip's own speaking rate (NaN for words that were not heard)."""
+    m = norms().get("dur_model")
+    d = np.array([max(w["pe"] - w["ps"], 0.03) if w["status"] != "skip" else np.nan for w in fa.words])
+    pred = _dur_feats(fa.words, fa.bt) @ np.array(m["coef"]) if m else np.zeros(fa.n)
+    return np.exp(pred + np.nanmedian(np.log(d) - pred))
+
+
+def d_flat(fa: FA, th) -> list[Cand]:
+    """A held, steady, flat-pitch voiced sound that no word accounts for (an "uh", "um" or drawn-out word) next to a silence or a word boundary."""
+    out = []
+    ex = expected_durations(fa)
+    big = [(a, b) for a, b in fa.sil if b - a >= 0.3]
+    left = {w["i"]: th["flat_mult"] * ex[w["i"]] + 0.05 for w in fa.words if w["status"] != "skip"}     # each word's own vowel can explain this much flat voicing, in total
+    for a, b, istd, flux in flat_stretches(fa.fr, th["flat_range"], th["flat_min_s"]):
+        if istd > th["flat_istd"] or a < 0.3 or b > fa.dur - 0.3:
+            continue
+        explained = 0.0
+        for w in fa.words:
+            if w["status"] == "skip":
+                continue
+            ov = min(b, w["pe"]) - max(a, w["ps"])
+            if ov > 0:
+                use = min(ov, left[w["i"]])
+                explained += use
+                left[w["i"]] -= use
+        if (b - a) - explained < th["flat_unexpl"]:
+            continue
+        edges = [w["ps"] for w in fa.words if w["status"] != "skip"] + [w["pe"] for w in fa.words if w["status"] != "skip"] + [x for r in big for x in r]
+        if min(abs(a - e) for e in edges) > 0.08 and min(abs(b - e) for e in edges) > 0.08:
+            continue
+        k = max([w["i"] for w in fa.words if w["status"] != "skip" and w["pe"] <= a + 0.05] or [0])
+        out.append(Cand("FILLER", a, b, float(b - a), k, min(k + 1, fa.n - 1), {"heard": "held vowel", "kind": "hesitation sound or drawn-out word"}))
+    return out
+
+
+def d_filler(fa: FA, th) -> list[Cand]:
+    """Recogniser-based fillers and unexplained voiced stretches, plus the acoustic held-vowel detector (no duplicates by time)."""
+    base = d_text(fa, th) + d_insert(fa, th)
+    fl = [c for c in base if c.flaw == "FILLER"]
+    extra = [c for c in d_flat(fa, th) if not any(min(c.end, f.end) - max(c.start, f.start) > 0.05 for f in fl)]
+    return base + extra
+
+
 PRODUCERS_FREE = {"PAUSE_BAD": d_pauses, "PAUSE_LOST": d_pauses, "PACE_FAST": d_pace, "PACE_SLOW": d_pace, "MONOTONE": d_mono, "UPTALK": d_uptalk,
-                  "FADE": d_fade, "SHOUT": d_shout, "SLUR": d_slur, "FILLER": lambda fa, th: d_text(fa, th) + d_insert(fa, th), "REPEAT": d_text, "WORD_SKIP": d_text, "WORD_SWAP": d_text}
+                  "FADE": d_fade, "SHOUT": d_shout, "SLUR": d_slur, "FILLER": d_filler, "REPEAT": d_text, "WORD_SKIP": d_text, "WORD_SWAP": d_text}
 
 
 def run(fa: FA, th: dict, flaw: str | None = None) -> list[Cand]:

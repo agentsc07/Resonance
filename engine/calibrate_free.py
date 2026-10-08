@@ -12,7 +12,6 @@ from . import detect
 from . import tune as T
 
 GRID_FREE = {
-    "PAUSE_BAD": {"pause_bad": [0.4, 0.5, 0.6, 0.8, 1.0, 1.3], "pause_loose_mult": [1.0, 1.3, 1.6, 2.0]},
     "PAUSE_LOST": {"lost_frac": [0.1, 0.2, 0.3, 0.4, 0.55]},
     "PACE_FAST": {"pace_k_fast": [1.2, 1.6, 2.0, 2.5, 3.0], "pace_win": [1, 2, 3], "pace_min_s": [0.8, 1.2, 1.6]},
     "PACE_SLOW": {"pace_k_slow": [1.2, 1.6, 2.0, 2.5, 3.0]},
@@ -26,6 +25,13 @@ GRID_FREE = {
     "WORD_SKIP": {"skip_min_words": [1, 2]},
     "WORD_SWAP": {"swap_sim": [0.5, 0.6, 0.7, 0.8, 0.9]},
 }
+
+
+# Pinned, not fitted: the F1-optimal pause limit on injected pauses (0.8 s) misses real hesitations such as a 0.55 s stop inside a noun phrase. 0.5 s with a doubled limit
+# at looser phrase boundaries is the lowest setting that keeps false pause flags on the clean baseline readings near one per minute (see docs/RESULTS.md).
+# The held-vowel detector is pinned the same way: the fitted minimum length (0.4 s) would miss a real 0.27 s "uhh" in the regression set (tests/real); its range, steadiness and
+# word-allowance settings come from the grid search described in docs/RESULTS.md.
+PINNED = {"pause_bad": 0.5, "pause_loose_mult": 2.0, "flat_range": 2.0, "flat_min_s": 0.25, "flat_unexpl": 0.2, "flat_mult": 0.8, "flat_istd": 4.0}
 
 
 def fit_ins_clf(labs):
@@ -61,7 +67,7 @@ def main():
     detect.use("free")
     from . import free
     free.INS_CLF = fit_ins_clf(labs)
-    th = dict(detect.TH)
+    th = {**dict(detect.TH), **PINNED}
     for rnd in range(a.rounds):
         for flaw, params in GRID_FREE.items():
             for key, vals in params.items():

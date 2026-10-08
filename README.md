@@ -78,7 +78,7 @@ Event F1 against the injected flaws, 11 headline flaws, thresholds fitted on tra
 | Dev (20 clips) | 0.659 | 0.729 | 29.5 ms | 100% |
 | JFK 1962 (160 clips) | 0.551 | 0.607 | 26.1 ms | 96% |
 
-Upload mode (5 detectable flaws): F1 0.351 on train, 0.375 on dev, 0.095 on JFK 1962.
+Upload mode (5 detectable flaws): F1 0.363 on train, 0.412 on dev, 0.116 on JFK 1962.
 
 - The score falls with flaw level for 12 of 13 scored flaws (Spearman ρ ≤ −0.9).
 - False flags on unaltered speech under noise, phone, room, MP3 and gain: 0.45 per minute.

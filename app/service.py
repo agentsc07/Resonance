@@ -247,7 +247,7 @@ def analyse(opts: dict) -> dict:
                 "points": r["points_lost"], "lane": LANE[r["flaw"]], "why": r["explanation"], "tip": r["params"].get("tip", ""), "confidence": r.get("confidence"),
                 "reliability": r.get("reliability"), "w0": r["word_start"], "w1": r["word_end"]} for k, r in enumerate(pred["what"])]
     out = {"key": key, "overall": pred["scores"]["overall"], "band": pred["scores"]["band"], "worst": pred["scores"]["worst_area_score"], "categories": cats, "summary": summary(pred), "regions": regions,
-           "timeline": tl, "words": words, "quality": pred["quality"], "mode": "reference" if opts.get("reference_id") else mode, "audio_url": f"/api/audio/{'clip' if src == 'clip' else 'upload'}/{ident}.wav",
+           "timeline": tl, "words": words, "quality": pred["quality"], "short": bool(pred["quality"].get("short")), "mode": "reference" if opts.get("reference_id") else mode, "audio_url": f"/api/audio/{'clip' if src == 'clip' else 'upload'}/{ident}.wav",
            "reference": pred["reference"], "pred": pred, "genre": m["genre"], "clip": ident if src == "clip" else None,
            "text_checks": pred["quality"].get("text_checks", True)}
     _CACHE[key] = out

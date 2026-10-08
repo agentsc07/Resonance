@@ -83,6 +83,22 @@ def free_analysis(lab: dict):
     return fa
 
 
+CLEAN_TAKES = {"train": ["B01", "B02", "B04", "B06", "B07"], "dev": ["B03"], "extra": ["B09", "B10"]}
+
+
+def clean_free_analysis(bid: str):
+    """Reference-free analysis of a clean baseline reading (the take, with its own text), cached: the yardstick for false flags on clean speech."""
+    from . import audio, free
+    FREE_CACHE.mkdir(exist_ok=True)
+    f = FREE_CACHE / f"clean_{bid}.pkl"
+    if f.exists():
+        return pickle.loads(f.read_bytes())
+    x = audio.normalise(audio.load(str(DATA / "takes" / f"{bid}-CHAMP_C0.flac")))[0]
+    fa = free.analyse(x, bid)
+    f.write_bytes(pickle.dumps(fa))
+    return fa
+
+
 def cands_for(lab: dict, mode: str, flaw=None):
     """Detections for a clip (consensus across the panel in cross mode). Returns (cands, C of the primary reference, its ref id)."""
     from . import consensus

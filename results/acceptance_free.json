@@ -1,0 +1,204 @@
+{
+ "mode": "free",
+ "dose_response": {
+  "min_ok": -0.9,
+  "per_flaw": {
+   "PACE_FAST": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     98.1,
+     100.0
+    ],
+    "spearman": -0.393
+   },
+   "PACE_SLOW": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0
+    ],
+    "spearman": NaN
+   },
+   "PAUSE_BAD": {
+    "scores_L0_to_L5": [
+     100.0,
+     98.2,
+     78.0,
+     78.2,
+     100.0,
+     83.9
+    ],
+    "spearman": -0.203
+   },
+   "PAUSE_LOST": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     99.4,
+     99.4
+    ],
+    "spearman": -0.828
+   },
+   "MONOTONE": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0
+    ],
+    "spearman": NaN
+   },
+   "UPTALK": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0
+    ],
+    "spearman": NaN
+   },
+   "EMPH_FLAT": {
+    "scores_L0_to_L5": [
+     100.0,
+     98.2,
+     100.0,
+     100.0,
+     100.0,
+     100.0
+    ],
+    "spearman": 0.393
+   },
+   "FADE": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     90.8,
+     86.1,
+     78.7
+    ],
+    "spearman": -0.941
+   },
+   "SHOUT": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     90.7,
+     70.6,
+     58.0
+    ],
+    "spearman": -0.941
+   },
+   "FILLER": {
+    "scores_L0_to_L5": [
+     100.0,
+     87.0,
+     86.8,
+     87.1,
+     82.5,
+     76.2
+    ],
+    "spearman": -0.829
+   },
+   "REPEAT": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0
+    ],
+    "spearman": NaN
+   },
+   "RARE_HESIT": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     93.5,
+     95.3,
+     86.9
+    ],
+    "spearman": -0.88
+   },
+   "SLUR": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0
+    ],
+    "spearman": NaN
+   },
+   "WORD_SKIP": {
+    "scores_L0_to_L5": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     99.4
+    ],
+    "spearman": -0.655
+   },
+   "WORD_SWAP": {
+    "scores_L0_to_L5": [
+     100.0,
+     86.8,
+     98.9,
+     98.4,
+     97.3,
+     87.2
+    ],
+    "spearman": -0.429
+   }
+  },
+  "failing": [
+   "PACE_FAST",
+   "PAUSE_BAD",
+   "PAUSE_LOST",
+   "EMPH_FLAT",
+   "FILLER",
+   "RARE_HESIT",
+   "WORD_SKIP",
+   "WORD_SWAP"
+  ],
+  "median_spearman": NaN
+ },
+ "invariance": {
+  "false_flags_per_min": 2.24,
+  "max_score_shift": 23.5,
+  "mean_shift_by_condition": {
+   "GAIN": 1.38,
+   "MP3": 1.41,
+   "N10": 6.93,
+   "N20": 5.71,
+   "PHN": 14.37,
+   "RVB": 4.6
+  },
+  "n": 60,
+  "pass_under_10_points": false,
+  "pass": false
+ },
+ "locality": {
+  "mean_other_category_loss": 5.03,
+  "n": 60,
+  "pass": false
+ }
+}

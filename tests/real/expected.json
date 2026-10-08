@@ -1,0 +1,20 @@
+{
+  "_note": "Real recordings with natural slips, used as a regression check for upload (free) mode. Times are from an energy/pitch analysis, +-0.15 s.",
+  "test-2.wav": {
+    "duration_s": 4.24,
+    "transcript_heard": "What is your favorite painting style or technique and why?",
+    "expected": [
+      {"flaw": "PAUSE_BAD", "start_s": 0.90, "end_s": 1.45, "why": "0.55 s silence between 'your' and 'favorite' (inside a noun phrase); ASR wrongly stretches 'favorite' to 0.70-1.66"}
+    ]
+  },
+  "test-uhh.wav": {
+    "duration_s": 7.96,
+    "expected": [
+      {"flaw": "FILLER", "start_s": 3.44, "end_s": 3.72, "why": "steady vowel, flat pitch ~174 Hz, low spectral change: likely 'uhh' (confirm by ear)"},
+      {"flaw": "PAUSE_BAD", "start_s": 3.76, "end_s": 5.14, "why": "1.38 s hesitation silence right after the filler"}
+    ],
+    "possible": [
+      {"flaw": "FILLER", "start_s": 5.20, "end_s": 5.45, "why": "second steady stretch after the pause; may be a drawn-out word start"}
+    ]
+  }
+}

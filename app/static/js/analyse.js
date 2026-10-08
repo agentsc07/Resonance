@@ -103,6 +103,7 @@ function render() {
   const mode = M.modes.find((m) => m.id === R.mode), q = R.quality;
   const qc = { good: "var(--good)", fair: "var(--warn)", poor: "var(--coral)" }[q.badge];
   $("#meta").innerHTML = `<span class="chip">${mode.label}</span><span class="chip" style="color:${qc};border-color:${qc}"><i class="dot"></i>Recording ${q.badge} · SNR ${Math.round(q.snr_db)} dB</span>` +
+    (R.short ? `<span class="chip" style="color:var(--warn);border-color:var(--warn)" title="Pace and level are judged against the rest of your recording, which is too short to do that">Short recording: results are less reliable</span>` : "") +
     (R.text_checks ? "" : `<span class="chip" title="Without the text, skipped and misread words cannot be checked">Text checks off</span>`) +
     (R.mode === "cross" ? `<span class="chip" style="color:var(--warn)">Experimental</span>` : "") + (S.experimental ? `<span class="chip" style="color:var(--warn)">Experimental detectors on</span>` : "");
   // timeline
