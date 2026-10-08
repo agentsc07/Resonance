@@ -29,7 +29,7 @@ Vocabulary choice is not scored: a speaker may choose simple or rare words.
 
 ### 3.1 Speakers and splits
 
-Ten baseline recordings: eight VCTK 0.92 speakers (CC BY 4.0; studio read speech; ages 18 to 38; American, New England American, English, Irish, Australian, South African and two Indian-English voices; four women, four men) and two one-minute excerpts of President Kennedy's 1962 address at Rice University (public domain; open-air recording with crowd noise). Splits hold out whole speakers: **train** B01, B02, B04, B06, B07; **dev** B03; **test** B05, B08 (run once at the end); **extra** B09, B10 (Kennedy; never used to fit anything).
+Ten baseline recordings: eight VCTK 0.92 speakers (CC BY 4.0; studio read speech; ages 18 to 38; American, New England American, English, Irish, Australian, South African and two Indian-English voices; four women, four men) and two one-minute excerpts of President Kennedy's 1962 address at Rice University (public domain; open-air recording with crowd noise). Splits hold out whole speakers: **train** B01, B02, B04, B06, B07; **dev** B03; **test** B05, B08 (held out, not evaluated); **extra** B09, B10 (Kennedy; never used to fit anything).
 
 ### 3.2 The 15 flaws in 7 areas
 
@@ -138,14 +138,14 @@ The app is a local web application (FastAPI service and a static front end) with
 
 ## 7. Evaluation
 
-**Protocol.** A predicted region matches a true flaw of the same type when their overlap (IoU) is at least 0.5 (strict) or 0.3 (standard); point events are widened to 0.30 s. We also report onset F1 (same type, start within 250 ms), the median onset error and area accuracy. Score acceptance tests check dose-response (the score must fall with level), invariance (unaltered readings under each condition keep their score and raise at most 0.5 false flags per minute) and locality (a flaw should cost points mainly in its own area). Everything is fitted on train, checked on dev; the Kennedy set is never fitted on; the test split is run once.
+**Protocol.** A predicted region matches a true flaw of the same type when their overlap (IoU) is at least 0.5 (strict) or 0.3 (standard); point events are widened to 0.30 s. We also report onset F1 (same type, start within 250 ms), the median onset error and area accuracy. Score acceptance tests check dose-response (the score must fall with level), invariance (unaltered readings under each condition keep their score and raise at most 0.5 false flags per minute) and locality (a flaw should cost points mainly in its own area). Everything is fitted on train, checked on dev; the Kennedy set is never fitted on; the test split (B05, B08) is held out and has not been evaluated.
 
 | Reference mode | Clips | F1 (IoU ≥ 0.5) | F1 (IoU ≥ 0.3) | Onset F1 | Median onset error | Area accuracy |
 |---|---|---|---|---|---|---|
 | Train | 235 | 0.611 | 0.670 | 0.580 | 17.5 ms | 98% |
 | Dev (held-out speaker) | 20 | 0.659 | 0.729 | 0.541 | 29.5 ms | 100% |
 | Kennedy 1962 (unseen) | 160 | 0.551 | 0.607 | 0.528 | 26.1 ms | 96% |
-| Test (B05, B08) | run on 12 Oct | | | | | |
+| Test (B05, B08) | held out, not evaluated | | | | | |
 
 *Table 2. Eleven headline flaws.* In upload mode (five detectable flaws) strict F1 is 0.363 on train, 0.412 on dev (7 of 23 flaws found) and 0.116 on Kennedy 1962, where recogniser errors on the noisy recording produce many false flags.
 

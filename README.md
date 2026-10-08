@@ -7,7 +7,7 @@
 Speech delivery analytics built on the Flawline benchmark (Track C: Contrastive Speech Analytics & Temporal Flaw Grounding).
 
 <!-- LINKS:start -->
-Demo video (link at release) · [Dataset download](https://drive.google.com/drive/folders/1HUwjgzhGVNBPQMHhGchfYjcXd-iLGn8T?usp=sharing) · [Technical report (PDF)](docs/technical_report.pdf) · [Datasheet](DATASHEET.md)
+[Dataset download](https://drive.google.com/drive/folders/1HUwjgzhGVNBPQMHhGchfYjcXd-iLGn8T?usp=sharing) · [Technical report (PDF)](docs/technical_report.pdf) · [Datasheet](DATASHEET.md)
 <!-- LINKS:end -->
 
 ![Resonance analysing a reading: score, timeline with flagged moments, and the cause of each](docs/screenshots/analyse_shout_1440x900.png)
@@ -84,6 +84,8 @@ Upload mode (5 detectable flaws): F1 0.363 on train, 0.412 on dev, 0.116 on JFK 
 - False flags on unaltered speech under noise, phone, room, MP3 and gain: 0.45 per minute.
 - Worst score shift of an unaltered reading under those conditions: 6.5 points.
 
+The test split (B05, B08) is held out and has not been evaluated; no number here comes from it.
+
 Every metric, split, acceptance test and leakage-audit result, with how it was measured: [`docs/RESULTS.md`](docs/RESULTS.md).
 
 ## Limitations
@@ -103,7 +105,7 @@ Every metric, split, acceptance test and leakage-audit result, with how it was m
 | Temporal flaw grounding | Start and end of every flagged moment; metrics in [`docs/RESULTS.md`](docs/RESULTS.md) |
 | Causal explanations | Cause, points lost and coaching tip per moment ([`engine/explain.py`](engine/explain.py)) |
 | Technical report (6 pages) | [`docs/technical_report.pdf`](docs/technical_report.pdf) |
-| Demo video | Link above |
+| Demo video | Submitted with the hackathon entry |
 | Reproducibility | `make` targets, `Dockerfile`, [`requirements.lock`](requirements.lock), [`flawline-dataset/checksums.sha256`](flawline-dataset/checksums.sha256) |
 
 ## Repository layout

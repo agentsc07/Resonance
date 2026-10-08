@@ -17,9 +17,9 @@ def sub(tag: str, body: str) -> None:
 
 
 sub("BRAND", f"# {b['product']}\n\n**{b['tagline']}**")
-item = lambda label, url: f"[{label}]({url})" if url else f"{label} (link at release)"
+item = lambda label, url: f"[{label}]({url})" if url else None
 local = lambda u, d: u if u.startswith("http") else d
-sub("LINKS", " · ".join([item("Demo video", L.get("video", "")), item("Dataset download", L.get("dataset", "")),
-                         f"[Technical report (PDF)]({local(L.get('report', ''), 'docs/technical_report.pdf')})", f"[Datasheet]({local(L.get('datasheet', ''), 'DATASHEET.md')})"]))
+sub("LINKS", " · ".join(x for x in [item("Demo video", L.get("video", "")), item("Dataset download", L.get("dataset", "")),
+                         f"[Technical report (PDF)]({local(L.get('report', ''), 'docs/technical_report.pdf')})", f"[Datasheet]({local(L.get('datasheet', ''), 'DATASHEET.md')})"] if x))
 p.write_text(s)
 print("README updated:", b["product"])
