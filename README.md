@@ -7,7 +7,7 @@
 Speech delivery analytics built on the Flawline benchmark (Track C: Contrastive Speech Analytics & Temporal Flaw Grounding).
 
 <!-- LINKS:start -->
-Demo video (link at release) · Dataset download (link at release) · [Technical report (PDF)](docs/technical_report.pdf) · [Datasheet](DATASHEET.md)
+Demo video (link at release) · [Dataset download](https://drive.google.com/drive/folders/1HUwjgzhGVNBPQMHhGchfYjcXd-iLGn8T?usp=sharing) · [Technical report (PDF)](docs/technical_report.pdf) · [Datasheet](DATASHEET.md)
 <!-- LINKS:end -->
 
 ![Resonance analysing a reading: score, timeline with flagged moments, and the cause of each](docs/screenshots/analyse_shout_1440x900.png)
