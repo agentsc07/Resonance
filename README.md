@@ -46,15 +46,15 @@ To rebuild the dataset instead of downloading it: `make baselines dataset` (fetc
 
 563 clips, about 10 hours: 10 baseline recordings (8 VCTK speakers and 2 excerpts of the 1962 Rice University address), 15 flaws at 5 levels each, and 6 recording conditions. Every flaw is injected at a known place and strength, so every label is ground truth. Splits hold out speakers (train, dev, test; the two JFK excerpts form a separate evaluation set).
 
-| Category | Flaws |
+| Area | Flaws (code) |
 |---|---|
-| Pacing | rushed, dragging |
-| Pausing | pause in the wrong place, missing pause |
-| Intonation | flat pitch, rise on a statement, buried emphasis |
-| Volume | trailing off, sudden loud stretch |
-| Fluency | filler sounds, false starts, hesitation before a hard word |
-| Clarity | slurred consonants |
-| Text fidelity | skipped words, misread words |
+| Pacing | Rushed phrase (PACE_FAST), Dragging (PACE_SLOW) |
+| Pausing | Misplaced pause (PAUSE_BAD), Missing pause (PAUSE_LOST) |
+| Intonation | Flat pitch (MONOTONE), Rise on a statement (UPTALK), Buried emphasis (EMPH_FLAT) |
+| Volume | Trailing off (FADE), Sudden loud stretch (SHOUT) |
+| Fluency | Filler (FILLER), False start (REPEAT), Hesitation before a hard word (RARE_HESIT) |
+| Clarity | Slurred consonants (SLUR) |
+| Text fidelity | Skipped word (WORD_SKIP), Misread word (WORD_SWAP) |
 
 Label format: [`schema/label.schema.json`](schema/label.schema.json) (v1.1.0), example in [`schema/example.label.json`](schema/example.label.json). Datasheet: [`DATASHEET.md`](DATASHEET.md). Licences: [`flawline-dataset/LICENSES.md`](flawline-dataset/LICENSES.md).
 
@@ -90,7 +90,7 @@ Every metric, split, acceptance test and leakage-audit result, with how it was m
 
 - Upload mode is weaker than the reference mode and does not transfer to noisy archival speech.
 - Skipped words are detected only when a clean reading of the text is available.
-- Four flaws (buried emphasis, repeated words, rise on a statement, hesitation) are experimental and excluded from the headline numbers.
+- Four flaws (buried emphasis, false start, rise on a statement, hesitation before a hard word) are experimental and excluded from the headline numbers.
 - The speaker pool is small (8 voices aged 18 to 38, read speech).
 - Realism of the injected flaws was checked by one listener.
 

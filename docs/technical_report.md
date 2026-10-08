@@ -1,83 +1,179 @@
-# Resonance and the Flawline benchmark: locating and scoring delivery flaws in read speech
+# Resonance: finding, explaining and scoring delivery flaws in speech
 
-Track C: Contrastive Speech Analytics & Temporal Flaw Grounding. All numbers are produced by the code in this repository and are listed, with how they were measured, in `docs/RESULTS.md`.
+**Built on the Flawline benchmark.** Multimodal AI Hackathon 2026 · Track C: Contrastive Speech Analytics & Temporal Flaw Grounding.
+Code, dataset and video: see the links in the README. Every number here is produced by the code in the repository; `docs/RESULTS.md` lists how each was measured.
 
-## 1. Problem
+**In one paragraph.** Feedback on spoken delivery is usually vague, and a detector cannot be validated without known answers. We built **Flawline**, a benchmark of 563 clips (about 10 hours) of real read speech in which 15 delivery flaws from 7 areas are injected at known places and five strengths, under six recording conditions, so every clip carries an exact, time-stamped label. **Resonance** finds those flaws blind, explains each one in plain words, scores seven areas and the overall delivery, and lets a speaker replay and re-record the moment. With a clean reading of the same text it reaches event F1 0.61 (train), 0.66 (held-out speaker) and 0.55 (an unseen 1962 speech); flags land a median 18 to 30 ms from the true onset and name the right area 96 to 100% of the time.
 
-A speaker practising a reading wants to know *where* delivery goes wrong and *why*, not only a single score. Judging delivery needs a yardstick, and human ratings are costly and inconsistent. We build the yardstick the other way round: real recordings of speakers reading a known text are altered at known places and strengths with controlled delivery flaws, so every label is ground truth by construction. An engine then predicts the same labels blind, and an evaluation harness compares prediction with truth. The dataset (the **Flawline benchmark**), the generator, the engine (**Resonance**) and the harness share one label format (`schema/label.schema.json`, v1.1.0). The generator and the engine never import each other, so the engine cannot read the answer from the code that wrote it.
+## 1. Problem and approach
 
-![Pipeline from audio and optional text to flagged moments, score and report.](figures/pipeline.png)
+A speaker practising a talk wants to know *where* delivery goes wrong and *why*, not only a single score. Human ratings are costly and inconsistent, so we build the yardstick the other way round: start from clean recordings of real speakers reading a known text, inject one flaw at a known place and strength, and keep the injection as the label. Four parts share one label format (`schema/label.schema.json`, v1.1.0): a **generator** that writes the benchmark, an **engine** that predicts the same labels blind, an **evaluation harness** that compares the two, and an **app** that shows the engine's output to a user (Figure 1). The generator and the engine never import each other, so the engine cannot read the answer from the code that wrote it.
 
-*Figure 1. Pipeline from audio and optional text to flagged moments, score and report.*
+![Overview](figures/overview.png)
 
-## 2. The Flawline benchmark
+*Figure 1. Overview. The generator turns clean takes into flawed clips with exact labels; the engine predicts labels blind; the harness scores the engine against the truth; the app shows the result to a speaker.*
 
-**Who.** Ten baseline recordings: eight VCTK 0.92 speakers (CC BY 4.0; studio read speech, ages 18 to 38; American, New England American, English, Irish, Australian, South African and two Indian-English voices) and two roughly one-minute excerpts of President Kennedy's 1962 address at Rice University (public domain; open-air recording with crowd noise). Splits hold out speakers: test (B05, B08) is run once at the end, dev is B03, train is B01, B02, B04, B06 and B07, and the two JFK excerpts form a separate set that no threshold was fitted on.
+## 2. What we score, and what we never score
 
-**Where.** Each baseline also appears under six synthetic recording conditions: babble noise at 20 dB, pink noise at 10 dB, room reverb (RT60 0.6 s), a 300 to 3400 Hz phone band, 64 kbps MP3 and a gain change. Conditions are applied to unaltered readings (they must not change the score) and to a sample of flawed readings (they must not remove the flags).
+Not every difference in a recording is the speaker's fault. We separate three axes and score only the third.
 
-**What.** Fifteen flaws in seven categories, five levels each (L1 mild to L5 egregious): pacing (rushed, dragging), pausing (pause inside a phrase, missing pause), intonation (flat pitch, rise on a statement, buried emphasis), volume (trailing off, sudden loud stretch), fluency (filler sounds, false starts, hesitation before a hard word), clarity (slurred consonants) and text fidelity (skipped words, misread words). The release has 563 clips (9.96 hours): 405 single-flaw, 50 multi-flaw, 38 flawed clips under a recording condition and 70 unaltered or condition-only clips.
+| Axis | Examples | Treatment |
+|---|---|---|
+| **Who you are** (identity) | accent, pronunciation habits, voice pitch and timbre, a stammer | Never scored and never injected. Measurements are normalised to the speaker's own voice; fluency scoring can be switched off. |
+| **Where you recorded** (environment) | microphone, background noise, room echo, phone line, compression | Never scored. Tested by six recording conditions (Section 3.3); low-quality audio lowers confidence instead of producing guesses. |
+| **What you did** (delivery) | pace, pauses, intonation, volume, fluency, clarity, text fidelity | Scored: the 15 flaws in Table 1. |
 
-**Placement and rendering.** The generator works from the transcript. Word times come from forced matching of a recogniser's word timestamps to the known text, then every cut is moved to the nearest energy valley. A grammar pass types each word boundary (sentence end, clause punctuation, before a conjunction, inside a tight phrase), so pauses and fillers are placed where a real speaker would or would not put them. Pace changes are confined to a short stretch with a ramp (PSOLA time-scaling), fades and loud stretches use smooth gain curves, fillers are recorded hesitation sounds (the speaker's own where available) inserted with a natural gap, and skipped words are removed at silent boundaries with a short crossfade.
+Vocabulary choice is not scored: a speaker may choose simple or rare words.
 
-**Quality gates.** (i) *Objective checks* on every clip: the labelled region sits where the audio changed, the flaw strength grows with level, and edit boundaries fall on word boundaries within tolerance. (ii) *Removal gate:* after a word is cut, the recogniser is run again on the seconds around the join; if it still hears the removed word, the clip is rejected and the word is blacklisted for that take. On the first pass 10 of 81 removals failed; after three rounds of rejecting and regenerating, none of the 81 is audible by this gate. The gate and the skipped-word detector use the same recogniser (faster-whisper, base.en), so the gate guarantees the word is not *heard*, not that a detector can *notice* its absence. (iii) *Leakage audit:* a classifier that sees only editing artifacts (click energy at the join, noise-floor step, spectral-flux spike, sample-exact repetition) tries to tell an altered window from the same place in the clean baseline. Trained on the train split and scored on held-out windows it reaches AUC 0.591 (pass mark 0.60); leave-one-speaker-out gives 0.612. Five flaws exceed 0.65 in the leave-one-speaker-out analysis (Section 6).
+## 3. The Flawline benchmark
 
-## 3. Engine
+### 3.1 Speakers and splits
 
-The engine takes audio and, optionally, the text that was read, and returns flagged regions (flaw, area, start and end time, severity 0 to 5, cause) and a score. It has two modes that differ only in how "expected delivery" is obtained.
+Ten baseline recordings: eight VCTK 0.92 speakers (CC BY 4.0; studio read speech; ages 18 to 38; American, New England American, English, Irish, Australian, South African and two Indian-English voices; four women, four men) and two one-minute excerpts of President Kennedy's 1962 address at Rice University (public domain; open-air recording with crowd noise). Splits hold out whole speakers: **train** B01, B02, B04, B06, B07; **dev** B03; **test** B05, B08 (run once at the end); **extra** B09, B10 (Kennedy; never used to fit anything).
 
-**With a clean reading of the same text.** (1) *Condition matching:* the reference is degraded to the recording's measured bandwidth, noise and reverb, so the recording condition cannot pass for delivery. (2) *Alignment:* dynamic time warping on log-mel features with deltas; the lag between recording and reference is read as events (a sharp rise is an insertion, a fall a deletion) and as tempo (its slope over about 1.5 s). (3) *Detectors:* one per flaw, each a threshold on a speaker-normalised measurement: pauses and fillers from lag events, skipped words from deletions, misread words from a local path cost, pace from tempo, flat pitch from F0 range, trailing off, loud stretches and slurring from level and 2 to 7.5 kHz energy. Thresholds are fitted on train by coordinate search.
+### 3.2 The 15 flaws in 7 areas
 
-**Upload mode (no reference).** Expectations come from the clip's own statistics (level, F0 range), transcript rules (pause norms by boundary type, recogniser output against the text for misread words and fillers) and norms from clean speakers. Five flaws are detectable this way (trailing off, loud stretch, pause in the wrong place, filler sounds, misread words); localised pace changes, slurring, flat pitch and skipped words are not, because without a reference there is nothing to compare a short stretch with. Skipped-word detection from the text alone was measured and rejected (precision 0.07, recall 0.16 on train). Word times from the recogniser are first snapped to the audio: a silence that falls inside a word's span is handed to the word boundary, so a real pause is attributed to the right place. A silence of 1 s or more inside a sentence is always flagged as a long hesitation, and a held, steady, flat-pitch vowel that no word accounts for is flagged as a filler sound.
+Each flaw has five levels, L1 (barely noticeable) to L5 (obvious).
 
-**Shared stages.** *Arbitration* drops known secondary symptoms inside a primary region (short pauses inside a rushed stretch, a loud stretch also looking "prominent") and resolves other overlaps in favour of the more reliable detector (reliability is precision on train). *Severity* is an isotonic map from the measured deviation to the injected level, fitted on train. *Explanation* fills one template per flaw with the measured numbers and the words concerned, and adds a coaching tip.
+| Area | Flaw (code) | What a listener hears | How it is injected | Detected |
+|---|---|---|---|---|
+| Pacing | Rushed phrase (PACE_FAST) | a stretch spoken too fast | tempo ramps up over a short region; gaps shrink most, then vowels, consonants least | Ref |
+| Pacing | Dragging (PACE_SLOW) | a stretch spoken too slowly | vowels and gaps stretched at sentence openings or before hard words | Ref |
+| Pausing | Misplaced pause (PAUSE_BAD) | silence inside a phrase ("the … people") | own room-tone silence inside a tight phrase; the word before it drawn out | Ref, Up |
+| Pausing | Missing pause (PAUSE_LOST) | no breath where one belongs | a pause the speaker chose (at a comma) shortened, 50 ms floor | Ref |
+| Intonation | Flat pitch (MONOTONE) | a phrase with no melody | pitch range compressed where the speaker is most expressive (PSOLA) | Ref |
+| Intonation | Rise on a statement (UPTALK) | a statement ending like a question | final contour replaced by a rise from the last word's nucleus | Exp, Up |
+| Intonation | Buried emphasis (EMPH_FLAT) | the key word not stressed | pitch, loudness and length cues of meaning-carrying words reduced | Exp |
+| Volume | Trailing off (FADE) | the sentence end fades away | gain ramp down on speech only, where breath runs out | Ref, Up |
+| Volume | Sudden loud stretch (SHOUT) | a stretch much louder than the rest | vocal effort: louder, brighter and slightly higher; noise floor untouched | Ref, Up |
+| Fluency | Filler (FILLER) | "uh", "um", a drawn-out word | own-voice "uh"/"um" or drawl, where people really hesitate | Ref, Up |
+| Fluency | False start (REPEAT) | "the the", a restarted phrase | first attempt cut off at 60 to 80%, then a clean restart | Exp |
+| Fluency | Hesitation before a hard word (RARE_HESIT) | a pause or "uh" before a rare word | pause, own-voice "uh" and a slowed rare word (Zipf < 3.5) | Exp |
+| Clarity | Slurred consonants (SLUR) | mumbled, softened consonants | 2 to 8 kHz consonant energy reduced where articulation is crispest | Ref |
+| Text fidelity | Skipped word (WORD_SKIP) | a small word missing | a function word removed at an energy valley, with a crossfade | Ref |
+| Text fidelity | Misread word (WORD_SWAP) | a different word said | a look-alike word from the same speech (form/from), or a dropped plural -s, re-timed and pitch-matched | Ref, Up |
 
-## 4. Scoring
+*Table 1. The taxonomy. Ref = detected with a clean reading of the same text; Up = also detected in upload mode (no reference); Exp = experimental, reported but excluded from headline numbers (Section 7).*
 
-Each flagged region costs `p = w · c · r · s² · m`: a per-flaw weight `w`, recording-quality confidence `c`, detector reliability `r`, severity `s` and a duration factor `m` (1 for events, region seconds / 2 capped at 3 for spans). The penalty per clip minute `P` gives an area score `100 · exp(−P / 35)`. The overall score is `0.6 × (genre-weighted mean of the seven areas) + 0.4 × (weakest area)`, so one badly hurt area cannot hide behind an average; the band (polished, strong, noticeable flaws, needs work) is capped by the weakest area. Weights per area depend on the kind of speaking (interpretive reading, declamation, extemporaneous, persuasive oratory) and can be replaced by a user rubric. The per-flaw weights are fitted on train single-flaw clips so a single level-5 flaw scores about 60 for every flaw type. In a recording whose quality gate is fair or poor, or whose conditions differ from the reference, a lone flag in an area counts half and cannot be the weakest area, which stops one stray detection from dominating the score.
+### 3.3 How a clip is made
 
-## 5. Evaluation protocol
+![Benchmark build](figures/benchmark_build.png)
 
-*Grounding.* A predicted region matches a true flaw of the same type when their overlap (IoU) is at least 0.5 (strict) or 0.3 (standard); point-like events are widened to 0.30 s. We also report onset F1 (same type, start within 250 ms), the median onset error and the share of located flags that name the right area. *Score acceptance tests.* Dose-response: the score must fall with level (Spearman ρ ≤ −0.9) on the B01 grid of all five levels. Invariance: unaltered readings under each condition must keep their score (target shift below 3 points) and produce at most 0.5 false flags per minute. Locality: a flaw should cost points mainly in its own area (target below 2 points elsewhere). *Leakage* is described in Section 2. Thresholds, weights and maps are fitted on train; dev is checked; the JFK set is never fitted on; the test split is run once.
+*Figure 2. Building one labelled clip.*
 
-## 6. Results
+1. **Word times.** A recogniser's word timestamps are matched to the known text and every cut point is moved to the nearest energy valley.
+2. **Placement by grammar.** spaCy types every word boundary (sentence end, clause punctuation, before a conjunction or subordinate clause, after a discourse marker, inside a tight or loose phrase). Each flaw has placement rules, so a pause lands where no fluent reader would pause and a filler where people really hesitate.
+3. **Rendering in the speaker's own voice.** PSOLA time and pitch edits reuse the speaker's own pitch periods; fillers are built from the speaker's own neutral vowels; gain changes touch speech, not the room noise.
+4. **Quality gates.** Objective checks (the label sits where the audio changed, strength grows with level, edits fall on word boundaries); a removal gate (speech recognition is re-run around every removed word and the clip is rejected if the word is still heard: after three rounds, 0 of 81 removals were audible); a listening pass by one listener, after which the pace, filler, pause and slur renderers were rebuilt.
+5. **Recording conditions.** Babble noise at 20 dB, pink noise at 10 dB, room reverb (RT60 0.6 s), a 300 to 3400 Hz phone band, 64 kbps MP3 and a gain change, applied to unaltered readings (the score must not move) and to a sample of flawed readings (the flags must survive).
 
-| Same-speaker mode | Clips | F1 (IoU ≥ 0.5) | F1 (IoU ≥ 0.3) | Onset F1 | Median onset error | Area accuracy |
+### 3.4 The label
+
+Every clip has a JSON label with who, where and what. Each flaw region carries its type, area, level, start and end in seconds, the words around it and the reason for its placement (abridged):
+
+```json
+{"clip_id": "B01-CHAMP_C0__PAUSE_BAD_L3_s3821",
+ "where": {"base_condition": "C0", "added_condition": null},
+ "what": [{"flaw": "PAUSE_BAD", "category": "Pausing", "level": 3,
+           "start_s": 36.0713, "end_s": 37.0453, "boundary": "phrase_tight",
+           "context": "of gold at ⟦…⟧ one end. People",
+           "why": "inside a tight phrase, between 'at' and 'one'"}]}
+```
+
+### 3.5 Size and leakage check
+
+563 clips, 9.96 hours: 405 single-flaw, 50 multi-flaw, 38 flawed clips under a recording condition, and 70 unaltered or condition-only clips. To check that flaws cannot be found from editing traces alone, a classifier that sees only artifact features (click energy at a join, noise-floor step, spectral-flux spike, exact repetition) tries to tell an altered window from the same place in the clean take: AUC 0.591 on held-out windows and 0.612 leave-one-speaker-out, where 0.5 is chance. Five flaws exceed 0.65 in the leave-one-speaker-out analysis (Section 7).
+
+## 4. How Resonance listens
+
+### 4.1 Features
+
+Every recording becomes frame-level measurements (every 10 ms) and word-level facts. All acoustic measurements are relative to the speaker's own voice.
+
+| Measurement | How it is computed | Relative to | Used for |
+|---|---|---|---|
+| Pitch (F0) | Praat pitch track (parselmouth), range adapted to the speaker, octave errors cleaned | semitones from the speaker's own median | flat pitch, rise on a statement, emphasis |
+| Loudness | frame intensity in dB | the speaker's own median speech level | trailing off, loud stretch |
+| Consonant energy | 2 to 7.5 kHz band energy relative to total energy | the speaker's own clip | slurred consonants |
+| Speaking rate and timing | syllables per second over word windows; tempo from alignment with a reference | the speaker's own rate, or the reference | rushed, dragging |
+| Silence and held vowels | frames below the speech floor; voiced frames with near-flat pitch and little spectral change | the clip's own noise floor | pauses, fillers, hesitations |
+| Words | faster-whisper (base.en) word timestamps, aligned to the text, snapped to the audio | the text that was read | which words a moment falls between; misread or skipped words |
+| Grammar and word rarity | spaCy boundary types; Zipf word frequency | fluent-reader norms | whether a pause belongs there; hesitation before a hard word |
+| Spectral frames | log-mel with deltas | the reference reading | alignment (reference mode) |
+
+### 4.2 Two ways to know what "good" is
+
+![Engine](figures/engine_modes.png)
+
+*Figure 3. The engine. Both modes share detection, arbitration, severity, scoring and explanation.*
+
+**With a clean reading of the same text (reference mode).** The reference is first degraded to the recording's measured bandwidth, noise and reverb, so the recording condition cannot pass for delivery. Dynamic time warping aligns the two; the lag between them is read as events (a sharp rise is an insertion such as a pause or filler, a fall is a deletion) and as tempo. One detector per flaw thresholds a speaker-normalised measurement; thresholds are fitted on train.
+
+**Upload mode (any recording, optional text).** Expectations come from the clip's own statistics, transcript rules (pause norms by boundary type) and norms from clean speakers. Speech recognisers smooth over hesitations: they stretch words across pauses and drop "uh". So timing is taken from the audio, not from the recogniser: word times are snapped to the audio (a silence inside a word's span is handed to the word boundary), any silence of 1 s or more inside a sentence is a long hesitation, and a held, steady, flat-pitch vowel that no word explains is a filler. The words are used only to explain each moment: which words it falls between and whether a fluent reader would pause there. Five headline flaws are detectable this way; rise on a statement can also be detected but is experimental (Table 1).
+
+### 4.3 From detection to explanation
+
+**Arbitration** drops secondary symptoms inside a primary region (short gaps inside a rushed stretch) and resolves overlaps in favour of the more reliable detector. **Severity** maps the measured deviation to a 0 to 5 scale with an isotonic fit on train. **Explanation** fills one template per flaw with the measured numbers and the words concerned, and adds a coaching tip, for example:
+
+> Clip `B01-CHAMP_C0__PAUSE_BAD_L3_s3821`, region 1 (36.07 to 37.04 s), found blind with a clean reading. *Explanation:* Words 96–97 "at one": 0.97 s pause inside a phrase (phrase_tight); the reference does not stop here. Misplaced pause (Pausing, severity 3.0). *Tip:* Keep phrases together; pause at commas and full stops, not between a word and its phrase. The region costs 8.5 points.
+
+## 5. Scoring
+
+Each flagged region costs `p = w · c · r · s² · m`: per-flaw weight `w`, recording-quality confidence `c`, detector reliability `r` (precision on train), severity `s` and duration factor `m` (1 for point events; region seconds / 2, capped at 3, for stretches). Squaring severity makes one glaring slip cost more than several mild ones. Penalties per minute `P` give each of the seven areas a score `100 · exp(−P / 35)`. The **overall score** is `0.6 × genre-weighted mean of the areas + 0.4 × weakest area`, so one bad habit cannot hide behind good ones, and the band (polished, strong, noticeable flaws, needs work) is capped by the weakest area. Area weights depend on the kind of speaking (interpretive reading, declamation, extemporaneous, persuasive oratory) and can be replaced by a user rubric. Per-flaw weights are fitted on train so that a single level-5 flaw scores about 60 for every flaw type. In a fair or poor recording, a lone flag in an area counts half and cannot become the weakest area.
+
+## 6. The Resonance app
+
+The app is a local web application (FastAPI service and a static front end) with three pages: Analyse, Dataset and About.
+
+- **Upload** any recording (WAV, MP3, M4A, FLAC), with the text that was read if available, or pick an example.
+- **Score**: overall score and band, plus the areas that lost points.
+- **Timeline**: waveform with one feature lane at a time (pitch, loudness or rate) against the speaker's expected range, and numbered flagged regions with start and end times. This is the participant-versus-baseline overlay.
+- **Flaw card**: the cause in plain words with measured numbers, the points lost, a coaching tip, and a button that plays exactly that moment.
+- **Try that part again**: the user re-records just that phrase; only the measurement that caused the flag is compared, before and after.
+- **Fairness switch** ("Ignore fillers and false starts") for speakers who stammer or pause to think; **downloadable report**; **Dataset page** with paired clean and flawed audio; **About page** with the evaluation numbers.
+
+![App](figures/timeline.png)
+
+*Figure 4. The analysis view: score, flagged moments on the timeline, the cause and the points lost.*
+
+## 7. Evaluation
+
+**Protocol.** A predicted region matches a true flaw of the same type when their overlap (IoU) is at least 0.5 (strict) or 0.3 (standard); point events are widened to 0.30 s. We also report onset F1 (same type, start within 250 ms), the median onset error and area accuracy. Score acceptance tests check dose-response (the score must fall with level), invariance (unaltered readings under each condition keep their score and raise at most 0.5 false flags per minute) and locality (a flaw should cost points mainly in its own area). Everything is fitted on train, checked on dev; the Kennedy set is never fitted on; the test split is run once.
+
+| Reference mode | Clips | F1 (IoU ≥ 0.5) | F1 (IoU ≥ 0.3) | Onset F1 | Median onset error | Area accuracy |
 |---|---|---|---|---|---|---|
 | Train | 235 | 0.611 | 0.670 | 0.580 | 17.5 ms | 98% |
-| Dev | 20 | 0.659 | 0.729 | 0.541 | 29.5 ms | 100% |
-| JFK 1962 | 160 | 0.551 | 0.607 | 0.528 | 26.1 ms | 96% |
+| Dev (held-out speaker) | 20 | 0.659 | 0.729 | 0.541 | 29.5 ms | 100% |
+| Kennedy 1962 (unseen) | 160 | 0.551 | 0.607 | 0.528 | 26.1 ms | 96% |
+| Test (B05, B08) | run on 12 Oct | | | | | |
 
-*Table 1. Eleven headline flaws, with a clean reading of the same text.* In upload mode (five detectable flaws) the strict F1 is 0.363 on train, 0.412 on dev (7 of 23 flaws found) and 0.116 on JFK 1962, where recogniser errors on the noisy recording produce many false flags (698 flags for 199 true flaws).
+*Table 2. Eleven headline flaws.* In upload mode (five detectable flaws) strict F1 is 0.363 on train, 0.412 on dev (7 of 23 flaws found) and 0.116 on Kennedy 1962, where recogniser errors on the noisy recording produce many false flags.
 
-![Per-flaw event F1 on the train split.](figures/per_flaw_f1.png)
+![Per-flaw F1](figures/per_flaw_f1.png) ![Dose-response](figures/dose_response.png)
 
-*Figure 2. Per-flaw event F1 on the train split, with a clean reading (left bars) and in upload mode (right bars).*
+*Figure 5. Left: per-flaw event F1 on train, reference mode and upload mode. Right: overall score against flaw level; one line per scored flaw.*
 
-Four flaws are experimental and excluded from the headline numbers: buried emphasis (F1 0.08; the voices are too flat for flattening to scale with level), repeated words (0.07), rise on a statement (0.22) and hesitation before a hard word (0.63, but its score does not fall steadily with level and its leakage AUC is 0.69 to 0.72).
-
-![Score against flaw level for the B01 grid.](figures/dose_response.png)
-
-*Figure 3. Overall score against flaw level on the B01 grid; one line per scored flaw.*
-
-*Dose-response.* The score falls steadily with level for 12 of 13 scored flaws (Figure 3); hesitation before a hard word fails (ρ = −0.64). *Invariance.* Under noise, phone band, room reverb, MP3 and gain change, unaltered readings raise 0.45 false flags per minute (target ≤ 0.5, met); the worst score shift is 6.5 points (target < 3, not met), the mean shift is 0.0 to 1.6 points per condition. *Locality.* A level-3 flaw costs 6.1 points in other areas on average (target < 2, not met). *Leakage.* Overall AUC 0.591 held out, 0.612 leave-one-speaker-out; FILLER (0.69), PAUSE_BAD (0.71), PAUSE_LOST (0.72), RARE_HESIT (0.72) and REPEAT (0.74) exceed 0.65 in the latter, so part of their detectability may come from editing traces.
-
-![A timeline view: score, flagged moments on the loudness trace, cause and points lost.](figures/timeline.png)
-
-*Figure 4. The analysis view: score, flagged moments on the loudness trace, the cause and the points lost.*
-
-## 7. Fairness and invariance
-
-Accent, voice, speaker and recording condition are not scored: the reference is degraded to the recording's conditions, the measurements are normalised per speaker, and the invariance suite above checks that conditions do not move the score. The benchmark supports no claim about accents or demographics (one or two speakers per accent). The score is a rubric measuring departure from a chosen yardstick, not a verdict on a speaker: a flat voice, an accent, a stammer or a deliberate pause is not a fault in itself. The fluency switch and the custom rubric exist for that reason, and low-quality recordings carry a lower confidence.
+**Acceptance tests.** The score falls steadily with level for 12 of 13 scored flaws (hesitation before a hard word fails, ρ = −0.64). Under the six conditions, unaltered readings raise 0.45 false flags per minute (target ≤ 0.5, met); the mean score shift is 0.0 to 1.6 points per condition and the worst case is 6.5 points (target < 3, not met). A level-3 flaw costs 6.1 points in other areas on average (target < 2, not met). **Experimental flaws:** buried emphasis (F1 0.08; the voices are too flat for flattening to scale with level), false starts (0.07), rise on a statement (0.22) and hesitation before a hard word (0.63, but non-monotone and leakage AUC about 0.7). **Leakage:** FILLER (0.69), PAUSE_BAD (0.71), PAUSE_LOST (0.72), RARE_HESIT (0.72) and REPEAT (0.74) exceed 0.65 leave-one-speaker-out, so part of their detectability may come from editing traces.
 
 ## 8. Limitations
 
-Upload mode is weaker than the reference mode and does not transfer to noisy archival speech. Skipped words need a clean reading. Four flaws are experimental, and two acceptance targets (worst score shift, locality) are not met. The speaker pool is small (eight voices aged 18 to 38, read speech, no spontaneous speech, slang, children or speakers over 45). Realism of the injected flaws was checked by one listener; the objective checks do not replace a listening study. Dev is a single speaker, so dev numbers are noisy. Rebuilding the audio on another platform can change a few time-stretched clips by one 16-bit step, so the released archive ships the baseline takes and checksums.
+Upload mode is weaker than reference mode and does not transfer to noisy archival speech; skipped words need a clean reading. Four flaws are experimental, and two acceptance targets (worst-case score shift, locality) are not met. The speaker pool is small: eight studio voices aged 18 to 38 plus one 1962 speaker, read speech only, so no claim is made about accents, ages or spontaneous speech. Realism of the injected flaws was checked by one listener. The dev split is a single speaker, so its numbers are noisy.
 
 ## 9. Future work
 
-A gold set labelled by speaking coaches, to replace injected flaws with human judgement as the main yardstick (the listening-study tools, `make label` and `make review`, are already built and the engine-versus-listener comparison script exists); coaching text from a language model grounded in the measured numbers; Indian English and code-mixed speech, in the reference and the upload modes; and a reference-free route to skipped words.
+A gold set of real speeches labelled by debate coaches, to tune and test on human judgement (the labelling and review tools, `make label` and `make review`, and the engine-versus-listener comparison script are already built); coaching text from a language model grounded in the measured numbers; Indian English and code-mixed speech; and a reference-free route to skipped words.
 
-## Reproducing
+## 10. Reproducing, and where each requirement is met
 
-`make setup`, unzip the released dataset into `flawline-dataset/` (or `make baselines dataset`), `make eval`, `make app`; Docker instructions are in the README.
+`make setup`, unzip the released dataset into `flawline-dataset/` (or rebuild with `make baselines dataset`), `make eval`, `make app`. Docker, the pinned `requirements.lock` and SHA-256 checksums for every clip are in the repository.
+
+| Track C requirement | Where |
+|---|---|
+| Custom contrastive dataset, publicly available | Flawline benchmark (Section 3), `DATASHEET.md`, download link in the README |
+| Same transcripts for baseline and flawed versions | every flawed clip is derived from its own baseline take (Section 3.3) |
+| Temporally bounded labels | `schema/label.schema.json`, Section 3.4 |
+| Speaker-agnostic, stress-tested under recording conditions | Sections 2, 4.1 and 7 |
+| Feature extraction | Section 4.1, `engine/features.py` |
+| Flaw regions with causal explanations | Sections 4.3 and 6 |
+| Dashboard: upload, feature extraction, overlay, flaw regions | Section 6, `app/` |
+| Reproducibility | Makefile, Dockerfile, `requirements.lock`, checksums |

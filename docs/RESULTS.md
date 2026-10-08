@@ -4,7 +4,7 @@ All numbers are read from `results/*.json` and `results/*.csv` by `scripts/make_
 
 ## 1. Event grounding
 
-An injected flaw is *found* when a predicted region of the same flaw type overlaps it. Point-like events (a removed word, a short insertion) are widened to 0.30 s on both sides before overlap is computed. Precision = share of predicted regions that match a true flaw; recall = share of true flaws matched; F1 is their harmonic mean. Counts are over all clips of the split.
+An injected flaw is *found* when a predicted region of the same flaw type overlaps it. Point-like events (a removed word, a short insertion) are widened to a width of 0.30 s, centred on the event, before overlap is computed. Precision = share of predicted regions that match a true flaw; recall = share of true flaws matched; F1 is their harmonic mean. Counts are over all clips of the split.
 
 Metrics reported side by side:
 

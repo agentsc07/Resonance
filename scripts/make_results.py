@@ -18,7 +18,7 @@ w("# Results\n")
 w("All numbers are read from `results/*.json` and `results/*.csv` by `scripts/make_results.py`. Thresholds and weights are fitted on the **train** split only; **dev** is checked, "
   "**JFK** (two excerpts of the 1962 Rice University address) is never tuned on, and the **test** split is run once at the end.\n")
 w("## 1. Event grounding\n")
-w("An injected flaw is *found* when a predicted region of the same flaw type overlaps it. Point-like events (a removed word, a short insertion) are widened to 0.30 s on both sides before overlap is computed. "
+w("An injected flaw is *found* when a predicted region of the same flaw type overlaps it. Point-like events (a removed word, a short insertion) are widened to a width of 0.30 s, centred on the event, before overlap is computed. "
   "Precision = share of predicted regions that match a true flaw; recall = share of true flaws matched; F1 is their harmonic mean. Counts are over all clips of the split.\n")
 w("Metrics reported side by side:\n")
 w("- **Strict F1**: overlap (IoU) of at least 0.5 between predicted and true region, same flaw type.")
