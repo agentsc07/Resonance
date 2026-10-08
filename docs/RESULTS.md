@@ -146,3 +146,12 @@ Flaws above 0.65 in leave-one-speaker-out (FILLER, PAUSE_BAD, PAUSE_LOST, RARE_H
 
 Unaltered readings under noise, phone band, room reverb, MP3 and gain change, upload mode: **2.240 false flags per minute**, worst score shift **23.5 points**, mean shift by condition GAIN 1.38, MP3 1.41, N10 6.93, N20 5.71, PHN 14.37, RVB 4.6 (n = 60).
 
+## 4. Reproduction check
+
+- **date**: 2026-10-08
+- **system**: macOS 15 (Darwin 25.4), arm64, Python 3.13.1, Docker 29.7.2
+- **make setup**: pass (fresh venv, requirements.lock)
+- **make app**: pass: starts, all 5 examples analyse, Dataset and About load, lab pages absent by default
+- **make eval**: pass on the commit before the upload-mode changes (harness, acceptance, leakage and headline reproduce the committed numbers; prediction caches under /tmp were shared with the source tree). Not repeated after the upload-mode changes.
+- **docker build and run**: pass: image builds, container serves the app with the dataset mounted
+

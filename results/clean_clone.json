@@ -1,0 +1,5 @@
+{"date": "2026-10-08", "system": "macOS 15 (Darwin 25.4), arm64, Python 3.13.1, Docker 29.7.2",
+ "make setup": "pass (fresh venv, requirements.lock)",
+ "make app": "pass: starts, all 5 examples analyse, Dataset and About load, lab pages absent by default",
+ "make eval": "pass on the commit before the upload-mode changes (harness, acceptance, leakage and headline reproduce the committed numbers; prediction caches under /tmp were shared with the source tree). Not repeated after the upload-mode changes.",
+ "docker build and run": "pass: image builds, container serves the app with the dataset mounted"}
